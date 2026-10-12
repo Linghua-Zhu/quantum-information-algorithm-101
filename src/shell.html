@@ -1,0 +1,283 @@
+<header class="top">
+  <a class="brand" href="#home" data-go="home">Quantum Information and Programming 101</a>
+  <nav class="tabs" id="nav" aria-label="Course">
+    <a href="#home" data-go="home" data-nav="home">Home</a>
+    <a href="#u1-goals" data-go="u1" data-nav="u1">Unit 1: One qubit</a>
+    <a href="#research" data-go="research" data-nav="research">Research</a>
+    <a href="#about" data-go="about" data-nav="about">About</a>
+  </nav>
+</header>
+<main id="main">
+<div class="unit-head" id="unit-head" hidden>
+  <div class="unit-title"><span>Unit 1</span><h1>One qubit</h1></div>
+  <nav class="tabs" id="unit-tabs" aria-label="Parts of unit 1">
+    <a href="#u1-goals" data-go="u1-goals" data-nav="u1-goals">Goals</a>
+    <a href="#u1-start" data-go="u1-start" data-nav="u1-start">Start here</a>
+    <a href="#u1-practice" data-go="u1-practice" data-nav="u1-practice">Practice</a>
+    <a href="#u1-discuss" data-go="u1-discuss" data-nav="u1-discuss">Discuss</a>
+    <a href="#u1-explore" data-go="u1-explore" data-nav="u1-explore">Explore</a>
+    <a href="#u1-code" data-go="u1-code" data-nav="u1-code">Code</a>
+  </nav>
+</div>
+
+<section id="view-home">
+  <div class="hero">
+    <div>
+      <h1>Quantum Information and Programming 101</h1>
+      <p class="sub">From vectors to qubits to algorithms.<br>Predict first, then observe.</p>
+      <p class="lead">A course tool for a first course in quantum information and quantum programming. You work through each topic by committing to an answer, watching what the physics does, and explaining the difference. The same circuits then become code that runs on a simulator or on a real quantum computer.</p>
+      <div class="row" id="h-cta"></div>
+      <p class="note" id="h-status"></p>
+    </div>
+    <figure class="fig hero-fig">
+      <div id="h-sphere"></div>
+      <figcaption>A circuit as a path on the Bloch sphere. H takes |0⟩ to |+⟩, then S takes it on to |+i⟩. Drag the figure to turn it. <button type="button" class="link" id="h-play">Play</button></figcaption>
+    </figure>
+  </div>
+
+  <h2 class="sec">How each question works</h2>
+  <ol class="three">
+    <li><h3>Predict</h3><p>You commit to an answer before anything moves: a point on the sphere, a number, or a choice.</p></li>
+    <li><h3>Observe</h3><p>The tool shows what happens and tells you how your answer relates to it.</p></li>
+    <li><h3>Explain</h3><p>You write one sentence about the result, then compare it with a reference.</p></li>
+  </ol>
+  <p class="txt" style="margin-top:16px;max-width:44em">Committing first is what makes the observation informative. You find out exactly where your picture of the physics and the physics part ways.</p>
+
+  <h2 class="sec">Course map</h2>
+  <div class="map" id="h-map"></div>
+  <h3 class="sub3">Every unit has the same six parts</h3>
+  <dl class="parts-def" id="h-parts"></dl>
+
+  <h2 class="sec">About this tool</h2>
+  <div class="about">
+    <p class="txt">Linghua Zhu made this tool for a first course in quantum information and quantum programming. It runs in your browser. There is no login, and your answers are stored on this device only.</p>
+    <p class="txt">Unit 1 is open. The other units and the research topics are in preparation. The <a href="#about" data-go="about">About</a> page explains how the tool is designed and lists its sources.</p>
+  </div>
+</section>
+
+<section id="view-goals" hidden>
+  <div class="page">
+    <h2>What you will be able to do</h2>
+    <p class="lead">Unit 1 has six goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
+    <ol class="goals" id="g-list"></ol>
+    <h3>What you need before you start</h3>
+    <p class="txt">Sines and cosines, vectors with three components, and complex numbers in the form e<sup>iφ</sup>. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.</p>
+    <div class="row" style="margin-top:18px"><a class="primary" href="#u1-start" data-go="u1-start">Start here</a><a class="ghost" href="#u1-practice" data-go="u1-practice">Go to practice</a></div>
+  </div>
+</section>
+
+<section id="view-start" hidden>
+  <div class="page" style="max-width:none">
+    <h2>Start here</h2>
+    <p class="lead">Read this once before the practice. It gives the conventions for the sphere and one worked example for each topic. The practice then asks for the same steps with less and less help.</p>
+    <nav class="toc" id="s-toc" aria-label="On this page"></nav>
+    <div id="s-body"></div>
+    <div class="row" style="border-top:1px solid var(--rule);padding-top:18px;margin-top:0"><a class="primary" href="#u1-practice" data-go="u1-practice">Go to practice</a><a class="ghost" href="#u1-goals" data-go="u1-goals">Back to the goals</a></div>
+  </div>
+</section>
+
+<section id="view-practice" hidden>
+  <h2 class="vh">Practice</h2>
+  <p class="note" id="p-intro" style="margin:0 0 14px" hidden>First time here? <a href="#u1-start" data-go="u1-start">Start here</a> explains how to read the sphere and how the practice works.</p>
+  <nav class="groups" id="p-groups" aria-label="Topics"></nav>
+  <div class="stage poe">
+    <figure class="fig">
+      <div id="p-sphere"></div>
+      <figcaption>
+        <div class="legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span></div>
+        <div class="figtools">
+          <button type="button" class="link" id="p-resetview">Reset view</button><span id="p-flatnote" hidden>Cross-section through the z axis</span>
+          <details id="p-numbers"><summary>Place by numbers</summary>
+            <div class="angles"><label id="p-n1l">θ <input type="number" id="p-n1"></label><label id="p-n2l">φ <input type="number" id="p-n2"></label><button type="button" class="ghost" id="p-placeangles">Place</button></div>
+            <p class="err" id="p-angerr" hidden></p>
+          </details>
+        </div>
+      </figcaption>
+    </figure>
+    <div class="qhead" id="p-head"></div>
+    <div class="qsteps" id="p-steps" aria-live="polite"></div>
+  </div>
+  <div class="strip" id="p-strip"></div>
+</section>
+
+<section id="view-discuss" hidden>
+  <h2 class="vh">Discuss</h2>
+  <p class="note" style="margin:0 0 12px">One question for each idea in this unit. Answer on your own, talk it over, answer again, then compare the reasons for every option.</p>
+  <nav class="qnav" id="d-nav" aria-label="Discussion questions"></nav>
+  <div class="stage poe" id="d-stage">
+    <figure class="fig">
+      <div id="d-sphere"></div>
+      <figcaption>
+        <span id="d-cap">Drag the figure to turn it.</span>
+        <div class="figtools"><button type="button" class="link" id="d-resetview">Reset view</button><button type="button" class="link" id="d-replay" hidden>Replay the motion</button></div>
+      </figcaption>
+    </figure>
+    <div class="qhead" id="d-head"></div>
+    <div class="qsteps" id="d-steps" aria-live="polite"></div>
+  </div>
+</section>
+
+<section id="view-explore" hidden>
+  <h2 class="vh">Explore</h2>
+  <div class="stage">
+    <figure class="fig">
+      <div id="e-sphere"></div>
+      <figcaption>
+        <div class="legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-path"></i>Path so far</span></div>
+        <div class="figtools"><button type="button" class="link" id="e-resetview">Reset view</button></div>
+      </figcaption>
+    </figure>
+    <div>
+      <p class="note" style="margin:0 0 14px">A sandbox with no questions. Build a circuit one step at a time and watch the state. The Code part turns the same circuit into a program.</p>
+      <div class="group"><h3>Start state</h3><div class="keys" id="e-starts"></div><p class="note">Choosing a start state clears the steps.</p></div>
+      <div class="group"><h3>Gates</h3><div class="keys" id="e-gates"></div></div>
+      <div class="group"><h3>Rotation by any angle</h3>
+        <div class="row"><label>Axis <select id="e-axis"><option>x</option><option>y</option><option selected>z</option></select></label>
+        <label>Angle <input type="number" id="e-angle" value="90" min="-360" max="360" step="15"> °</label>
+        <button type="button" class="ghost" id="e-rotate">Apply rotation</button></div>
+        <p class="err" id="e-err" hidden></p>
+      </div>
+      <div class="group"><h3>Noise</h3>
+        <div class="row"><label>t/T1 <input type="number" id="e-t" value="0.5" min="0.05" max="10" step="0.05"></label><label>T2/T1 <input type="number" id="e-ratio" value="1" min="0.1" max="2" step="0.1"></label><button type="button" class="ghost" id="e-relax">Apply relaxation and dephasing</button></div>
+        <div class="row"><label>p <input type="number" id="e-p" value="0.2" min="0.05" max="1" step="0.05"></label><button type="button" class="ghost" id="e-depol">Apply depolarizing noise</button></div>
+        <p class="err" id="e-nerr" hidden></p>
+      </div>
+      <div class="group"><h3>Steps so far</h3><div class="circuit" id="e-circuit" style="margin-bottom:10px"></div>
+        <div class="row"><button type="button" class="ghost" id="e-undo">Undo last step</button><button type="button" class="ghost" id="e-clear">Clear steps</button><a class="ghost" href="#u1-code" data-go="u1-code">See this circuit as code</a></div>
+        <p class="err" id="e-serr" hidden></p></div>
+      <div class="group"><h3>Measure fresh copies of this state</h3>
+        <div class="row"><label>Axis <select id="e-maxis"><option value="z">Z</option><option value="x">X</option><option value="y">Y</option></select></label><label>Shots <input type="number" id="e-shots" value="200" min="1" max="100000" step="1" style="width:110px"></label><button type="button" class="ghost" id="e-measure">Measure</button></div>
+        <p class="err" id="e-merr" hidden></p>
+        <p class="note" id="e-mout" aria-live="polite"></p>
+      </div>
+      <div class="group"><h3>State</h3><div class="vals" id="e-vals"></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="view-code" hidden>
+  <h2 class="vh">Code</h2>
+  <div class="codegrid">
+    <div>
+      <div class="group"><h3>The circuit</h3>
+        <div class="circuit" id="c-circuit" style="margin-bottom:8px"></div>
+        <p class="note" id="c-cnote" style="margin:0 0 10px"></p>
+        <div class="row"><a class="ghost" href="#u1-explore" data-go="u1-explore">Change it in Explore</a></div>
+      </div>
+      <div class="group"><h3>Measure along</h3>
+        <div class="seg inline" id="c-axis" role="radiogroup" aria-label="Measurement axis">
+          <label><input type="radio" name="c-axis" id="c-axis-z" value="z"> Z</label>
+          <label><input type="radio" name="c-axis" id="c-axis-x" value="x"> X</label>
+          <label><input type="radio" name="c-axis" id="c-axis-y" value="y"> Y</label>
+        </div>
+      </div>
+      <div class="group"><h3><label for="c-shots">Shots</label></h3>
+        <div class="row"><input type="number" id="c-shots" min="0" max="10000" step="100" inputmode="numeric"></div>
+        <p class="err" id="c-serr" hidden></p>
+      </div>
+      <div class="group"><h3>Run on</h3>
+        <div class="seg" id="c-target" role="radiogroup" aria-label="Where to run">
+          <label><input type="radio" name="c-target" id="c-target-simulator" value="simulator"> <span>An ideal simulator<br><small class="note">On your computer. No account, no noise.</small></span></label>
+          <label><input type="radio" name="c-target" id="c-target-fake_device" value="fake_device"> <span>A simulator that imitates a real device<br><small class="note">On your computer. No account. The noise of a real device is included.</small></span></label>
+          <label><input type="radio" name="c-target" id="c-target-device" value="device"> <span>A real quantum computer<br><small class="note">At IBM, through the cloud. Needs a free account.</small></span></label>
+        </div>
+        <p class="note" id="c-tnote" hidden></p>
+      </div>
+      <div class="group"><p class="note" style="margin:0">Copy the code, then follow <button type="button" class="link" id="c-tohow">How to run it</button> under the code.</p></div>
+    </div>
+    <div>
+      <div class="codebar"><div class="codekey" id="c-key"></div><button type="button" class="ghost" id="c-copy">Copy the code</button></div>
+      <pre class="code" id="c-code" tabindex="0" aria-label="Python code for this circuit"></pre>
+      <h3 class="sub3" id="c-howh">How to run it</h3>
+      <div class="howto" id="c-howto"></div>
+      <p class="note" style="margin-top:12px">Before you run the script, write down what you expect it to print. Then compare.</p>
+      <details style="margin-top:14px" id="c-expectbox"><summary>What should come out</summary><div class="howto" id="c-expect" style="margin-top:8px"></div></details>
+      <details style="margin-top:10px"><summary>The same circuit in OpenQASM 3</summary>
+        <p class="note" id="c-qnote">OpenQASM is a plain text format for circuits that many quantum programming tools read.</p>
+        <pre class="code" id="c-qasm" tabindex="0" style="margin-top:8px" aria-label="OpenQASM 3 text for this circuit"></pre>
+        <div class="row"><button type="button" class="ghost" id="c-qcopy">Copy the OpenQASM</button></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section id="view-research" hidden>
+  <div class="page">
+    <h1>Research</h1>
+    <p class="lead">Research starts where Unit 4 ends: with a circuit on a real device and a result that needs explaining. The topic cards are in preparation.</p>
+    <h2 class="sub">What a finished project looks like</h2>
+    <p class="txt">A finished project answers its question with evidence that someone else can check: the code, the raw counts, a control experiment, and a statement of what the result shows and what it does not show. A project that reaches this standard on a question that is still open can be written up for publication. That step happens outside this tool.</p>
+    <h2 class="sub">What each topic card will hold</h2>
+    <ol class="worked" style="margin-left:22px">
+      <li>A question, and a claim about it that could turn out to be false.</li>
+      <li>Why the question is still open, with the date the literature was last checked.</li>
+      <li>The smallest instance of the problem, small enough to run in the browser.</li>
+      <li>One control experiment and one classical baseline.</li>
+      <li>Starter code in Python for scaling the instance up.</li>
+      <li>What counts as done. A clear negative result counts.</li>
+    </ol>
+    <h2 class="sub">Three experiments to start from</h2>
+    <p class="txt">The physics is that of Unit 1. The device techniques they need are the subject of Unit 4. Each one ends in a number with an uncertainty and a comparison with a model.</p>
+    <ul class="plain" style="margin-top:8px">
+      <li>Readout calibration. Prepare |0⟩ and |1⟩, measure, and count how often the device reports the wrong one. Use the two error rates to correct a later measurement.</li>
+      <li>T1 and T2 against the model. Prepare |1⟩ or |+⟩, wait, and measure. Fit the decay and compare it with the noise model of this unit. Find where the model stops describing the data.</li>
+      <li>One circuit, three ways. Run the same small circuit on a device, on an ideal simulator, and on a simulator with a noise model. Apply one method of error mitigation and report how much of the gap it closes.</li>
+    </ul>
+    <h2 class="sub">Where the topics will come from</h2>
+    <p class="txt">The topic cards will be drawn from current work on quantum algorithms and quantum machine learning for near-term devices. Each card carries the date its literature was last checked.</p>
+  </div>
+</section>
+
+<section id="view-about" hidden>
+  <div class="page" style="max-width:none">
+    <h1>About this tool</h1>
+    <p class="lead" style="max-width:44em">Quantum Information and Programming 101 is a course tool for a first course in quantum information and quantum programming, by Linghua Zhu. It runs in the browser. There is no login, and answers are stored only on the device in use.</p>
+    <h2 class="sec">How it is designed</h2>
+    <div class="design">
+      <h3>Predict first</h3>
+      <p class="txt">Every practice item asks for a commitment before anything moves: a point on the sphere, a number or a choice. Only then does the tool show what the physics does. Students who predict the outcome of a demonstration before seeing it understand it better than students who only watch (Crouch et al. 2004). Predict, observe and explain are modelled on the strategy elicit, confront, resolve (McDermott 2001).</p>
+      <h3>Feedback on the answer given</h3>
+      <p class="txt">The practice recognises common wrong answers. The feedback says what a wrong answer corresponds to, for example the state after the first gate alone, or the probability of the other outcome. It is about the task and the reasoning, not about the student. Feedback aimed at the person, such as praise, rarely helps learning (Hattie and Timperley 2007). The physics is computed in the page, so each prediction gets feedback specific to it, and the same answer always gets the same feedback.</p>
+      <h3>Help that fades</h3>
+      <p class="txt">Start here works through one example for each topic. In the practice the help then fades. The first items show the rotation axis, the sense of the turn or the measurement axis on the sphere. Later items show less, and the last ones show nothing. This adapts the fading of worked examples, which moves learners step by step from studying examples to solving problems on their own (Renkl and Atkinson 2003). After the starter set, further items come without hints. For gates alone there are <span id="v-gen"></span>.</p>
+      <h3>Missed items come back</h3>
+      <p class="txt">A missed item returns a few items later and again the next day. An item answered correctly returns after 3, 7, 14 and 30 days, without hints. Recalling an answer improves long-term retention more than studying it again (Roediger and Karpicke 2006). So does spreading practice over several days instead of one session (Cepeda et al. 2006).</p>
+      <h3>A reason for every option</h3>
+      <p class="txt">Each idea in a unit has one question for discussion. Students answer alone, talk it over and answer again (Crouch and Mazur 2001). Then they read the reasons for every option: why each wrong option is tempting, and where it breaks down. Several of the wrong options are answers that students give in published studies, listed in the tables below.</p>
+      <h3>One idea, several representations</h3>
+      <p class="txt">A state appears as amplitudes, as a point on the sphere, as numbers and as a circuit, and the worked examples translate from one to another (Ainsworth 2006). The Code part turns the circuit into a Qiskit program for a simulator or a real quantum computer. Students predict what the program prints, run it, and then change it. These are the first steps of the PRIMM approach to teaching programming (Sentance et al. 2019).</p>
+      <h3>Open to every student</h3>
+      <p class="txt">The tool is free and needs no account and no installation. It works on a phone as well as a computer, in a light and a dark theme, and with a keyboard alone. Every result is stated in words as well as drawn.</p>
+    </div>
+    <h2 class="sec">Error tags</h2>
+    <p class="txt" style="max-width:44em">The wrong answers the practice recognises. Where a study reports the same difficulty, it is listed.</p>
+    <div class="scroll"><table id="v-tags"></table></div>
+    <h2 class="sec">Discussion questions</h2>
+    <div class="scroll"><table id="v-discuss"></table></div>
+    <h2 class="sec">Physics self-checks</h2>
+    <p class="txt" style="max-width:44em">These checks run in your browser each time this page opens.</p>
+    <ul class="checks" id="v-checks"></ul>
+    <h2 class="sec">Your responses</h2>
+    <p class="txt" style="max-width:44em">Stored in this browser only. Nothing is sent anywhere. The text below is comma-separated and pastes into a spreadsheet.</p>
+    <textarea class="mono" id="v-log" rows="8" readonly spellcheck="false" aria-label="Your responses as comma-separated text"></textarea>
+    <div class="row"><button type="button" class="ghost" id="v-copy">Copy</button><button type="button" class="ghost" id="v-clear">Clear my data</button><span class="note" id="v-clearnote" style="margin:0"></span></div>
+    <h2 class="sec">References</h2>
+    <ul class="refs" id="v-refs">
+      <li>Ainsworth, S. (2006). DeFT: A conceptual framework for considering learning with multiple representations. <i>Learning and Instruction, 16</i>(3), 183–198. <a href="https://doi.org/10.1016/j.learninstruc.2006.03.001" target="_blank" rel="noopener">https://doi.org/10.1016/j.learninstruc.2006.03.001</a></li>
+      <li>Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., &amp; Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. <i>Psychological Bulletin, 132</i>(3), 354–380. <a href="https://doi.org/10.1037/0033-2909.132.3.354" target="_blank" rel="noopener">https://doi.org/10.1037/0033-2909.132.3.354</a></li>
+      <li>Crouch, C. H., Fagen, A. P., Callan, J. P., &amp; Mazur, E. (2004). Classroom demonstrations: Learning tools or entertainment? <i>American Journal of Physics, 72</i>(6), 835–838. <a href="https://doi.org/10.1119/1.1707018" target="_blank" rel="noopener">https://doi.org/10.1119/1.1707018</a></li>
+      <li>Crouch, C. H., &amp; Mazur, E. (2001). Peer Instruction: Ten years of experience and results. <i>American Journal of Physics, 69</i>(9), 970–977. <a href="https://doi.org/10.1119/1.1374249" target="_blank" rel="noopener">https://doi.org/10.1119/1.1374249</a></li>
+      <li>Hattie, J., &amp; Timperley, H. (2007). The power of feedback. <i>Review of Educational Research, 77</i>(1), 81–112. <a href="https://doi.org/10.3102/003465430298487" target="_blank" rel="noopener">https://doi.org/10.3102/003465430298487</a></li>
+      <li>Hu, P., Li, Y., Mong, R. S. K., &amp; Singh, C. (2024). Student understanding of the Bloch sphere. <i>European Journal of Physics, 45</i>(2), 025705. <a href="https://doi.org/10.1088/1361-6404/ad2393" target="_blank" rel="noopener">https://doi.org/10.1088/1361-6404/ad2393</a></li>
+      <li>Hu, P., Li, Y., &amp; Singh, C. (2024). Investigating and improving student understanding of the basics of quantum computing. <i>Physical Review Physics Education Research, 20</i>(2), 020108. <a href="https://doi.org/10.1103/PhysRevPhysEducRes.20.020108" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevPhysEducRes.20.020108</a></li>
+      <li>McDermott, L. C. (2001). Oersted Medal Lecture 2001: “Physics Education Research—The key to student learning.” <i>American Journal of Physics, 69</i>(11), 1127–1137. <a href="https://doi.org/10.1119/1.1389280" target="_blank" rel="noopener">https://doi.org/10.1119/1.1389280</a></li>
+      <li>Passante, G., Emigh, P. J., &amp; Shaffer, P. S. (2015). Student ability to distinguish between superposition states and mixed states in quantum mechanics. <i>Physical Review Special Topics - Physics Education Research, 11</i>(2), 020135. <a href="https://doi.org/10.1103/PhysRevSTPER.11.020135" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevSTPER.11.020135</a></li>
+      <li>Renkl, A., &amp; Atkinson, R. K. (2003). Structuring the transition from example study to problem solving in cognitive skill acquisition: A cognitive load perspective. <i>Educational Psychologist, 38</i>(1), 15–22. <a href="https://doi.org/10.1207/S15326985EP3801_3" target="_blank" rel="noopener">https://doi.org/10.1207/S15326985EP3801_3</a></li>
+      <li>Roediger, H. L., III, &amp; Karpicke, J. D. (2006). Test-enhanced learning: Taking memory tests improves long-term retention. <i>Psychological Science, 17</i>(3), 249–255. <a href="https://doi.org/10.1111/j.1467-9280.2006.01693.x" target="_blank" rel="noopener">https://doi.org/10.1111/j.1467-9280.2006.01693.x</a></li>
+      <li>Sentance, S., Waite, J., &amp; Kallia, M. (2019). Teaching computer programming with PRIMM: A sociocultural perspective. <i>Computer Science Education, 29</i>(2–3), 136–176. <a href="https://doi.org/10.1080/08993408.2019.1608781" target="_blank" rel="noopener">https://doi.org/10.1080/08993408.2019.1608781</a></li>
+      <li>Wan, T., Emigh, P. J., &amp; Shaffer, P. S. (2019). Probing student reasoning in relating relative phase and quantum phenomena. <i>Physical Review Physics Education Research, 15</i>(2), 020139. <a href="https://doi.org/10.1103/PhysRevPhysEducRes.15.020139" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevPhysEducRes.15.020139</a></li>
+    </ul>
+  </div>
+</section>
+</main>
+<footer>Quantum Information and Programming 101. Linghua Zhu, 2026. The design and the sources are on the <a href="#about" data-go="about">About</a> page.<span id="f-nosave" hidden> This browser is not storing your progress, so it lasts only until the page is closed.</span></footer>

@@ -8,13 +8,14 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%233c5488' stroke-width='2.5'/%3E%3Cellipse cx='16' cy='16' rx='14' ry='5' fill='none' stroke='%238491b4' stroke-width='1.5'/%3E%3Cline x1='16' y1='16' x2='24' y2='7' stroke='%233c5488' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='7' r='2.6' fill='%233c5488'/%3E%3C/svg%3E">
 <style>
 :root{padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+@font-face{font-family:"QIP Sym";src:local("STIX Two Math"),local("STIXTwoMath-Regular"),local("Cambria Math"),local("Apple Symbols"),local("Segoe UI Symbol"),local("DejaVu Serif");unicode-range:U+2297}
 :root{
   --paper:#ffffff;--ink:#1f1f1f;--muted:#5d6470;--rule:#d5d9e2;--wash:#f4f5f8;
   --navy:#3c5488;--coral:#e64b35;--teal:#00a087;--slate:#8491b4;
   --act:#d6efe9;--chg:#fbdad4;
-  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --serif:Georgia,"Times New Roman",Times,serif;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:"QIP Sym","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"QIP Sym",Georgia,"Times New Roman",Times,serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","QIP Sym",monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -278,6 +279,7 @@ ol.goals .gp{font-size:13px;color:var(--muted);margin-top:8px;display:flex;gap:6
 .lesson h4{font-size:15px;font-weight:600;margin:22px 0 8px}
 .lesson .kind+h3{margin-top:0}
 .nw{white-space:nowrap}
+.mat{display:inline-grid;grid-template-columns:auto auto;gap:0 .9em;vertical-align:middle;padding:.05em .5em;margin:0 .15em;border-left:1.5px solid var(--ink);border-right:1.5px solid var(--ink);border-radius:5px;text-align:center;line-height:1.35}
 .lesson .kind{font-size:13px;color:var(--muted);margin-bottom:2px}
 .lesson .txt{max-width:38em}
 .lesson .eq{font-family:var(--serif);font-size:18px;margin:10px 0 10px 22px}
@@ -395,7 +397,7 @@ details.inclass textarea{margin-top:8px}
 <section id="view-goals" hidden>
   <div class="page">
     <h2>What you will be able to do</h2>
-    <p class="lead">Unit 1 has six goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
+    <p class="lead">Unit 1 has eight goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
     <ol class="goals" id="g-list"></ol>
     <h3>What you need before you start</h3>
     <p class="txt">Sines and cosines, vectors with three components, and complex numbers in the form e<sup>iφ</sup>. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.</p>
@@ -501,14 +503,20 @@ details.inclass textarea{margin-top:8px}
         <p class="note" id="c-cnote" style="margin:0 0 10px"></p>
         <div class="row"><a class="ghost" href="#u1-explore" data-go="u1-explore">Change it in Explore</a></div>
       </div>
-      <div class="group"><h3>Measure along</h3>
+      <div class="group"><h3>The script computes</h3>
+        <div class="seg" id="c-mode" role="radiogroup" aria-label="What the script computes">
+          <label><input type="radio" name="c-mode" id="c-mode-counts" value="counts"> <span>Counts along one axis<br><small class="note">Measures many times and counts the two outcomes.</small></span></label>
+          <label><input type="radio" name="c-mode" id="c-mode-expect" value="expect"> <span>⟨X⟩, ⟨Y⟩ and ⟨Z⟩<br><small class="note">The expectation values of the three Pauli operators, which are the components of the Bloch vector.</small></span></label>
+        </div>
+      </div>
+      <div class="group" id="c-axisgroup"><h3>Measure along</h3>
         <div class="seg inline" id="c-axis" role="radiogroup" aria-label="Measurement axis">
           <label><input type="radio" name="c-axis" id="c-axis-z" value="z"> Z</label>
           <label><input type="radio" name="c-axis" id="c-axis-x" value="x"> X</label>
           <label><input type="radio" name="c-axis" id="c-axis-y" value="y"> Y</label>
         </div>
       </div>
-      <div class="group"><h3><label for="c-shots">Shots</label></h3>
+      <div class="group" id="c-shotsgroup"><h3><label for="c-shots">Shots</label></h3>
         <div class="row"><input type="number" id="c-shots" min="0" max="10000" step="100" inputmode="numeric"></div>
         <p class="err" id="c-serr" hidden></p>
       </div>
@@ -533,6 +541,14 @@ details.inclass textarea{margin-top:8px}
         <p class="note" id="c-qnote">OpenQASM is a plain text format for circuits that many quantum programming tools read.</p>
         <pre class="code" id="c-qasm" tabindex="0" style="margin-top:8px" aria-label="OpenQASM 3 text for this circuit"></pre>
         <div class="row"><button type="button" class="ghost" id="c-qcopy">Copy the OpenQASM</button></div>
+      </details>
+      <details style="margin-top:10px" id="c-paulibox"><summary>Pauli operators and Pauli strings in Qiskit</summary>
+        <div class="howto" style="margin-top:8px"><p>Qiskit numbers the qubits from 0 and writes qubit 0 as the rightmost letter of a Pauli string. This course writes the first qubit first. So X⊗Z in this course, with X on the first qubit and Z on the second, is <code>Pauli("ZX")</code> in Qiskit. Mixing up the two orders gives wrong numbers and no error message.</p></div>
+        <pre class="code" id="c-pauli" tabindex="0" aria-label="Python code with Pauli operators and Pauli strings"></pre>
+        <div class="row" style="margin-top:8px"><button type="button" class="ghost" id="c-pcopy">Copy the code</button></div>
+        <div class="howto" style="margin-top:8px"><p>The script needs only <code>pip install qiskit</code>. Before you run it, write down what each line will print.</p>
+          <details><summary>What it prints</summary><pre id="c-pout"></pre></details>
+        </div>
       </details>
     </div>
   </div>
@@ -673,7 +689,7 @@ function labelOf(v){var c=isCardinal(v);if(c)return c;var a=toAngles(v);return '
 
 var STARTS={zero:[0,0,1],one:[0,0,-1],plus:[1,0,0],minus:[-1,0,0],plusi:[0,1,0],minusi:[0,-1,0]};
 function startVec(s){return typeof s==='string'?STARTS[s].slice():fromAngles(s[0],s[1]);}
-var CONCEPTS={S1:'State as a point',S2:'Global and relative phase',G1:'Gates as rotations',G2:'Rotation sense',G3:'States on the rotation axis',G4:'Gate order',M1:'Probability from projection',M2:'Measuring along other axes',M3:'State after a measurement',N1:'Mixed states inside the ball',N2:'Shapes of noise',N3:'Shots and estimation'};
+var CONCEPTS={S1:'State as a point',S2:'Global and relative phase',G1:'Gates as rotations',G2:'Rotation sense',G3:'States on the rotation axis',G4:'Gate order',M1:'Probability from projection',M2:'Measuring along other axes',M3:'State after a measurement',O1:'Pauli operators',O2:'Products and commutation',O3:'Pauli strings',N1:'Mixed states inside the ball',N2:'Shapes of noise',N3:'Shots and estimation'};
 var STARTER_G=[
   {id:'r01',concept:'G1',level:1,start:'zero',gates:['X']},
   {id:'r02',concept:'G1',level:1,start:'plus',gates:['Z']},
@@ -1218,7 +1234,9 @@ function buildChoice(item){
   R.observe=function(sp,done){sp.draw();done();};
   return R;
 }
+var EXTRA_BUILDERS={};
 function buildItem(item){
+  if(EXTRA_BUILDERS[item.type])return EXTRA_BUILDERS[item.type](item);
   switch(item.type){
     case 'locate':return buildLocate(item);
     case 'prob':return buildProb(item);
@@ -1335,9 +1353,350 @@ function selfChecks2(){
   out.push({name:'Pure dephasing matches its Kraus form',ok:test.every(function(r){return near(krausApply(PD,r),chRelax(1,b,r));})});
   out.push({name:'Measurement probabilities add to 1 on every axis',ok:test.every(function(r){return ['x','y','z'].every(function(k){var pr=dot(r,AXM[k].v);return Math.abs((1+pr)/2+(1-pr)/2-1)<1e-12;});})});
   out.push({name:'Born rule from amplitudes matches the projection formula',ok:[fromAngles(60,40),fromAngles(130,250),[1,0,0]].every(function(r){var k=ketOf(r);return Math.abs(k[0][0]*k[0][0]+k[0][1]*k[0][1]-(1+r[2])/2)<1e-12;})});
-  var all=[].concat(STARTER_S,STARTER_G,STARTER_M,STARTER_N),ok=true;
+  var all=[],ok=true;
+  GROUP_ORDER.forEach(function(k){all=all.concat(GROUPS[k].starter);});
   all.forEach(function(it){try{var R=buildItem(it);if(!R.prompt||!R.reference||!R.result)ok=false;}catch(e){ok=false;}});
   out.push({name:'All '+all.length+' starter items build with a prompt, a result and a reference',ok:ok});
+  return out;
+}
+// Pauli operators and Pauli strings
+var PAXIS={X:[1,0,0],Y:[0,1,0],Z:[0,0,1]};
+var PKET={X:['|+⟩','|−⟩'],Y:['|+i⟩','|−i⟩'],Z:['|0⟩','|1⟩']};
+var PNAME={X:'x',Y:'y',Z:'z'};
+var PMUL={II:[0,'I'],IX:[0,'X'],IY:[0,'Y'],IZ:[0,'Z'],XI:[0,'X'],YI:[0,'Y'],ZI:[0,'Z'],XX:[0,'I'],YY:[0,'I'],ZZ:[0,'I'],
+  XY:[1,'Z'],YZ:[1,'X'],ZX:[1,'Y'],YX:[3,'Z'],ZY:[3,'X'],XZ:[3,'Y']};
+var PHASE=['','i','−','−i'];
+function pmul(a,b){var k=0,s=[];for(var i=0;i<a.length;i++){var r=PMUL[a[i]+b[i]];k+=r[0];s.push(r[1]);}return {k:k%4,s:s};}
+function nAnti(a,b){var n=0;for(var i=0;i<a.length;i++)if(a[i]!=='I'&&b[i]!=='I'&&a[i]!==b[i])n++;return n;}
+function nDiff(a,b){var n=0;for(var i=0;i<a.length;i++)if(a[i]!==b[i])n++;return n;}
+function sText(s){return s.join('⊗');}
+function opText(k,s){k=((k%4)+4)%4;var t=sText(s);if(!k)return t;return s.length>1?PHASE[k]+'('+t+')':PHASE[k]+t;}
+function comp(r,P){return P==='I'?1:r[{X:0,Y:1,Z:2}[P]];}
+function countWord(n){return ['no','one','two','three','four'][n]||String(n);}
+function seededOrder(opts,id){
+  var rnd=mulberry32(hashStr('order:'+id)),a=opts.slice();
+  for(var i=a.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}
+  return a;
+}
+function uniqueOptions(opts){var seen={};return opts.filter(function(o){if(seen[o.t])return false;seen[o.t]=1;return true;});}
+function pushNR(ds,correct,tag,x){
+  if(!(x>=-1-1e-9&&x<=1+1e-9)||Math.abs(x-correct)<0.045)return;
+  for(var i=0;i<ds.length;i++)if(Math.abs(ds[i].x-x)<0.045)return;
+  ds.push({tag:tag,x:x});
+}
+
+function buildPChoice(item){
+  var R={item:item,type:item.type,mode:'choice',options:item.options,nofig:!item.scene,replay:!!item.reveal};
+  R.prompt=item.prompt;R.note=item.note||'';R.how='Choose one answer.';
+  R.scene=function(){return item.scene?item.scene():{};};
+  R.classify=function(i){var o=item.options[i];return {tag:o.ok?'correct':o.tag,off:o.ok?0:1,i:i};};
+  R.feedback=function(c){return c.tag==='correct'?'Correct.':item.options[c.i].fb;};
+  R.reference=item.reference;R.result=item.result;
+  R.answer=item.options.map(function(o){return !!o.ok;}).indexOf(true);
+  R.respText=function(i){return item.options[i].t;};
+  R.observe=function(sp,done){if(item.reveal)item.reveal(sp,function(){done();});else{sp.draw();done();}};
+  return R;
+}
+
+function buildPEig(item){
+  var ax=PAXIS[item.op],v=scale(ax,item.ev),ket=PKET[item.op][item.ev>0?0:1],ds=[],an=PNAME[item.op];
+  var ev=item.ev>0?'+1':'−1',other=item.ev>0?'−1':'+1',end=item.ev>0?'positive':'negative';
+  pushD(ds,v,'eigen-sign',scale(ax,-item.ev),true);
+  ['X','Y','Z'].forEach(function(o){if(o===item.op)return;pushD(ds,v,'eigen-axis',PAXIS[o],true);pushD(ds,v,'eigen-axis',scale(PAXIS[o],-1),true);});
+  var R={item:item,type:'peig',mode:'point'};
+  R.prompt='Place the eigenstate of '+item.op+' with eigenvalue '+ev+'.';
+  R.note=item.level===1?'Shown on the sphere: the '+an+' axis.':item.level===2?'An eigenstate of a Pauli operator lies on its axis.':'No hints on the sphere.';
+  R.how='Click or tap the sphere where the state sits. Drag to turn the sphere.';
+  R.scene=function(){return {state:null,hint:item.level===1?{axis:ax}:null};};
+  R.classify=function(p){return classPoint(p,v,ds,true);};
+  R.feedback=function(c){
+    switch(c.tag){
+      case 'correct':return 'Correct.';
+      case 'eigen-sign':return 'That is the eigenstate with eigenvalue '+other+'. The eigenvalue '+ev+' belongs to the '+end+' end of the '+an+' axis, '+ket+'.';
+      case 'eigen-axis':return 'That is an eigenstate of another Pauli operator. The eigenstates of '+item.op+' are the two ends of the '+an+' axis.';
+      default:return 'Not there. The eigenstates of '+item.op+' are the two ends of the '+an+' axis, and the eigenvalue '+ev+' belongs to '+ket+'.';
+    }
+  };
+  R.reference='As a gate, '+item.op+' is a half turn about the '+an+' axis. The two states on that axis stay in place, so they are its eigenstates. The positive end has eigenvalue +1 and the negative end −1. Here '+item.op+ket+' = '+(item.ev>0?'':'−')+ket+'.';
+  R.result='The eigenstate is '+ket+'.';R.answer=v;
+  R.respText=function(p){return labelOf(p);};
+  R.observe=function(sp,done){sp.hint={axis:ax};sp.state=v;sp.draw();done();};
+  return R;
+}
+
+function buildPExp(item){
+  var r=vecOf(item.state),P=item.op,c=comp(r,P),A=PNAME[P],ds=[];
+  pushNR(ds,c,'prob-for-exp',(1+c)/2);
+  ['X','Y','Z'].forEach(function(o){if(o!==P)pushNR(ds,c,'exp-wrong-component',comp(r,o));});
+  pushNR(ds,c,'exp-sign',-c);
+  var R={item:item,type:'pexp',mode:'number',numLabel:'⟨'+P+'⟩',numMin:-1,numMax:1};
+  R.prompt=stateSentence(r)+' What is the expectation value ⟨'+P+'⟩?';
+  R.note=item.level===1?'Shown on the sphere: the '+A+' axis and the projection of the state onto it.':item.level===2?'Shown on the sphere: the '+A+' axis.':'No hints on the sphere.';
+  R.how='Type a number between −1 and 1.';
+  R.scene=function(){var s={state:r};if(item.level<=2)s.hint={axis:PAXIS[P]};if(item.level===1){s.lines=[{a:r,b:scale(PAXIS[P],c)}];s.marks=[{v:scale(PAXIS[P],c),cls:'foot',label:f3(c)}];}return s;};
+  R.classify=function(x){return classNumber(x,c,ds);};
+  R.feedback=function(cl){
+    var tail='⟨'+P+'⟩ is the '+A+' component of the Bloch vector: '+f3(c)+'.';
+    switch(cl.tag){
+      case 'correct':return 'Correct.';
+      case 'prob-for-exp':return 'That is the probability of the outcome +1, (1 + ⟨'+P+'⟩)/2. The expectation value averages the outcomes +1 and −1, so it runs from −1 to 1. '+tail;
+      case 'exp-wrong-component':return 'That is the component along another axis. '+tail;
+      case 'exp-sign':return 'The sign is reversed. '+tail;
+      default:return 'Not that value. '+tail;
+    }
+  };
+  R.reference='The outcomes of '+(P==='X'?'an ':'a ')+P+' measurement are +1 and −1. Their average is ⟨'+P+'⟩ = P(+1) − P(−1), and that equals the projection of the state onto the '+A+' axis: '+f3(c)+'.';
+  R.result='⟨'+P+'⟩ = '+f3(c)+'.';R.answer=c;
+  R.respText=function(x){return '⟨'+P+'⟩ = '+f2(x);};
+  R.observe=function(sp,done){sp.hint={axis:PAXIS[P]};sp.lines=[{a:r,b:scale(PAXIS[P],c)}];sp.marks=[{v:scale(PAXIS[P],c),cls:'foot',label:f3(c)}];sp.draw();done();};
+  return R;
+}
+
+function prodSpec(item){
+  var a=item.a,b=item.b,r=pmul([a],[b]),c=r.s[0],k=r.k,res=opText(k,[c]),dir=scale(PAXIS[c],k===1?1:-1);
+  var opts=uniqueOptions([
+    {t:res,ok:true},
+    {t:opText(k+2,[c]),tag:'op-sign',fb:'That is the product in the other order: '+b+a+' = '+opText(k+2,[c])+'. Swapping two different Pauli operators flips the sign, and '+a+b+' = '+res+'.'},
+    {t:c,tag:'missing-i',fb:'The product of two different Pauli operators carries a factor ±i: '+a+b+' = '+res+'.'},
+    {t:'I',tag:'product-identity',fb:'Only the square of a Pauli operator is I. Two different ones multiply to ±i times the third: '+a+b+' = '+res+'.'}
+  ]);
+  return {
+    prompt:'What is the product '+a+b+'?',
+    note:item.level===1?'The product of two different Pauli operators is ±i times the third one.':item.level===2?'XY = iZ, and the same holds in the cyclic order X, Y, Z.':'',
+    options:seededOrder(opts,item.id),
+    reference:'XY = iZ, YZ = iX and ZX = iY. Reversing the order flips the sign. So '+a+b+' = '+res+'. On the sphere the result points along the cross product of the two axes: (a·σ)(b·σ) = i(a×b)·σ when a and b are perpendicular.',
+    result:a+b+' = '+res+'.',
+    scene:function(){return {marks:[{v:PAXIS[a],cls:'ma',vec:true,label:a},{v:PAXIS[b],cls:'ma',vec:true,label:b}]};},
+    reveal:function(sp,done){sp.marks=sp.marks.concat([{v:dir,cls:'mb',vec:true,label:a+b+' = '+res}]);sp.draw();done();}
+  };
+}
+
+function commExplain(a,b){
+  var parts=[],n=nAnti(a,b);
+  if(a.length===1){
+    var ab=pmul(a,b),ba=pmul(b,a);
+    return a[0]+b[0]+' = '+opText(ab.k,ab.s)+' and '+b[0]+a[0]+' = '+opText(ba.k,ba.s)+', so '+a[0]+b[0]+' = −'+b[0]+a[0]+'. Two different Pauli operators anticommute.';
+  }
+  for(var i=0;i<a.length;i++){
+    var s='Position '+(i+1)+': '+a[i]+' and '+b[i];
+    if(a[i]==='I'||b[i]==='I')s+=' commute, since I commutes with everything.';
+    else if(a[i]===b[i])s+=' commute.';
+    else s+=' anticommute.';
+    parts.push(s);
+  }
+  return parts.join(' ')+' '+(n===1?'One position anticommutes':(n===0?'No position anticommutes':countWord(n).charAt(0).toUpperCase()+countWord(n).slice(1)+' positions anticommute'))+', so the strings '+(n%2?'anticommute':'commute')+(n>1?': (−1)'+(n===2?'²':n===3?'³':'^'+n)+' = '+(n%2?'−1':'+1')+'.':'.');
+}
+function commSpec(item){
+  var a=item.a.split(''),b=item.b.split(''),n=nAnti(a,b),commute=n%2===0,single=a.length===1;
+  var A=single?a[0]:sText(a),B=single?b[0]:sText(b),why=commExplain(a,b);
+  var wrongCommute=single?{tag:'commute-all',fb:'They do not commute. '+why}
+    :(nDiff(a,b)%2===0?{tag:'count-identity',fb:'Positions with I do not count, because I commutes with every Pauli operator. '+why}:{tag:'parity-miscount',fb:'Count the positions again. '+why});
+  var wrongAnti=n>=2?{tag:'any-anticommute',fb:'Each position where the letters anticommute gives a factor −1 when the order is swapped, and the factors multiply. '+why}:{tag:'parity-miscount',fb:'Count the positions again. '+why};
+  var opts=[
+    commute?{t:'They commute',ok:true}:{t:'They commute',tag:wrongCommute.tag,fb:wrongCommute.fb},
+    commute?{t:'They anticommute',tag:wrongAnti.tag,fb:wrongAnti.fb}:{t:'They anticommute',ok:true},
+    {t:'Neither: swapping them changes the product in some other way',tag:'neither',fb:'Two Pauli strings always commute or anticommute. Swapping them multiplies the product by −1 once for every position where the letters anticommute. '+why}
+  ];
+  return {
+    prompt:'Do '+A+' and '+B+' commute or anticommute?',
+    note:item.level===1?'Count the positions that hold two different Pauli letters. Each one gives a factor −1 when you swap the strings.':item.level===2?(single?'Work out '+a[0]+b[0]+' and '+b[0]+a[0]+' and compare them.':'I commutes with every Pauli operator.'):'',
+    options:opts,
+    reference:why,
+    result:'They '+(commute?'commute.':'anticommute.'),
+    scene:single?function(){return {marks:[{v:PAXIS[a[0]],cls:'ma',vec:true,label:a[0]},{v:PAXIS[b[0]],cls:'ma',vec:true,label:b[0]}]};}:null
+  };
+}
+
+function strProdSpec(item){
+  var a=item.a.split(''),b=item.b.split(''),r=pmul(a,b),res=opText(r.k,r.s),A=sText(a),B=sText(b);
+  var keep=[],same=false;
+  for(var i=0;i<a.length;i++){if(a[i]===b[i]&&a[i]!=='I'){keep.push(a[i]);same=true;}else keep.push(r.s[i]);}
+  var opts=[
+    {t:res,ok:true},
+    {t:opText(r.k+2,r.s),tag:'string-sign',fb:'The sign is reversed. Multiply letter by letter and collect the phases: ('+A+')('+B+') = '+res+'.'},
+    r.k?{t:opText(0,r.s),tag:'phase-dropped',fb:'The phase in front is missing. Each pair of different letters contributes ±i. ('+A+')('+B+') = '+res+'.'}
+       :{t:opText(1,r.s),tag:'phase-added',fb:'There is no phase in front here. The factors ±i from the positions cancel. ('+A+')('+B+') = '+res+'.'}
+  ];
+  if(same)opts.push({t:opText(r.k,keep),tag:'square-not-identity',fb:'A Pauli operator times itself is I, not the operator again. ('+A+')('+B+') = '+res+'.'});
+  var steps=a.map(function(x,i){var p=pmul([x],[b[i]]);return x+b[i]+' = '+opText(p.k,p.s);}).join(', ');
+  return {
+    prompt:'What is the product ('+A+')('+B+')?',
+    note:item.level<=2?'Multiply position by position, and collect the phases in front.':'',
+    options:seededOrder(uniqueOptions(opts),item.id),
+    reference:'Position by position: '+steps+'. The phases multiply, so ('+A+')('+B+') = '+res+'.',
+    result:'('+A+')('+B+') = '+res+'.',
+    scene:null
+  };
+}
+
+function buildPStrExp(item){
+  var r1=vecOf(item.q1),r2=vecOf(item.q2),L=item.ops.split(''),c1=comp(r1,L[0]),c2=comp(r2,L[1]),c=c1*c2,ds=[],S=sText(L);
+  pushNR(ds,c,'string-order',comp(r1,L[1])*comp(r2,L[0]));
+  pushNR(ds,c,'string-average',(c1+c2)/2);
+  pushNR(ds,c,'one-factor',c1);pushNR(ds,c,'one-factor',c2);
+  var R={item:item,type:'pstrexp',mode:'number',numLabel:'⟨'+S+'⟩',numMin:-1,numMax:1};
+  R.prompt='Two qubits are in a product state. Qubit 1 is '+(isCardinal(r1)||'at '+labelOf(r1))+' and qubit 2 is '+(isCardinal(r2)||'at '+labelOf(r2))+'. What is ⟨'+S+'⟩?';
+  R.note=item.level===1?'On a product state, ⟨'+S+'⟩ = ⟨'+L[0]+'⟩ of qubit 1 times ⟨'+L[1]+'⟩ of qubit 2.':item.level===2?'The sphere shows both qubits.':'The sphere shows both qubits.';
+  R.how='Type a number between −1 and 1.';
+  R.scene=function(){return {marks:[{v:r1,cls:'ma',vec:true,label:'1'},{v:r2,cls:'mb',vec:true,label:'2'}]};};
+  R.classify=function(x){return classNumber(x,c,ds);};
+  R.feedback=function(cl){
+    var tail='Qubit 1 gives ⟨'+L[0]+'⟩ = '+f3(c1)+' and qubit 2 gives ⟨'+L[1]+'⟩ = '+f3(c2)+', so ⟨'+S+'⟩ = '+f3(c)+'.';
+    switch(cl.tag){
+      case 'correct':return 'Correct.';
+      case 'string-order':return 'The letters went to the wrong qubits. The first letter acts on qubit 1. '+tail;
+      case 'string-average':return 'On a product state the expectation value is the product of the two, not their average. '+tail;
+      case 'one-factor':return 'Both qubits contribute. '+tail;
+      default:return 'Not that value. '+tail;
+    }
+  };
+  R.reference='On a product state, each qubit has its own Bloch vector, and the expectation value of a string is the product of the expectation values for each qubit. '+'⟨'+S+'⟩ = '+f3(c1)+' × '+f3(c2)+' = '+f3(c)+'.';
+  R.result='⟨'+S+'⟩ = '+f3(c)+'.';R.answer=c;
+  R.respText=function(x){return '⟨'+S+'⟩ = '+f2(x);};
+  R.observe=function(sp,done){
+    sp.lines=[{a:r1,b:scale(PAXIS[L[0]],c1)},{a:r2,b:scale(PAXIS[L[1]],c2)}];
+    sp.marks=sp.marks.concat([{v:scale(PAXIS[L[0]],c1),cls:'foot',label:f3(c1)},{v:scale(PAXIS[L[1]],c2),cls:'foot',label:f3(c2)}]);
+    sp.draw();done();
+  };
+  return R;
+}
+
+EXTRA_BUILDERS.pchoice=buildPChoice;
+EXTRA_BUILDERS.peig=buildPEig;
+EXTRA_BUILDERS.pexp=buildPExp;
+EXTRA_BUILDERS.pstrexp=buildPStrExp;
+EXTRA_BUILDERS.pprod=function(item){var s=prodSpec(item);s.id=item.id;return buildPChoice(Object.assign({},item,s));};
+EXTRA_BUILDERS.pcomm=function(item){return buildPChoice(Object.assign({},item,commSpec(item)));};
+EXTRA_BUILDERS.pstrprod=function(item){return buildPChoice(Object.assign({},item,strProdSpec(item)));};
+
+var STARTER_O=[
+  {id:'o01',concept:'O1',level:1,type:'peig',op:'X',ev:-1},
+  {id:'o02',concept:'O1',level:2,type:'peig',op:'Y',ev:1},
+  {id:'o03',concept:'O1',level:2,type:'pchoice',
+    prompt:'The qubit is in |0⟩. Apply Y. What is the state now, as a ket?',
+    note:'Y = [[0, −i], [i, 0]]. The first column is Y|0⟩.',
+    options:[
+      {t:'i|1⟩',ok:true},
+      {t:'|1⟩',tag:'phase-dropped',fb:'On the sphere that is the right point, since Y turns the top to the bottom. As a ket there is also a factor i: Y|0⟩ = i|1⟩. It is a global phase, so the sphere does not show it.'},
+      {t:'−i|1⟩',tag:'y-sign',fb:'The first column of Y is (0, i), so Y|0⟩ = i|1⟩. The factor −i appears in Y|1⟩ = −i|0⟩.'},
+      {t:'|0⟩',tag:'eigen-assume',fb:'|0⟩ is an eigenstate of Z, not of Y. Y is a half turn about the y axis, and it takes |0⟩ to i|1⟩.'}
+    ],
+    reference:'The first column of Y = [[0, −i], [i, 0]] is Y|0⟩ = i|1⟩. On the sphere, Y is a half turn about the y axis and takes the top to the bottom. The factor i is a global phase, which the sphere does not show.',
+    result:'Y|0⟩ = i|1⟩.',
+    scene:function(){return {state:[0,0,1]};},
+    reveal:function(sp,done){sp.ghost=[0,0,1];sp.animate([{from:[0,0,1],axis:AX.y,angle:PI,hint:{axis:AX.y}}],function(){sp.state=[0,0,-1];sp.draw();done();});}},
+  {id:'o04',concept:'O1',level:2,type:'pexp',state:[60,90],op:'Y'},
+  {id:'o05',concept:'O1',level:3,type:'pexp',state:[120,180],op:'X'},
+  {id:'o06',concept:'O2',level:1,type:'pprod',a:'X',b:'Y'},
+  {id:'o07',concept:'O2',level:2,type:'pprod',a:'Z',b:'Y'},
+  {id:'o08',concept:'O2',level:2,type:'pcomm',a:'X',b:'Z'},
+  {id:'o09',concept:'O2',level:3,type:'pchoice',
+    prompt:'What is the commutator [X, Y] = XY − YX?',
+    note:'',
+    options:[
+      {t:'0',tag:'commute-all',fb:'X and Y do not commute. XY = iZ and YX = −iZ, so XY − YX = 2iZ.'},
+      {t:'iZ',tag:'half-commutator',fb:'iZ is XY alone. The commutator subtracts YX = −iZ, which doubles it: [X, Y] = 2iZ.'},
+      {t:'2iZ',ok:true},
+      {t:'−2iZ',tag:'op-sign',fb:'That is [Y, X], the commutator in the other order. [X, Y] = XY − YX = iZ − (−iZ) = 2iZ.'}
+    ],
+    reference:'XY = iZ and YX = −iZ, so [X, Y] = 2iZ. In the same way [Y, Z] = 2iX and [Z, X] = 2iY.',
+    result:'[X, Y] = 2iZ.',
+    scene:function(){return {marks:[{v:[1,0,0],cls:'ma',vec:true,label:'X'},{v:[0,1,0],cls:'ma',vec:true,label:'Y'}]};},
+    reveal:function(sp,done){sp.marks=sp.marks.concat([{v:[0,0,1],cls:'mb',vec:true,label:'[X, Y] = 2iZ'}]);sp.draw();done();}},
+  {id:'o10',concept:'O2',level:3,type:'pchoice',
+    prompt:'A turn by α about the x axis is Rx(α) = cos(α/2) I − i sin(α/2) X. Which matrix is Rx(180°)?',
+    note:'',
+    options:[
+      {t:'X',tag:'global-phase-matrix',fb:'As gates, X and −iX do the same thing to every state, because they differ only by the global factor −i. As matrices they differ. At α = 180° the formula gives cos 90° I − i sin 90° X = −iX.'},
+      {t:'iX',tag:'rot-sign',fb:'The sign comes from the minus in Rx(α) = cos(α/2) I − i sin(α/2) X. At α = 180° this gives −iX.'},
+      {t:'−X',tag:'missing-i',fb:'The factor i is missing. At α = 180° the formula gives cos 90° I − i sin 90° X = −iX.'},
+      {t:'−iX',ok:true}
+    ],
+    reference:'At α = 180°, cos 90° = 0 and sin 90° = 1, so Rx(180°) = −iX. It differs from X only by the global factor −i, so the X gate and a half turn about x act the same on every state.',
+    result:'Rx(180°) = −iX.',
+    scene:function(){return {state:[0,0,1],hint:{axis:[1,0,0]}};},
+    reveal:function(sp,done){sp.ghost=[0,0,1];sp.animate([{from:[0,0,1],axis:AX.x,angle:PI,hint:{axis:AX.x}}],function(){sp.state=[0,0,-1];sp.draw();done();});}},
+  {id:'o11',concept:'O3',level:1,type:'pcomm',a:'XX',b:'ZZ'},
+  {id:'o12',concept:'O3',level:2,type:'pcomm',a:'XI',b:'ZX'},
+  {id:'o13',concept:'O3',level:2,type:'pstrprod',a:'XZ',b:'YZ'},
+  {id:'o14',concept:'O3',level:3,type:'pstrexp',q1:[60,0],q2:'zero',ops:'XZ'},
+  {id:'o15',concept:'O3',level:3,type:'pcomm',a:'XYZ',b:'YZX'}
+];
+
+function genO(n,seed){
+  var rnd=mulberry32((seed|0)+n*49999+53),k=Math.floor(rnd()*6),L=['X','Y','Z'],F=['I','X','Y','Z'],id='go'+n,a,b,len,i;
+  function word(m){var w='';for(var j=0;j<m;j++)w+=pick(rnd,F);return w;}
+  if(k===0)return {id:id,concept:'O1',level:3,type:'peig',op:pick(rnd,L),ev:pick(rnd,[1,-1]),generated:true};
+  if(k===1)return {id:id,concept:'O1',level:3,type:'pexp',state:[pick(rnd,[30,45,60,90,120,135,150]),pick(rnd,[0,45,60,90,120,180,270])],op:pick(rnd,L),generated:true};
+  if(k===2){a=pick(rnd,L);do{b=pick(rnd,L);}while(b===a);return {id:id,concept:'O2',level:3,type:'pprod',a:a,b:b,generated:true};}
+  if(k===3){
+    len=pick(rnd,[2,2,3]);
+    for(i=0;i<50;i++){a=word(len);b=word(len);if(a!==b&&/[XYZ]/.test(a)&&/[XYZ]/.test(b))break;}
+    return {id:id,concept:'O3',level:3,type:'pcomm',a:a,b:b,generated:true};
+  }
+  if(k===4){
+    for(i=0;i<50;i++){a=word(2);b=word(2);if(a!==b&&/[XYZ]/.test(a)&&/[XYZ]/.test(b))break;}
+    return {id:id,concept:'O3',level:3,type:'pstrprod',a:a,b:b,generated:true};
+  }
+  var grid=[[45,0],[60,0],[90,0],[90,90],[120,0],[135,180],[60,90],[90,180],[45,90],[120,270],'zero','plus','plusi','one'],q1,q2,ops;
+  for(i=0;i<80;i++){
+    q1=pick(rnd,grid);q2=pick(rnd,grid);ops=pick(rnd,L)+pick(rnd,L);
+    if(Math.abs(comp(vecOf(q1),ops[0]))>0.2&&Math.abs(comp(vecOf(q2),ops[1]))>0.2)break;
+  }
+  return {id:id,concept:'O3',level:3,type:'pstrexp',q1:q1,q2:q2,ops:ops,generated:true};
+}
+
+GROUPS.O={name:'Operators',concepts:['O1','O2','O3'],starter:STARTER_O,gen:genO};
+GROUP_ORDER.splice(GROUP_ORDER.indexOf('N'),0,'O');
+
+// Self-checks of the Pauli algebra
+function cmat(M,s){return M.map(function(row){return row.map(function(c){return cmul(c,s);});});}
+function matmul(A,B){
+  return A.map(function(row,i){return B[0].map(function(_,j){var s=[0,0];for(var k=0;k<B.length;k++)s=cadd(s,cmul(A[i][k],B[k][j]));return s;});});
+}
+function kron(A,B){
+  var out=[];
+  for(var i=0;i<A.length;i++)for(var p=0;p<B.length;p++){
+    var row=[];for(var j=0;j<A.length;j++)for(var q=0;q<B.length;q++)row.push(cmul(A[i][j],B[p][q]));out.push(row);
+  }
+  return out;
+}
+function matNear(A,B){for(var i=0;i<A.length;i++)for(var j=0;j<A.length;j++)if(Math.abs(A[i][j][0]-B[i][j][0])>1e-9||Math.abs(A[i][j][1]-B[i][j][1])>1e-9)return false;return true;}
+var PMAT={I:[[[1,0],[0,0]],[[0,0],[1,0]]],X:NAMED.X.std,Y:NAMED.Y.std,Z:NAMED.Z.std};
+var IPOW=[[1,0],[0,1],[-1,0],[0,-1]];
+function strMat(s){var M=PMAT[s[0]];for(var i=1;i<s.length;i++)M=kron(M,PMAT[s[i]]);return M;}
+function selfChecks3(){
+  var out=[],F=['I','X','Y','Z'],ok=true;
+  F.forEach(function(a){F.forEach(function(b){var r=pmul([a],[b]);if(!matNear(matmul(PMAT[a],PMAT[b]),cmat(PMAT[r.s[0]],IPOW[r.k])))ok=false;});});
+  out.push({name:'The products of the Pauli matrices follow XY = iZ, YZ = iX, ZX = iY',ok:ok});
+  ok=true;
+  var words=[];F.forEach(function(a){F.forEach(function(b){words.push([a,b]);});});
+  words.forEach(function(a){words.forEach(function(b){
+    var AB=matmul(strMat(a),strMat(b)),BA=matmul(strMat(b),strMat(a)),sign=nAnti(a,b)%2?[-1,0]:[1,0];
+    if(!matNear(AB,cmat(BA,sign)))ok=false;
+    var r=pmul(a,b);if(!matNear(AB,cmat(strMat(r.s),IPOW[r.k])))ok=false;
+  });});
+  out.push({name:'Two-qubit Pauli strings commute exactly when an even number of positions anticommute',ok:ok});
+  ok=true;
+  [fromAngles(60,40),fromAngles(130,250),[1,0,0],[0,-1,0]].forEach(function(r){
+    var k=ketOf(r);
+    ['X','Y','Z'].forEach(function(P){
+      var v=matmul(PMAT[P],[[k[0]],[k[1]]]),e=cadd(cmul([k[0][0],-k[0][1]],v[0][0]),cmul([k[1][0],-k[1][1]],v[1][0]));
+      if(Math.abs(e[0]-comp(r,P))>1e-9||Math.abs(e[1])>1e-9)ok=false;
+    });
+  });
+  out.push({name:'⟨X⟩, ⟨Y⟩ and ⟨Z⟩ equal the components of the Bloch vector',ok:ok});
+  out.push({name:'Rx(180°) equals −iX',ok:matNear(unitaryOf([1,0,0],PI),cmat(PMAT.X,[0,-1]))});
+  ok=true;
+  var rnd=mulberry32(7);
+  for(var t=0;t<20;t++){
+    var a=unit([rnd()-0.5,rnd()-0.5,rnd()-0.5]),b=unit([rnd()-0.5,rnd()-0.5,rnd()-0.5]),c=cross(a,b);
+    function sig(n){var M=[[[0,0],[0,0]],[[0,0],[0,0]]];['X','Y','Z'].forEach(function(P,i){var Q=cmat(PMAT[P],[n[i],0]);for(var x=0;x<2;x++)for(var y=0;y<2;y++)M[x][y]=cadd(M[x][y],Q[x][y]);});return M;}
+    var lhs=matmul(sig(a),sig(b)),rhs=cmat(PMAT.I,[dot(a,b),0]),ic=cmat(sig(c),[0,1]);
+    for(var x=0;x<2;x++)for(var y=0;y<2;y++)rhs[x][y]=cadd(rhs[x][y],ic[x][y]);
+    if(!matNear(lhs,rhs))ok=false;
+  }
+  out.push({name:'(a·σ)(b·σ) = (a·b) I + i (a×b)·σ',ok:ok});
   return out;
 }
 // Bloch sphere drawn in SVG
@@ -1537,7 +1896,7 @@ var COURSE={
       line:'The geometry everything else stands on. It also serves introductory mechanics and electromagnetism.',
       plan:['Adding vectors and taking components','Projecting one vector onto another','Cross product and the right-hand rule','Superposition of fields','Complex numbers as arrows: magnitude and phase']},
     {n:'1',title:'One qubit',open:true,go:'u1-goals',
-      line:'States, gates, measurement and noise, all on the Bloch sphere.'},
+      line:'States, gates, measurement, Pauli operators and noise, all on the Bloch sphere.'},
     {n:'2',title:'Two qubits',open:false,
       line:'Why one sphere per qubit is not enough.',
       plan:['Product states and entangled states','CNOT and the Bell states','Measuring one qubit of a pair','Correlations that two separate spheres cannot hold']},
@@ -1571,12 +1930,17 @@ var GOALS=[
     text:'Predict the result of a short sequence of gates, and explain why the order matters.'},
   {id:'g5',group:'M',concepts:['M1','M2','M3'],short:'Predict a measurement',
     text:'Get outcome probabilities along x, y or z from the projection of the state, and say what state the qubit is in afterwards.'},
+  {id:'g7',group:'O',concepts:['O1'],short:'Use the Pauli operators',
+    text:'Write X, Y and Z as matrices, use each one both as a gate and as a measurement, and read ⟨X⟩, ⟨Y⟩ and ⟨Z⟩ off the sphere.'},
+  {id:'g8',group:'O',concepts:['O2','O3'],short:'Multiply Pauli operators and strings',
+    text:'Multiply Pauli operators, decide whether two Pauli strings commute, and say what commuting means for measuring them.'},
   {id:'g6',group:'N',concepts:['N1','N2','N3'],short:'Reason about noise and data',
     text:'Place mixed states inside the ball, predict how relaxation, dephasing and depolarizing noise move a state, and tell the scatter of a finite number of shots from a systematic shift.'}
 ];
 
 // Start here
 var XZ={u:[1,0,0],w:[0,0,1]};
+function matHTML(a,b,c,d){return '<span class="mat"><span>'+a+'</span><span>'+b+'</span><span>'+c+'</span><span>'+d+'</span></span>';}
 var INTRO=[
   {id:'why',title:'What the sphere is for',
     html:[
@@ -1665,6 +2029,60 @@ var INTRO=[
     after:'<p class="txt">What state the qubit is in after the measurement is one of the things the practice asks you to predict.</p>',
     fig:{scene:function(){var s=fromAngles(120,0),f=[0,0,s[2]];return {state:s,hint:{axis:[0,0,1]},lines:[{a:s,b:f}],marks:[{v:f,cls:'foot',label:'−0.50'}]};},
       cap:'The dashed line drops the arrow onto the measurement axis.'}},
+  {id:'paulis',title:'Pauli operators',
+    html:[
+      '<p class="txt">The Pauli operators are three 2×2 matrices.</p>',
+      '<p class="eq">X = '+matHTML('0','1','1','0')+' &nbsp; Y = '+matHTML('0','−i','i','0')+' &nbsp; Z = '+matHTML('1','0','0','−1')+'</p>',
+      '<p class="txt">On the basis states they act like this.</p>',
+      '<ul class="plain"><li>X|0⟩ = |1⟩ and X|1⟩ = |0⟩.</li><li>Y|0⟩ = i|1⟩ and Y|1⟩ = −i|0⟩.</li><li>Z|0⟩ = |0⟩ and Z|1⟩ = −|1⟩.</li></ul>',
+      '<p class="txt">Each one has two roles.</p>',
+      '<ul class="plain"><li>As a gate it is a half turn about its own axis. The matrix of Rx(180°) is −iX, which differs from X only by a global phase.</li>',
+      '<li>As a measurement its eigenvalues +1 and −1 are the two outcomes, and its eigenstates are the two ends of its axis: |+⟩ and |−⟩ for X, |+i⟩ and |−i⟩ for Y, |0⟩ and |1⟩ for Z.</li></ul>',
+      '<p class="txt">The expectation value of a Pauli operator is the projection of the state onto its axis, so the three of them together give the Bloch vector.</p>',
+      '<p class="eq">⟨X⟩ = x, &nbsp; ⟨Y⟩ = y, &nbsp; ⟨Z⟩ = z</p>',
+      '<p class="txt">The state itself can be written with them as ρ = (I + xX + yY + zZ)/2. This also holds for the points inside the ball, which come later on this page. A turn by α about the axis n is</p>',
+      '<p class="eq">R<sub>n</sub>(α) = cos(α/2) I − i sin(α/2) (n<sub>x</sub>X + n<sub>y</sub>Y + n<sub>z</sub>Z)</p>'
+    ].join(''),
+    fig:{scene:function(){
+        var s=fromAngles(50,35),fx=[s[0],0,0],fy=[0,s[1],0],fz=[0,0,s[2]];
+        return {state:s,lines:[{a:s,b:fx},{a:s,b:fy},{a:s,b:fz}],marks:[{v:fx,cls:'foot',label:'⟨X⟩ = '+f2(s[0])},{v:fy,cls:'foot',label:'⟨Y⟩ = '+f2(s[1])},{v:fz,cls:'foot',label:'⟨Z⟩ = '+f2(s[2])}]};
+      },cap:'The projections of the state onto the three axes are ⟨X⟩, ⟨Y⟩ and ⟨Z⟩.'}},
+  {id:'ex-pauli',kind:'Worked example',title:'An expectation value',
+    task:'The state is at θ = 60°, φ = 90°. What is ⟨Y⟩, and how often does a Y measurement give +i?',
+    steps:[
+      '⟨Y⟩ is the y component of the Bloch vector: sin 60° · sin 90° = 0.866.',
+      'The outcomes of a Y measurement are +1 for |+i⟩ and −1 for |−i⟩. Their average is ⟨Y⟩ = P(+i) − P(−i) = 2P(+i) − 1.',
+      'So P(+i) = (1 + 0.866)/2 = 0.933.',
+      'Check the answer. The state leans toward +y, so +i should be the more likely outcome. It is.'
+    ],
+    fig:{scene:function(){var s=fromAngles(60,90),f=[0,s[1],0];return {state:s,hint:{axis:[0,1,0]},lines:[{a:s,b:f}],marks:[{v:f,cls:'foot',label:'0.866'}]};},
+      cap:'The dashed line drops the state onto the y axis.'}},
+  {id:'comm',title:'Commutation and Pauli strings',
+    html:[
+      '<p class="txt">Each Pauli operator squares to the identity: X² = Y² = Z² = I. Two different ones multiply to the third, with a factor i.</p>',
+      '<p class="eq">XY = iZ, &nbsp; YZ = iX, &nbsp; ZX = iY</p>',
+      '<p class="txt">In the reverse order the sign flips: YX = −iZ, so XY = −YX. Two operators with this property anticommute. Their commutator is</p>',
+      '<p class="eq">[X, Y] = XY − YX = 2iZ</p>',
+      '<p class="txt">The products follow the cross product. For two unit vectors a and b, with a·σ = a<sub>x</sub>X + a<sub>y</sub>Y + a<sub>z</sub>Z,</p>',
+      '<p class="eq">(a·σ)(b·σ) = (a·b) I + i (a×b)·σ</p>',
+      '<p class="txt">For a along x and b along y, x × y = z, which gives XY = iZ.</p>',
+      '<p class="txt">Commutation decides what can be known at the same time. Two observables that commute share their eigenstates, so a state can have a definite value of both. X and Z anticommute. No state has a definite value of both, and on the sphere no point sits at the end of the x axis and at the end of the z axis.</p>',
+      '<h4>Pauli strings</h4>',
+      '<p class="txt">On several qubits, a Pauli string puts one of I, X, Y and Z on each qubit. X⊗Z means X on the first qubit and Z on the second. Two strings multiply letter by letter.</p>',
+      '<p class="txt">To decide whether two strings commute, count the positions where they hold two different Pauli letters. Positions with I do not count, because I commutes with everything. Each counted position gives a factor −1 when the order is swapped. An even count means the strings commute, and an odd count means they anticommute.</p>',
+      '<p class="txt">On a product state each qubit has its own Bloch vector. There the expectation value of a string is the product of the expectation values for each qubit, for example ⟨X⊗Z⟩ = ⟨X⟩<sub>1</sub>⟨Z⟩<sub>2</sub>. States that are not product states come in Unit 2.</p>'
+    ].join(''),
+    fig:{scene:function(){return {marks:[{v:[1,0,0],cls:'ma',vec:true,label:'X'},{v:[0,1,0],cls:'ma',vec:true,label:'Y'},{v:[0,0,1],cls:'mb',vec:true,label:'XY = iZ'}]};},
+      cap:'X along x times Y along y gives iZ, along x × y = z.'}},
+  {id:'ex-comm',kind:'Worked example',title:'Two Pauli strings',
+    task:'Do X⊗Z and Z⊗X commute? What is their product?',
+    steps:[
+      'First position: X and Z are two different Pauli letters, so they anticommute.',
+      'Second position: Z and X anticommute as well.',
+      'Two positions anticommute, an even number, so the strings commute.',
+      'The product, letter by letter: (X⊗Z)(Z⊗X) = (XZ)⊗(ZX) = (−iY)⊗(iY) = Y⊗Y.',
+      'Check the answer. In the other order, (ZX)⊗(XZ) = (iY)⊗(−iY) = Y⊗Y as well, as it must be for strings that commute.'
+    ]},
   {id:'ball',title:'Inside the ball',wide:true,
     html:[
       '<p class="txt">So far every state sat on the surface. Points inside the ball are states too. They describe a qubit whose state is partly uncertain, for example because noise has acted on it. The practice shows them in a cross-section: a flat cut through the ball that contains the vertical axis. In a cross-section you can place a point anywhere inside the circle.</p>',
@@ -1853,6 +2271,57 @@ var DISCUSS=[
         limit:'They differ along x. The original state has an x component of sin 60° = 0.87. The inside point has none, because the measurement erased the relative phase.'}
     ],
     more:'Pure dephasing moves a state straight toward the z axis. What does that suggest the surroundings are doing to the qubit?'},
+  {id:'dO1',concept:'O1',title:'Applying Z and measuring Z',src:'',
+    stem:'A qubit is in |+⟩. One student applies the gate Z to it. Another student measures Z on an identical qubit. Are the two qubits now in the same state?',
+    scene:function(){return {state:[1,0,0],hint:{axis:[0,0,1]}};},
+    reveal:function(sp,done){sp.load({state:[1,0,0],ghost:[1,0,0],hint:{axis:[0,0,1]}});sp.animate([{from:[1,0,0],axis:AX.z,angle:PI}],function(){sp.state=[-1,0,0];sp.draw();done();});},
+    options:[
+      {t:'No: after the gate the qubit is in |−⟩, and after the measurement it is in |0⟩ or |1⟩, at random',ok:true,
+        why:'Applying Z is a half turn about the z axis. It takes |+⟩ to |−⟩ every time, and nothing random happens. Measuring Z is a different process. It gives 0 or 1, each with probability 0.5, and leaves the qubit in |0⟩ or |1⟩. The same matrix Z plays two different roles.'},
+      {t:'Yes: Z is the same matrix in both cases',
+        from:'Both processes carry the name Z, and the matrix is the same.',
+        limit:'A gate multiplies the state by the matrix. A measurement does not. It picks one eigenstate of Z at random, with probabilities from the projection of the state. Z|+⟩ = |−⟩ is what the gate does, not what the measurement does.'},
+      {t:'Yes: both leave the qubit in an eigenstate of Z',
+        from:'A measurement of Z does leave the qubit in an eigenstate of Z.',
+        limit:'The gate does not. Z|+⟩ = |−⟩, which lies on the equator and is not an eigenstate of Z.'},
+      {t:'No: the gate leaves |+⟩ unchanged, because Z only changes a phase',
+        from:'Z multiplies the |1⟩ part by −1, which is a change of phase.',
+        limit:'Only one of the two terms changes, so it is a relative phase. A relative phase moves the point, here from |+⟩ to |−⟩.'}
+    ],
+    more:'Which states does the gate Z leave exactly in place? What does a Z measurement do to those same states?'},
+  {id:'dO2',concept:'O2',title:'Definite X and definite Z',src:'',
+    stem:'Is there a state of one qubit for which both an X measurement and a Z measurement have a certain outcome?',
+    scene:function(){return {marks:[{v:[1,0,0],cls:'part'},{v:[0,0,1],cls:'part'}]};},
+    options:[
+      {t:'Yes: a superposition of |0⟩ and |+⟩ keeps the certainty of both',
+        from:'A superposition seems to combine the properties of the states in it.',
+        limit:'A certain X outcome needs the point at an end of the x axis, and a certain Z outcome needs it at an end of the z axis. Any superposition of |0⟩ and |+⟩ is a single point, and it cannot be in both places.'},
+      {t:'Yes: the state halfway between |0⟩ and |+⟩',
+        from:'It leans toward +z and toward +x, so both measurements favour the positive outcome.',
+        limit:'Leaning is not certainty. At θ = 45°, φ = 0° both projections are 0.71, so each measurement gives the positive outcome with probability 0.85, not 1.'},
+      {t:'No: X and Z anticommute, so no state is an eigenstate of both',ok:true,
+        why:'A certain outcome needs an eigenstate. The eigenstates of X are the ends of the x axis, those of Z the ends of the z axis, and no point is both. This is what anticommuting means for measurement. Since XZ = −ZX, X and Z share no eigenstate.'},
+      {t:'Yes, if X and Z are measured at the same time',
+        from:'Measuring both at once seems to avoid one measurement disturbing the other.',
+        limit:'No measurement gives both values at once. Measuring X leaves the qubit in |+⟩ or |−⟩, and a Z measurement after that gives 0 or 1 at random.'}
+    ],
+    more:'Which pairs of Pauli strings on two qubits can both have definite values in the same state? Try X⊗X and Z⊗Z.'},
+  {id:'dO3',concept:'O3',title:'Do X⊗X and Z⊗Z commute?',src:'',
+    stem:'X and Z anticommute. Do the two-qubit strings X⊗X and Z⊗Z commute?',
+    options:[
+      {t:'No: they anticommute, because X and Z anticommute',
+        from:'Each pair of letters anticommutes, so the strings seem to anticommute as well.',
+        limit:'Swapping the strings gives a factor −1 at each position where the letters anticommute. Here there are two such positions, and (−1)² = +1.'},
+      {t:'Yes: each position gives a factor −1, and the two factors cancel',ok:true,
+        why:'(X⊗X)(Z⊗Z) = (XZ)⊗(XZ) = (−iY)⊗(−iY) = −Y⊗Y. In the other order, (ZX)⊗(ZX) = (iY)⊗(iY) = −Y⊗Y. The two products are equal, so the strings commute. Two qubits can therefore have definite values of both X⊗X and Z⊗Z. The Bell states of Unit 2 do.'},
+      {t:'No: they act on the same two qubits, so they cannot both be measured',
+        from:'Two measurements on the same qubits seem bound to disturb each other.',
+        limit:'Sharing qubits is not the test. What matters is whether the operators commute, and X⊗X and Z⊗Z do. They share their eigenstates, so both can be measured on the same pair.'},
+      {t:'Yes: Pauli strings always commute',
+        from:'Some strings that look different, such as X⊗I and I⊗X, do commute.',
+        limit:'X⊗I and Z⊗I anticommute, since one position holds two different Pauli letters. Whether two strings commute depends on how many such positions there are.'}
+    ],
+    more:'Find all two-qubit Pauli strings other than I⊗I that commute with both X⊗X and Z⊗Z.'},
   {id:'dN1',concept:'N1',title:'Either 0 or 1?',src:'Passante, Emigh, Shaffer 2015',
     stem:'A classmate says: “A qubit in |+⟩ is really either 0 or 1. We just do not know which until we look.” Which experiment, repeated on many qubits prepared the same way, shows that this picture is wrong?',
     options:[
@@ -1959,6 +2428,7 @@ function gateLines(start,ops,withNoise,L){
 }
 function usesPi(ops){return ops.some(function(op){return op.t==='gate'&&!CG_GATE[op.name];});}
 function genQiskit(spec){
+  if(spec.mode==='expect')return genQiskitExpect(spec);
   var A=CG_AXIS[spec.axis],noisy=hasNoise(spec.ops),target=noisy?'simulator':spec.target,L=[],shots=spec.shots;
   var r=circuitState(spec.start,spec.ops,false),pr=dot(r,AXM[spec.axis].v);
   function push(t,m){L.push({t:t,m:m||''});}
@@ -2045,6 +2515,111 @@ function genQiskit(spec){
     pip:noisy?'pip install qiskit qiskit-aer':CG_TARGETS[target].pip,p:(1+pr)/2,e:pr,axis:spec.axis,
     spread:Math.sqrt(Math.max(0,1-pr*pr)/shots)};
 }
+function genQiskitExpect(spec){
+  var noisy=hasNoise(spec.ops),target=noisy?'simulator':spec.target,L=[],r=circuitState(spec.start,spec.ops,false);
+  var sim=target==='simulator',fake=target==='fake_device',dev=target==='device';
+  function push(t,m){L.push({t:t,m:m||''});}
+  push('# Quantum Information and Programming 101');
+  push('# Unit 1, one qubit');
+  push('# Circuit: '+circuitAscii(spec.start,spec.ops)+', expectation values of X, Y and Z');
+  push('');
+  if(usesPi(spec.ops))push('from math import pi');
+  push('from qiskit import QuantumCircuit');
+  push('from qiskit.quantum_info import SparsePauliOp');
+  if(noisy){
+    push('from qiskit_aer import AerSimulator');
+    push('from qiskit_aer.noise import depolarizing_error, thermal_relaxation_error');
+    push('');
+    push('# This circuit has noise steps from Explore. They are a model of noise,');
+    push('# so this script runs on a simulator only. A real device supplies its');
+    push('# own noise. Remove the noise steps in Explore to get a script that can');
+    push('# also run on a real quantum computer.');
+  }else{
+    push('');
+    push('# Where to run. This is the one line to change:');
+    push('#   "simulator"    an ideal simulator on your computer, no account needed');
+    push('#   "fake_device"  a simulator that imitates a real device, noise included');
+    push('#   "device"       a real quantum computer at IBM, needs a free account');
+    push('RUN_ON = "'+target+'"','chg');
+  }
+  push('');
+  push('# 1. Build the circuit. The qubit starts in |0>. No measurement is needed.');
+  push('qc = QuantumCircuit(1)');
+  var G=[];gateLines(spec.start,spec.ops,noisy,G);G.forEach(function(x){push(x.t);});
+  push('');
+  push('# 2. The observables, one Pauli operator each.');
+  push('observables = [SparsePauliOp("X"), SparsePauliOp("Y"), SparsePauliOp("Z")]');
+  push('');
+  if(noisy){
+    push('# 3. Run it on a simulator that can apply the noise steps.');
+    push('for name, op in zip("XYZ", observables):');
+    push('    qc.save_expectation_value(op, [0], label=name)');
+    push('sim = AerSimulator(method="density_matrix")');
+    push('data = sim.run(qc).result().data()');
+    push('values = [data[name] for name in "XYZ"]');
+  }else{
+    push('# 3. Run it.');
+    push('if RUN_ON == "simulator":');
+    push('    from qiskit.primitives import StatevectorEstimator',sim?'act':'');
+    push('    estimator = StatevectorEstimator()',sim?'act':'');
+    push('    job = estimator.run([(qc, observables)])',sim?'act':'');
+    push('else:');
+    push('    from qiskit.transpiler import generate_preset_pass_manager',sim?'':'act');
+    push('    try:                                # qiskit-ibm-runtime 0.50 or later',sim?'':'act');
+    push('        from qiskit_ibm_runtime.executor_estimator import Estimator',sim?'':'act');
+    push('    except ImportError:                 # earlier versions',sim?'':'act');
+    push('        from qiskit_ibm_runtime import EstimatorV2 as Estimator',sim?'':'act');
+    push('    if RUN_ON == "fake_device":');
+    push('        from qiskit_ibm_runtime.fake_provider import FakeManilaV2',fake?'act':'');
+    push('        backend = FakeManilaV2()',fake?'act':'');
+    push('    else:');
+    push('        from qiskit_ibm_runtime import QiskitRuntimeService',dev?'act':'');
+    push('        service = QiskitRuntimeService()   # reads your saved API key',dev?'act':'');
+    push('        backend = service.least_busy(simulator=False, operational=True)',dev?'act':'');
+    push('    print("running on:", backend.name)',sim?'':'act');
+    push('    # A device has its own small set of gates. Rewrite the circuit in them.',sim?'':'act');
+    push('    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)',sim?'':'act');
+    push('    isa = pm.run(qc)',sim?'':'act');
+    push('    # The device numbers its qubits its own way. Move the observables along.',sim?'':'act');
+    push('    observables = [op.apply_layout(isa.layout) for op in observables]',sim?'':'act');
+    push('    estimator = Estimator(mode=backend)',sim?'':'act');
+    push('    job = estimator.run([(isa, observables)])',sim?'':'act');
+    push('    print("job id:", job.job_id(), "(a real device puts the job in a queue)")',sim?'':'act');
+    push('values = job.result()[0].data.evs');
+  }
+  push('');
+  push('# 4. Read the result. The three values are the components of the Bloch vector.');
+  push('#    Adding 0.0 prints a tiny negative rounding error as 0.0 instead of -0.0.');
+  push('print("<X>, <Y>, <Z> =", [round(float(v), 4) + 0.0 for v in values])');
+  push('print("'+(noisy?'values in the model':'values without noise')+': <X> = '+pyNum(r[0])+', <Y> = '+pyNum(r[1])+', <Z> = '+pyNum(r[2])+'")');
+  return {lines:L,text:L.map(function(x){return x.t;}).join('\n')+'\n',target:target,simOnly:noisy,mode:'expect',
+    pip:noisy?'pip install qiskit qiskit-aer':CG_TARGETS[target].pip,r:r};
+}
+function pyFloat(x){return Number.isInteger(x)?x.toFixed(1):String(x);}
+function evsOutput(gen){
+  return '<X>, <Y>, <Z> = ['+gen.r.map(function(x){return pyFloat(Number(pyNum(x)));}).join(', ')+']\n'+gen.lines[gen.lines.length-1].t.replace(/^print\("/,'').replace(/"\)$/,'');
+}
+var PAULI_SNIPPET=[
+  '# Pauli operators in Qiskit',
+  'from qiskit import QuantumCircuit',
+  'from qiskit.quantum_info import Pauli, Statevector',
+  '',
+  '# Products and commutation',
+  'print(Pauli("X").dot(Pauli("Y")))           # the product X times Y',
+  'print(Pauli("XX").commutes(Pauli("ZZ")))    # do XX and ZZ commute?',
+  'print(Pauli("XI").commutes(Pauli("ZX")))    # do XI and ZX commute?',
+  '',
+  '# Qubit order. Qiskit writes qubit 0 as the rightmost letter.',
+  '# Pauli("ZX") is X on qubit 0 and Z on qubit 1. This course writes it X⊗Z.',
+  'qc = QuantumCircuit(2)',
+  'qc.h(0)                                     # qubit 0 in |+>, qubit 1 in |0>',
+  'state = Statevector(qc)',
+  'zx = state.expectation_value(Pauli("ZX")).real   # X on qubit 0, Z on qubit 1',
+  'xz = state.expectation_value(Pauli("XZ")).real   # Z on qubit 0, X on qubit 1',
+  'print(round(zx, 4))',
+  'print(round(xz, 4))'
+].join('\n')+'\n';
+var PAULI_SNIPPET_OUT='iZ\nTrue\nFalse\n1.0\n0.0\n';
 function genQasm(spec){
   var A=CG_AXIS[spec.axis],L=['OPENQASM 3.0;','include "stdgates.inc";','qubit[1] q;','bit[1] c;'],skipped=0;
   CG_PREP[spec.start].forEach(function(m){L.push(m+' q[0];');});
@@ -2053,6 +2628,7 @@ function genQasm(spec){
     if(CG_GATE[op.name])L.push(CG_GATE[op.name]+' q[0];');
     else{var g=gateOf(op.name);L.push('r'+g.param+'('+g.deg+' * pi / 180) q[0];');}
   });
+  if(spec.mode==='expect'){L.splice(L.indexOf('bit[1] c;'),1);return {text:L.join('\n')+'\n',skipped:skipped};}
   A.pre.forEach(function(m){L.push(m+' q[0];');});
   L.push('c[0] = measure q[0];');
   return {text:L.join('\n')+'\n',skipped:skipped};
@@ -2132,6 +2708,31 @@ var TAGINFO={
   'shot-noise-everywhere':['Shot noise on an eigenstate','Scatter where every shot gives the same outcome',''],
   'shrink-as-shot-noise':['Systematic gap read as shot noise','A gap that does not shrink with more shots',''],
   'more-shots':['More shots for a converged estimate','More shots asked for after convergence',''],
+  'eigen-sign':['Eigenvalue sign swapped','The other end of the axis',''],
+  'eigen-axis':['Eigenstate of another operator','An end of a different axis',''],
+  'eigen-assume':['State taken as an eigenstate','The state left in place by an operator that moves it',''],
+  'prob-for-exp':['Probability given as expectation value','(1 + ⟨P⟩)/2 in place of ⟨P⟩',''],
+  'exp-wrong-component':['Wrong component','The component along another axis',''],
+  'exp-sign':['Expectation value with the wrong sign','−⟨P⟩ in place of ⟨P⟩',''],
+  'op-sign':['Product in the wrong order','The sign of the reversed product',''],
+  'missing-i':['Factor i left out','The result without its factor ±i',''],
+  'product-identity':['Product taken as the identity','I for a product of two different Pauli operators',''],
+  'y-sign':['Sign of i in Y','−i in place of i, or the reverse',''],
+  'commute-all':['Pauli operators taken to commute','XZ = ZX',''],
+  'half-commutator':['Commutator off by a factor 2','iZ in place of 2iZ',''],
+  'global-phase-matrix':['Matrix taken up to a phase','X in place of −iX',''],
+  'rot-sign':['Rotation with the wrong sign','iX in place of −iX',''],
+  'any-anticommute':['Strings judged position by position','Anticommute because some letters anticommute',''],
+  'count-identity':['Identity counted as anticommuting','Positions with I counted',''],
+  'parity-miscount':['Anticommuting positions miscounted','The wrong parity of anticommuting positions',''],
+  'neither':['Neither commuting nor anticommuting','An option that Pauli strings never have',''],
+  'string-sign':['Sign of a string product','The product with the opposite sign',''],
+  'phase-dropped':['Phase factor dropped','The product without its factor ±i or −1',''],
+  'phase-added':['Phase factor added','A factor ±i where the product has none',''],
+  'square-not-identity':['Square kept as the letter','Z·Z kept as Z instead of I',''],
+  'string-order':['Qubits swapped in a string','The value with the two qubits exchanged',''],
+  'string-average':['Average in place of product','(⟨P⟩₁ + ⟨Q⟩₂)/2 in place of the product',''],
+  'one-factor':['One qubit only','The value for one of the two qubits',''],
   'unclassified':['Unclassified','No tagged answer nearby','']
 };
 TAGINFO['axis-y']=TAGINFO['axis-z']=TAGINFO['axis-x'];TAGINFO['last-only']=TAGINFO['first-only'];
@@ -2164,7 +2765,7 @@ function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGrou
 function fresh(){
   var p=freshPractice();
   return {v:3,seed:20261006,group:p.group,groups:p.groups,items:p.items,free:p.free,tags:p.tags,review:p.review,log:[],
-    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator'},unitTab:'u1-goals',seenStart:false};
+    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},unitTab:'u1-goals',seenStart:false};
 }
 function opValid(op){
   if(!op||typeof op!=='object')return false;
@@ -2232,7 +2833,7 @@ function repair(s){
   var ex=out.explore;
   out.explore=(typeof ex.start==='string'&&has(STARTS,ex.start)&&Array.isArray(ex.ops)&&ex.ops.length<=24&&ex.ops.every(opValid))?{start:ex.start,ops:ex.ops.map(cleanOp)}:{start:'zero',ops:[]};
   var c=out.code;
-  out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator'};
+  out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator',mode:c.mode==='expect'?'expect':'counts'};
   if(PART_ROUTE.indexOf(out.unitTab)<0)out.unitTab='u1-goals';
   return out;
 }
@@ -2370,7 +2971,10 @@ $('p-groups').onclick=function(e){
 };
 function predictControls(R){
   if(R.mode==='point'||R.mode==='slice')return '<p class="readout" id="p-read">No point placed yet.</p>';
-  if(R.mode==='number')return '<p class="field"><label for="p-num">'+esc(R.numLabel)+' =</label><input type="number" id="p-num" min="0" max="1" step="0.01" inputmode="decimal" placeholder="0.50"></p>';
+  if(R.mode==='number'){
+    var lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;
+    return '<p class="field"><label for="p-num">'+esc(R.numLabel)+' =</label><input type="number" id="p-num" min="'+lo+'" max="'+hi+'" step="0.01"'+(lo<0?'':' inputmode="decimal"')+' placeholder="0.50"></p>';
+  }
   if(R.mode==='multi')return '<div class="opts row2" id="p-opts" role="group" aria-label="Measurements">'+R.options.map(function(o){return '<label><input type="checkbox" value="'+o.k+'"> '+esc(o.t)+'</label>';}).join('')+'<label><input type="checkbox" value="none"> '+esc(R.noneText)+'</label></div>';
   return '<div class="opts" id="p-opts" role="radiogroup" aria-label="Answers">'+R.options.map(function(o,i){return '<label><input type="radio" name="p-choice" value="'+i+'"> <span>'+esc(o.t)+'</span></label>';}).join('')+'</div>';
 }
@@ -2381,6 +2985,7 @@ function renderItem(){
   renderGroups();
   if(!it){renderSummary();return;}
   var R=buildItem(it),rv=S.group==='R',g=rv?S.review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
+  $('view-practice').querySelector('.stage').classList.toggle('nofig',!!R.nofig);
   ps.load(R.scene());ps.setPlacing(R.mode==='point'||R.mode==='slice');ps.draw();
   var pos=rv?'Review, item '+(g.pos+1)+' of '+g.queue.length:g.mode==='starter'?'Item '+(g.pos+1)+' of '+g.queue.length:'More practice, item '+(g.freeN+1);
   var extra='';
@@ -2423,7 +3028,10 @@ ps.onPlace=function(p){
 function readResponse(){
   var R=cur,e=null,v=null;
   if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':'Place a point on the sphere first.';}
-  else if(R.mode==='number'){var raw=$('p-num').value.trim();v=parseFloat(raw);if(raw===''||!(v>=0&&v<=1)){v=null;e='Type a number between 0 and 1.';}}
+  else if(R.mode==='number'){
+    var raw=$('p-num').value.trim(),lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;v=parseFloat(raw);
+    if(raw===''||!(v>=lo&&v<=hi)){v=null;e='Type a number between '+String(lo).replace('-','\u2212')+' and '+hi+'.';}
+  }
   else if(R.mode==='multi'){var sel=[],none=false;each($('p-opts').querySelectorAll('input:checked'),function(b){if(b.value==='none')none=true;else sel.push(b.value);});if(!sel.length&&!none)e='Select at least one option.';else v=sel;}
   else{var c=$('p-opts').querySelector('input:checked');if(!c)e='Choose an answer.';else v=parseInt(c.value,10);}
   return {v:v,e:e};
@@ -2484,6 +3092,7 @@ function renderStrip(){
 }
 function renderSummary(){
   cur=null;phase='idle';curLog=null;
+  $('view-practice').querySelector('.stage').classList.remove('nofig');
   ps.load({state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),true);show($('p-flatnote'),false);
   $('p-head').removeAttribute('data-item');$('p-head').removeAttribute('data-level');
   if(S.group==='R'){reviewSummary();renderStrip();return;}
@@ -2509,7 +3118,7 @@ function reviewSummary(){
   GROUP_ORDER.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
   var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts()?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary','u1-discuss','Go to the discussion questions');
   if(!attempts()){
-    h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in the four topics come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
+    h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in each topic come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
     b=onward;
   }else if(more){
     h='<p class="prompt">'+(done?'That set is done. ':'')+(more===1?'One more item is':more+' more items are')+' due for review.</p>';
@@ -2692,9 +3301,8 @@ var EXAMPLE={start:'zero',ops:[{t:'gate',name:'H'},{t:'gate',name:'S'}]};
 var codeNow='',qasmNow='';
 function codeSpec(){
   var own=E.ops.length>0||E.start!=='zero',c=own?E:EXAMPLE;
-  return {own:own,start:c.start,ops:c.ops,axis:S.code.axis,shots:S.code.shots,target:S.code.target};
+  return {own:own,start:c.start,ops:c.ops,axis:S.code.axis,shots:S.code.shots,target:S.code.target,mode:S.code.mode};
 }
-function pyFloat(x){return Number.isInteger(x)?x.toFixed(1):String(x);}
 function howTo(target,gen){
   var py='<li>You need Python 3.10 or later.</li>',
       run='<li>Copy the code into a file named <code>unit1_circuit.py</code> and run it:<pre>python unit1_circuit.py</pre></li>',
@@ -2727,11 +3335,27 @@ function expectHTML(sp,gen){
   }
   return h;
 }
+function evsHTML(sp,gen){
+  var r=gen.r,onDevice=!gen.simOnly&&gen.target!=='simulator',len=Math.sqrt(dot(r,r)),h='';
+  var out=evsOutput(gen);
+  h+='<p>'+(gen.simOnly?'In the noise model':'Without noise')+': ⟨X⟩ = '+pyNum(r[0])+', ⟨Y⟩ = '+pyNum(r[1])+' and ⟨Z⟩ = '+pyNum(r[2])+'. ';
+  if(!gen.simOnly)h+='The vector has length 1, as it does for every pure state.</p>';
+  else h+=len<0.99995?'The vector has length '+pyNum(len)+', less than 1: the noise steps have left a mixed state.</p>':'The vector has length 1: the state is still pure.</p>';
+  if(!onDevice){
+    h+='<p>'+(gen.simOnly?'The simulator computes the values of the model exactly':'StatevectorEstimator computes the values exactly from the state')+', so the output is the same every time:</p><pre>'+esc(out)+'</pre>';
+  }else{
+    h+='<p>The script first prints the name of the device and the id of the job'+(gen.target==='device'?', then waits in the queue':'')+'. Without noise the rest of the output would look like this:</p><pre>'+esc(out)+'</pre>'+
+      '<p>On a device, real or imitated, expect values a little different from these. Gate errors and decoherence tend to shorten the Bloch vector. The Estimator corrects most readout errors by default, and each value is estimated from a finite number of shots, so the values also scatter from one run to the next. A value near +1 or −1 can even land slightly beyond it. Unit 4 takes these apart.</p>';
+  }
+  return h;
+}
 function renderCode(){
-  var sp=codeSpec(),gen=genQiskit(sp),qa=genQasm(sp),A=CG_AXIS[sp.axis],noisy=gen.simOnly,sh=$('c-shots');
+  var sp=codeSpec(),gen=genQiskit(sp),qa=genQasm(sp),A=CG_AXIS[sp.axis],noisy=gen.simOnly,sh=$('c-shots'),ex=sp.mode==='expect';
   codeNow=gen.text;qasmNow=qa.text;
-  $('c-circuit').innerHTML=opsHTML(sp.start,sp.ops,true)+'<span class="gate meas">Measure '+A.name+'</span>';
+  $('c-circuit').innerHTML=opsHTML(sp.start,sp.ops,true)+'<span class="gate meas">'+(ex?'⟨X⟩ ⟨Y⟩ ⟨Z⟩':'Measure '+A.name)+'</span>';
   $('c-cnote').textContent=sp.own?'This is the circuit from Explore.':'Explore has no steps yet, so this is an example: H, then S, starting from |0⟩.';
+  each($('c-mode').querySelectorAll('input'),function(i){i.checked=i.value===sp.mode;});
+  show($('c-axisgroup'),!ex);show($('c-shotsgroup'),!ex);
   each($('c-axis').querySelectorAll('input'),function(i){i.checked=i.value===sp.axis;});
   each($('c-target').querySelectorAll('input'),function(i){i.checked=i.value===gen.target;i.disabled=noisy&&i.value!=='simulator';});
   if(document.activeElement!==sh){sh.value=sp.shots;show($('c-serr'),false);}
@@ -2740,10 +3364,14 @@ function renderCode(){
   $('c-howto').innerHTML=howTo(gen.target,gen);
   $('c-key').innerHTML=noisy?'<span>A script for a simulator with a noise model</span>':'<span><i class="c"></i>The one line to change</span><span><i class="a"></i>The lines that run with this choice</span>';
   $('c-code').innerHTML=gen.lines.map(function(l){return '<span class="ln'+(l.m?' '+l.m:'')+'">'+esc(l.t)+'\n</span>';}).join('');
-  $('c-expect').innerHTML=expectHTML(sp,gen);
+  $('c-expect').innerHTML=ex?evsHTML(sp,gen):expectHTML(sp,gen);
   $('c-qasm').innerHTML=qa.text.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
-  $('c-qnote').textContent='OpenQASM is a plain text format for circuits that many quantum programming tools read.'+(qa.skipped?' Noise steps are not part of the language, so '+(qa.skipped===1?'the noise step is':'the '+qa.skipped+' noise steps are')+' left out here.':'');
+  $('c-qnote').textContent='OpenQASM is a plain text format for circuits that many quantum programming tools read.'+(ex?' The observables are not part of the circuit, so the text ends without a measurement.':'')+(qa.skipped?' Noise steps are not part of the language, so '+(qa.skipped===1?'the noise step is':'the '+qa.skipped+' noise steps are')+' left out here.':'');
 }
+$('c-pauli').innerHTML=PAULI_SNIPPET.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
+$('c-pout').textContent=PAULI_SNIPPET_OUT.replace(/\n$/,'');
+$('c-pcopy').onclick=function(){copyText(PAULI_SNIPPET,$('c-pcopy'),$('c-pauli'));};
+$('c-mode').onchange=function(e){var v=e.target.value;if(v==='counts'||v==='expect'){S.code.mode=v;store.save(S);renderCode();}};
 $('c-axis').onchange=function(e){if(CG_AXIS[e.target.value]){S.code.axis=e.target.value;store.save(S);renderCode();}};
 $('c-target').onchange=function(e){if(CG_TARGETS[e.target.value]){S.code.target=e.target.value;store.save(S);renderCode();}};
 $('c-shots').oninput=function(){
@@ -2868,7 +3496,7 @@ function renderAbout(){
   Object.keys(TAGINFO).forEach(function(t){var i=TAGINFO[t];if(t==='unclassified'||seen[i[0]])return;seen[i[0]]=1;rows.push(i);});
   $('v-tags').innerHTML='<thead><tr><th>Tag</th><th>The student\u2019s answer matches</th><th>Reported in</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';}).join('')+'</tbody>';
   $('v-discuss').innerHTML='<thead><tr><th>No.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+DISCUSS.map(function(q,j){return '<tr><td>'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';}).join('')+'</tbody>';
-  $('v-checks').innerHTML=selfChecks().concat(selfChecks2()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
+  $('v-checks').innerHTML=selfChecks().concat(selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
   $('v-log').value=S.log.length?csv():'No responses yet.';
 }
 $('v-copy').onclick=function(){copyText($('v-log').value,$('v-copy'),$('v-log'));};

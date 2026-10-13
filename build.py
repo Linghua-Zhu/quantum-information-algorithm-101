@@ -10,7 +10,7 @@ OUT = ROOT / "docs" / "index.html"
 TITLE = "Quantum Information and Programming 101"
 DESCRIPTION = ("A course tool for a first course in quantum information and quantum programming. "
                "From vectors to qubits to algorithms. Predict first, then observe.")
-SCRIPTS = ["core.js", "items.js", "sphere.js", "content.js", "codegen.js", "app.js"]
+SCRIPTS = ["core.js", "items.js", "paulis.js", "sphere.js", "content.js", "codegen.js", "app.js"]
 ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E"
         "%3Ccircle cx='16' cy='16' r='14' fill='none' stroke='%233c5488' stroke-width='2.5'/%3E"
         "%3Cellipse cx='16' cy='16' rx='14' ry='5' fill='none' stroke='%238491b4' stroke-width='1.5'/%3E"

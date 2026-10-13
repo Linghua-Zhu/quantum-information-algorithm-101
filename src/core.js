@@ -51,7 +51,7 @@ function labelOf(v){var c=isCardinal(v);if(c)return c;var a=toAngles(v);return '
 
 var STARTS={zero:[0,0,1],one:[0,0,-1],plus:[1,0,0],minus:[-1,0,0],plusi:[0,1,0],minusi:[0,-1,0]};
 function startVec(s){return typeof s==='string'?STARTS[s].slice():fromAngles(s[0],s[1]);}
-var CONCEPTS={S1:'State as a point',S2:'Global and relative phase',G1:'Gates as rotations',G2:'Rotation sense',G3:'States on the rotation axis',G4:'Gate order',M1:'Probability from projection',M2:'Measuring along other axes',M3:'State after a measurement',N1:'Mixed states inside the ball',N2:'Shapes of noise',N3:'Shots and estimation'};
+var CONCEPTS={S1:'State as a point',S2:'Global and relative phase',G1:'Gates as rotations',G2:'Rotation sense',G3:'States on the rotation axis',G4:'Gate order',M1:'Probability from projection',M2:'Measuring along other axes',M3:'State after a measurement',O1:'Pauli operators',O2:'Products and commutation',O3:'Pauli strings',N1:'Mixed states inside the ball',N2:'Shapes of noise',N3:'Shots and estimation'};
 var STARTER_G=[
   {id:'r01',concept:'G1',level:1,start:'zero',gates:['X']},
   {id:'r02',concept:'G1',level:1,start:'plus',gates:['Z']},

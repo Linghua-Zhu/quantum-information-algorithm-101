@@ -25,6 +25,26 @@ async function axe(page,label){
     await page.goto(FILE+'#u1-discuss');
     await page.check('#d-o1 input[value="1"]');await page.click('#d-lock1');await page.check('#d-o2 input[value="2"]');await page.click('#d-lock2');
     await axe(page,scheme+' discuss answered');
+    await page.goto(FILE+'#u1-code');
+    await page.check('#c-mode-expect');
+    await page.evaluate(()=>document.querySelectorAll('#view-code details').forEach(d=>{d.open=true;}));
+    await axe(page,scheme+' code, expectation values');
+    await page.check('#c-mode-counts');
+    // an operator item without a figure (o11), before and after answering
+    await page.goto(FILE+'#u1-practice');
+    await page.click('#p-groups button[data-g="O"]');
+    await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('qip101-v3'));s.group='O';s.groups.O.pos=10;localStorage.setItem('qip101-v3',JSON.stringify(s));});
+    await page.reload();
+    if(await page.locator('#p-head').getAttribute('data-item')!=='o11'){bad++;console.log(scheme+': o11 not on screen');}
+    await axe(page,scheme+' operator item without a figure');
+    await page.check('#p-opts input[value="0"]');await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');
+    await page.fill('#p-exp','x');await page.click('#p-compare');
+    await axe(page,scheme+' operator item answered');
+    // a number item with a negative range (o05)
+    await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('qip101-v3'));s.groups.O.pos=4;localStorage.setItem('qip101-v3',JSON.stringify(s));});
+    await page.reload();
+    await page.fill('#p-num','-0.5');await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');
+    await axe(page,scheme+' operator number item answered');
     await ctx.close();
   }
   console.log(bad?'axe violations: '+bad:'axe: no violations on any page, light or dark');

@@ -58,7 +58,7 @@
 <section id="view-goals" hidden>
   <div class="page">
     <h2>What you will be able to do</h2>
-    <p class="lead">Unit 1 has six goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
+    <p class="lead">Unit 1 has eight goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
     <ol class="goals" id="g-list"></ol>
     <h3>What you need before you start</h3>
     <p class="txt">Sines and cosines, vectors with three components, and complex numbers in the form e<sup>iφ</sup>. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.</p>
@@ -164,14 +164,20 @@
         <p class="note" id="c-cnote" style="margin:0 0 10px"></p>
         <div class="row"><a class="ghost" href="#u1-explore" data-go="u1-explore">Change it in Explore</a></div>
       </div>
-      <div class="group"><h3>Measure along</h3>
+      <div class="group"><h3>The script computes</h3>
+        <div class="seg" id="c-mode" role="radiogroup" aria-label="What the script computes">
+          <label><input type="radio" name="c-mode" id="c-mode-counts" value="counts"> <span>Counts along one axis<br><small class="note">Measures many times and counts the two outcomes.</small></span></label>
+          <label><input type="radio" name="c-mode" id="c-mode-expect" value="expect"> <span>⟨X⟩, ⟨Y⟩ and ⟨Z⟩<br><small class="note">The expectation values of the three Pauli operators, which are the components of the Bloch vector.</small></span></label>
+        </div>
+      </div>
+      <div class="group" id="c-axisgroup"><h3>Measure along</h3>
         <div class="seg inline" id="c-axis" role="radiogroup" aria-label="Measurement axis">
           <label><input type="radio" name="c-axis" id="c-axis-z" value="z"> Z</label>
           <label><input type="radio" name="c-axis" id="c-axis-x" value="x"> X</label>
           <label><input type="radio" name="c-axis" id="c-axis-y" value="y"> Y</label>
         </div>
       </div>
-      <div class="group"><h3><label for="c-shots">Shots</label></h3>
+      <div class="group" id="c-shotsgroup"><h3><label for="c-shots">Shots</label></h3>
         <div class="row"><input type="number" id="c-shots" min="0" max="10000" step="100" inputmode="numeric"></div>
         <p class="err" id="c-serr" hidden></p>
       </div>
@@ -196,6 +202,14 @@
         <p class="note" id="c-qnote">OpenQASM is a plain text format for circuits that many quantum programming tools read.</p>
         <pre class="code" id="c-qasm" tabindex="0" style="margin-top:8px" aria-label="OpenQASM 3 text for this circuit"></pre>
         <div class="row"><button type="button" class="ghost" id="c-qcopy">Copy the OpenQASM</button></div>
+      </details>
+      <details style="margin-top:10px" id="c-paulibox"><summary>Pauli operators and Pauli strings in Qiskit</summary>
+        <div class="howto" style="margin-top:8px"><p>Qiskit numbers the qubits from 0 and writes qubit 0 as the rightmost letter of a Pauli string. This course writes the first qubit first. So X⊗Z in this course, with X on the first qubit and Z on the second, is <code>Pauli("ZX")</code> in Qiskit. Mixing up the two orders gives wrong numbers and no error message.</p></div>
+        <pre class="code" id="c-pauli" tabindex="0" aria-label="Python code with Pauli operators and Pauli strings"></pre>
+        <div class="row" style="margin-top:8px"><button type="button" class="ghost" id="c-pcopy">Copy the code</button></div>
+        <div class="howto" style="margin-top:8px"><p>The script needs only <code>pip install qiskit</code>. Before you run it, write down what each line will print.</p>
+          <details><summary>What it prints</summary><pre id="c-pout"></pre></details>
+        </div>
       </details>
     </div>
   </div>

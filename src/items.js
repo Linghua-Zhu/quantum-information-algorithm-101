@@ -400,7 +400,9 @@ function buildChoice(item){
   R.observe=function(sp,done){sp.draw();done();};
   return R;
 }
+var EXTRA_BUILDERS={};
 function buildItem(item){
+  if(EXTRA_BUILDERS[item.type])return EXTRA_BUILDERS[item.type](item);
   switch(item.type){
     case 'locate':return buildLocate(item);
     case 'prob':return buildProb(item);
@@ -517,7 +519,8 @@ function selfChecks2(){
   out.push({name:'Pure dephasing matches its Kraus form',ok:test.every(function(r){return near(krausApply(PD,r),chRelax(1,b,r));})});
   out.push({name:'Measurement probabilities add to 1 on every axis',ok:test.every(function(r){return ['x','y','z'].every(function(k){var pr=dot(r,AXM[k].v);return Math.abs((1+pr)/2+(1-pr)/2-1)<1e-12;});})});
   out.push({name:'Born rule from amplitudes matches the projection formula',ok:[fromAngles(60,40),fromAngles(130,250),[1,0,0]].every(function(r){var k=ketOf(r);return Math.abs(k[0][0]*k[0][0]+k[0][1]*k[0][1]-(1+r[2])/2)<1e-12;})});
-  var all=[].concat(STARTER_S,STARTER_G,STARTER_M,STARTER_N),ok=true;
+  var all=[],ok=true;
+  GROUP_ORDER.forEach(function(k){all=all.concat(GROUPS[k].starter);});
   all.forEach(function(it){try{var R=buildItem(it);if(!R.prompt||!R.reference||!R.result)ok=false;}catch(e){ok=false;}});
   out.push({name:'All '+all.length+' starter items build with a prompt, a result and a reference',ok:ok});
   return out;

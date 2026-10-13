@@ -5,6 +5,7 @@ const HTML=fs.readFileSync(path.join(__dirname,'..','docs','index.html'));
 const KEY='qip101-v3';
 let fails=0,passes=0;
 function ok(c,msg){if(c)passes++;else{fails++;console.log('  FAIL: '+msg);}}
+function eq(a,b,msg){ok(JSON.stringify(a)===JSON.stringify(b),msg+' (got '+JSON.stringify(a)+', expected '+JSON.stringify(b)+')');}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 (async()=>{
   const server=http.createServer((q,r)=>{r.writeHead(200,{'content-type':'text/html; charset=utf-8'});r.end(HTML);}).listen(0);
@@ -145,6 +146,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     '{"v":3,"explore":{"start":"zero","ops":[{"t":"gate","name":"constructor"}]}}',
     '{"v":3,"explore":{"start":"zero","ops":[{"t":"gate","name":["H"]}]}}',
     '{"v":3,"code":{"axis":"constructor","shots":"many","target":"toString"}}',
+    '{"v":3,"code":{"axis":"x","shots":10,"target":"device","mode":"constructor"}}',
     '{"v":3,"group":"R","review":{"day":'+D+',"queue":[{"id":"constructor"}],"pos":0},"tags":{"constructor":3},"items":{"__proto__":{"n":1,"due":1,"day":1},"constructor":{"n":1,"due":1,"day":1}}}',
     '{"v":3,"group":"S","groups":{"S":{"queue":[]}},"tags":{"half-angle":"<img src=x onerror=window.__pwned=1>"}}',
     '{"v":3,"groups":{"S":{"queue":[{"id":"old1"},{"id":"old2"},{"id":"s01"},{"id":"s02"}],"pos":2}}}',
@@ -209,6 +211,30 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   ({ctx,page}=await fresh());
   await page.goto(URL+'#u1-practice');
   ok(!(await page.locator('#f-nosave').isVisible()),'and stays silent when storing works');
+  await ctx.close();
+
+  console.log('7. progress saved before the Operators topic is kept');
+  ({ctx,page}=await fresh());
+  await page.goto(URL);
+  await page.evaluate(([k,D])=>{
+    const ids=g=>GROUPS[g].starter.map(i=>({id:i.id}));
+    const s={v:3,seed:20261006,group:'N',
+      groups:{S:{mode:'starter',queue:ids('S'),pos:14,freeN:0},G:{mode:'starter',queue:ids('G'),pos:3,freeN:0},M:{mode:'starter',queue:ids('M'),pos:0,freeN:0},N:{mode:'starter',queue:ids('N'),pos:2,freeN:0}},
+      items:{s01:{n:1,m:0,first:1,last:1,box:1,due:D+3,day:D},n01:{n:1,m:1,first:0,last:0,box:0,due:D+1,day:D}},
+      free:{},tags:{'wrong-sense':1},review:{day:-1,queue:[],pos:0},log:[],discuss:{dN1:{first:1,final:2}},dq:2,
+      explore:{start:'zero',ops:[]},code:{axis:'x',shots:500,target:'fake_device'},unitTab:'u1-practice',seenStart:true};
+    localStorage.setItem(k,JSON.stringify(s));
+  },[KEY,D]);
+  await page.reload();await page.goto(URL+'#u1-practice');
+  ok(await page.locator('#p-groups [aria-current]').getAttribute('data-g')==='N','the topic in use is kept');
+  eq(await page.locator('#p-head').getAttribute('data-item'),'n03','the place in the topic is kept');
+  ok(await page.locator('#p-strip .c .pip.ok').count()===1&&await page.locator('#p-strip .c .pip.miss').count()===1,'earlier answers are kept');
+  await page.click('#p-groups button[data-g="O"]');
+  eq(await page.locator('#p-head').getAttribute('data-item'),'o01','the new topic starts at its first item');
+  await page.click('#unit-tabs a[data-go="u1-code"]');
+  ok(await page.locator('#c-mode-counts').isChecked()&&(await page.locator('#c-code').textContent()).includes('SHOTS = 500')&&await page.locator('#c-target-fake_device').isChecked(),'code settings are kept and the script still counts');
+  S=await st(page);
+  ok(S.discuss.dN1&&S.discuss.dN1.final===2&&S.code.mode==='counts'&&S.groups.O&&S.groups.O.pos===0,'saved state gains the new topic');
   await ctx.close();
 
   console.log(errs.length?'errors: '+JSON.stringify(errs.slice(0,6),null,1):'no page errors');

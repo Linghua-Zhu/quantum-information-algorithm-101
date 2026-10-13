@@ -97,9 +97,9 @@ async function overflow(page,label){
   await page.click('#h-cta a[data-go="u1-start"]');
   ok(await page.locator('#view-start').isVisible(),'start page shown');
   ok(await page.locator('#unit-head').isVisible(),'unit head shown');
-  eq(await page.locator('#s-body .lesson').count(),11,'eleven sections');
-  eq(await page.locator('#s-body svg.sphere').count(),7,'seven figures');
-  eq(await page.locator('#s-toc button').count(),11,'contents list has eleven entries');
+  eq(await page.locator('#s-body .lesson').count(),15,'fifteen sections');
+  eq(await page.locator('#s-body svg.sphere').count(),10,'ten figures');
+  eq(await page.locator('#s-toc button').count(),15,'contents list has fifteen entries');
   for(const id of ['ex-state','ex-gate','ex-noise']){
     await page.click('#s-play-'+id);
     await page.waitForFunction(i=>document.getElementById('s-play-'+i).textContent==='Play again',id,{timeout:8000});
@@ -107,22 +107,24 @@ async function overflow(page,label){
   }
   const exState=await page.evaluate(()=>{const p=document.querySelector('#s-fig-ex-state .s-trail');return !!p;});
   ok(exState,'worked example leaves its path on the figure');
+  const mats=await page.evaluate(()=>[...document.querySelectorAll('#sec-paulis .mat')].map(m=>m.children.length));
+  ok(mats.length===3&&mats.every(n=>n===4),'the three Pauli matrices are drawn as 2 by 2 grids '+JSON.stringify(mats));
   await page.click('#s-toc button[data-sec="how"]');
   ok((await state(page)).seenStart===true,'visit to Start here is remembered');
 
   console.log('C. goals');
   await page.click('#unit-tabs a[data-go="u1-goals"]');
-  eq(await page.locator('#g-list > li').count(),6,'six goals');
-  eq(await page.locator('#g-list .pip').count(),50,'fifty item marks on the goals page');
+  eq(await page.locator('#g-list > li').count(),8,'eight goals');
+  eq(await page.locator('#g-list .pip').count(),65,'65 item marks on the goals page');
   await page.locator('#g-list button[data-pg="G"]').first().click();
   ok(await page.locator('#view-practice').isVisible(),'goal link opens practice');
   eq(await page.locator('#p-groups [aria-current]').getAttribute('data-g'),'G','goal link selects the topic');
   await page.click('#p-groups button[data-g="S"]');
 
   console.log('D. practice, all starter items');
-  const plan={S:{miss:[1,5,9],twice:[5]},G:{miss:[0,7],twice:[]},M:{miss:[2,3,10],twice:[10]},N:{miss:[4,8,10],twice:[]}};
-  const sizes={S:14,G:14,M:11,N:11},expect={};
-  for(const g of ['S','G','M','N']){
+  const plan={S:{miss:[1,5,9],twice:[5]},G:{miss:[0,7],twice:[]},M:{miss:[2,3,10],twice:[10]},O:{miss:[2,6,12],twice:[6]},N:{miss:[4,8,10],twice:[]}};
+  const sizes={S:14,G:14,M:11,O:15,N:11},expect={};
+  for(const g of ['S','G','M','O','N']){
     await page.click('#p-groups button[data-g="'+g+'"]');
     const seen=[],missed=new Set(),again=new Set();
     let guard=0;
@@ -155,15 +157,15 @@ async function overflow(page,label){
     if(!r||r.first!==e.first||r.last!==e.last||r.m!==e.m||r.n!==1||r.day!==d0||r.box!==(e.first?1:0)||r.due!==d0+(e.first?3:1)){bad++;console.log('   record',id,JSON.stringify(r),JSON.stringify(e));}
   }
   eq(bad,0,'item records match what was answered');
-  eq(Object.keys(S.items).length,50,'fifty item records');
+  eq(Object.keys(S.items).length,65,'65 item records');
   const marks=await page.evaluate(()=>({ok:document.querySelectorAll('#p-strip .c .pip.ok').length,rec:document.querySelectorAll('#p-strip .c .pip.rec').length,miss:document.querySelectorAll('#p-strip .c .pip.miss').length,all:document.querySelectorAll('#p-strip .c .pip').length}));
-  eq(marks,{ok:39,rec:9,miss:2,all:50},'progress marks: right first, right after a miss, missed');
-  eq(S.log.length,50+11,'one log row per answer');
+  eq(marks,{ok:51,rec:11,miss:3,all:65},'progress marks: right first, right after a miss, missed');
+  eq(S.log.length,65+14,'one log row per answer');
   ok(S.log.every(r=>r.explanation==='Because of the geometry.'),'explanations are saved with their rows');
   eq(await page.locator('#p-groups button[data-g="R"] small').count(),0,'nothing due for review on the same day');
   await page.click('#p-groups button[data-g="R"]');
   ok((await page.locator('#p-head').textContent()).includes('Nothing is due for review today'),'review tab says nothing is due today');
-  ok((await page.locator('#p-head').textContent()).includes('Next review: 11 items tomorrow'),'review tab announces tomorrow');
+  ok((await page.locator('#p-head').textContent()).includes('Next review: 14 items tomorrow'),'review tab announces tomorrow');
   await overflow(page,'practice summary');
 
   console.log('E. more practice (generated items)');
@@ -176,8 +178,13 @@ async function overflow(page,label){
   for(let i=0;i<4;i++)await answer(page,i!==1);
   await page.click('#p-groups button[data-g="S"]');await page.click('#p-more');
   for(let i=0;i<4;i++)await answer(page,true);
+  await page.click('#p-groups button[data-g="O"]');await page.click('#p-more');
+  const oTypes=new Set();
+  for(let i=0;i<12;i++){const I=await answer(page,i%3!==1);ok(/^go\d+$/.test(I.id),'generated operator item '+I.id);oTypes.add(I.type);}
+  ok(oTypes.size>=4,'generated operator items vary in type '+JSON.stringify([...oTypes]));
   S=await state(page);
-  eq(Object.keys(S.items).length,50,'generated items leave the item records alone');
+  eq(Object.keys(S.items).length,65,'generated items leave the item records alone');
+  ok(S.free.O1||S.free.O2||S.free.O3,'free operator practice is counted by idea');
   ok(S.free.G1||S.free.G2||S.free.G3||S.free.G4,'free practice is counted by idea');
   await page.click('#p-backstarter');
   ok((await page.locator('#p-head').textContent()).includes('Starter set complete'),'back to the starter set summary');
@@ -186,38 +193,42 @@ async function overflow(page,label){
   await page.clock.setFixedTime(dayDate(1));
   await page.click('#unit-tabs a[data-go="u1-goals"]');
   await page.click('.top a[data-go="home"]');
-  eq(await page.locator('#h-review').textContent(),'Review 11 items','home offers the review');
+  eq(await page.locator('#h-review').textContent(),'Review 14 items','home offers the review');
   await page.click('#h-review');
   eq(await page.locator('#p-groups [aria-current]').getAttribute('data-g'),'R','review opens from home');
-  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'11 due','review tab counts the due items');
+  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'14 due','review tab counts the due items');
   const missedIds=Object.keys(expect).filter(id=>!expect[id].first);
   const revSeen=[];
-  for(let i=0;i<11;i++){
+  for(let i=0;i<14;i++){
+    if(i===12){
+      ok((await page.locator('#p-head').textContent()).includes('2 more'),'the rest of the review is offered as another set');
+      await page.click('#p-reviewmore');
+    }
     const I=await info(page);
     ok(missedIds.includes(I.id),'day 1 review holds only missed items ('+I.id+')');
     eq(I.level,3,I.id+': review comes at level 3');
     ok(!I.hint,I.id+': review shows no hint in the figure');
     ok(/You last answered this item yesterday/.test(I.note),I.id+': review note says when it was last answered');
-    ok(I.pos==='Review, item '+(i+1)+' of 11',I.id+': position label ['+I.pos+']');
+    ok(I.pos==='Review, item '+(i<12?(i+1)+' of 12':(i-11)+' of 2'),I.id+': position label ['+I.pos+']');
     revSeen.push(I.id);
     await answer(page,true);
   }
-  eq(new Set(revSeen).size,11,'eleven different items reviewed');
+  eq(new Set(revSeen).size,14,'fourteen different items reviewed');
   ok((await page.locator('#p-head').textContent()).includes('Review is done for today'),'review done message');
   S=await state(page);
   ok(missedIds.every(id=>S.items[id].box===1&&S.items[id].due===d0+1+3&&S.items[id].last===1&&S.items[id].n===2),'missed items move up one step and are due in 3 days');
   eq(await page.locator('#p-strip .c .pip.miss').count(),0,'no missed marks left');
-  eq(await page.locator('#p-strip .c .pip.rec').count(),11,'eleven items now right after a miss');
+  eq(await page.locator('#p-strip .c .pip.rec').count(),14,'fourteen items now right after a miss');
 
   console.log('G. review on day 3, with a miss in review');
   await page.clock.setFixedTime(dayDate(3));
   await page.reload();
   await page.goto(FILE+'#u1-practice');
-  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'39 due','39 items due on day 3');
+  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'51 due','51 items due on day 3');
   await page.click('#p-groups button[data-g="R"]');
   let n=0,missedInReview=null,retryNote=false;
   const seen3=new Set();
-  while(n++<60){
+  while(n++<80){
     const I=await info(page);
     if(!I){
       const more=page.locator('#p-reviewmore');
@@ -229,28 +240,28 @@ async function overflow(page,label){
     if(seen3.size===2&&!missedInReview){missedInReview=I.id;await answer(page,false);}
     else await answer(page,true);
   }
-  eq(seen3.size,39,'all 39 due items were reviewed, in sets of at most 12');
+  eq(seen3.size,51,'all 51 due items were reviewed, in sets of at most 12');
   ok(retryNote,'an item missed in review came back in the same session');
   S=await state(page);
   const r3=S.items[missedInReview];
   ok(r3.box===0&&r3.due===d0+3+1&&r3.m===1&&r3.last===1&&r3.first===1,'a miss in review resets the schedule to the next day '+JSON.stringify(r3));
   const others=Object.keys(expect).filter(id=>expect[id].first&&id!==missedInReview);
   ok(others.every(id=>S.items[id].box===2&&S.items[id].due===d0+3+7),'items right in review move to the 7 day step');
-  eq(await page.locator('#p-strip .c .pip.rec').count(),12,'the item missed in review now shows as right after a miss');
+  eq(await page.locator('#p-strip .c .pip.rec').count(),15,'the item missed in review now shows as right after a miss');
 
   console.log('H. later reviews follow 7, 14 and 30 days');
-  // day 4: the 11 once-missed items and the one missed in review
+  // day 4: the 14 once-missed items and the one missed in review
   await page.clock.setFixedTime(dayDate(4));await page.reload();await page.goto(FILE+'#u1-practice');
-  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'12 due','12 due on day 4');
+  eq(await page.locator('#p-groups button[data-g="R"] small').textContent(),'15 due','15 due on day 4');
   await page.click('#p-groups button[data-g="R"]');
-  for(let i=0;i<12;i++)await answer(page,true);
+  for(let i=0;i<15;i++){if(i===12)await page.click('#p-reviewmore');await answer(page,true);}
   S=await state(page);
   ok(missedIds.every(id=>S.items[id].box===2&&S.items[id].due===d0+4+7),'second right review: 7 days');
   eq(S.items[missedInReview].due,d0+4+3,'item missed in review: back on the 3 day step');
   await page.clock.setFixedTime(dayDate(10));await page.reload();await page.goto(FILE+'#u1-practice');
   await page.click('#p-groups button[data-g="R"]');
   let c10=0;while(c10<80){const I=await info(page);if(!I){const more=page.locator('#p-reviewmore');if(await more.count()){await more.click();continue;}break;}await answer(page,true);c10++;}
-  eq(c10,39,'day 10: the 38 items on the 7 day step and the one on the 3 day step');
+  eq(c10,51,'day 10: the 50 items on the 7 day step and the one on the 3 day step');
   S=await state(page);
   ok(others.every(id=>S.items[id].box===3&&S.items[id].due===d0+10+14),'third right review: 14 days');
   await page.clock.setFixedTime(dayDate(24));await page.reload();await page.goto(FILE+'#u1-practice');
@@ -266,10 +277,10 @@ async function overflow(page,label){
 
   console.log('I. discuss');
   await page.click('#unit-tabs a[data-go="u1-discuss"]');
-  eq(await page.locator('#d-nav button').count(),12,'twelve questions');
+  eq(await page.locator('#d-nav button').count(),15,'fifteen questions');
   const KEYS=await page.evaluate(()=>DISCUSS.map(q=>q.options.findIndex(o=>o.ok)));
-  eq(KEYS.map(i=>'ABCD'[i]).join(''),'CBDACDDBAACB','answer key is spread over the four letters');
-  for(let j=0;j<12;j++){
+  eq(KEYS.map(i=>'ABCD'[i]).join(''),'CBDACDDBAACBACB','answer key is spread over the four letters');
+  for(let j=0;j<15;j++){
     await page.click('#d-nav button[data-q="'+j+'"]');
     const meta=await page.evaluate(j=>{const q=DISCUSS[j];return {id:q.id,fig:!!q.scene,reveal:!!q.reveal,circ:(q.circuits||[]).length};},j);
     eq(await page.locator('#d-stage').evaluate(e=>e.classList.contains('nofig')),!meta.fig,meta.id+': figure shown only when the question has one');
@@ -294,9 +305,9 @@ async function overflow(page,label){
     if(meta.reveal){await page.waitForTimeout(2600);await page.click('#d-replay');await page.waitForTimeout(400);}
   }
   S=await state(page);
-  eq(Object.keys(S.discuss).length,12,'twelve discussion answers saved');
-  eq(S.log.filter(r=>r.type==='discuss-first').length,12,'first answers are logged');
-  eq(S.log.filter(r=>r.type==='discuss-final').length,12,'final answers are logged');
+  eq(Object.keys(S.discuss).length,15,'fifteen discussion answers saved');
+  eq(S.log.filter(r=>r.type==='discuss-first').length,15,'first answers are logged');
+  eq(S.log.filter(r=>r.type==='discuss-final').length,15,'final answers are logged');
   await page.click('#d-nav button[data-q="3"]');
   await page.click('#d-redo');
   ok(await page.locator('#d-lock1').isVisible(),'a question can be answered again');
@@ -339,6 +350,31 @@ async function overflow(page,label){
   ok(/Copied|Selected/.test(await page.locator('#c-copy').textContent()),'copy code responds');
   await page.locator('#c-expectbox summary').click();
   ok((await page.locator('#c-expect').textContent()).includes('Without noise: P(+) = 0.5'),'expected values listed');
+  await page.check('#c-mode-expect');
+  ok(await page.locator('#c-axisgroup').isHidden()&&await page.locator('#c-shotsgroup').isHidden(),'axis and shots are hidden for expectation values');
+  code=await page.locator('#c-code').textContent();
+  ok(code.includes('observables = [SparsePauliOp("X"), SparsePauliOp("Y"), SparsePauliOp("Z")]')&&code.includes('qc = QuantumCircuit(1)\n')&&!code.includes('qc.measure'),'expectation-value script has observables and no measurement');
+  ok(code.includes('RUN_ON = "device"')&&code.includes('apply_layout(isa.layout)'),'device target is kept and the observables follow the layout');
+  let actE=(await page.locator('#c-code .ln.act').allTextContents()).join('');
+  ok(actE.includes('QiskitRuntimeService()')&&actE.includes('Estimator(mode=backend)')&&!actE.includes('StatevectorEstimator'),'device branch marked in the estimator script');
+  await page.check('#c-target-simulator');
+  actE=(await page.locator('#c-code .ln.act').allTextContents()).join('');
+  ok(actE.includes('StatevectorEstimator()')&&!actE.includes('Estimator(mode=backend)'),'simulator branch marked in the estimator script');
+  ok((await page.locator('#c-circuit').textContent()).includes('⟨X⟩ ⟨Y⟩ ⟨Z⟩'),'the drawing ends in the three expectation values');
+  const ev=await page.locator('#c-expect').textContent();
+  ok(ev.includes('Without noise: ⟨X⟩ = 0, ⟨Y⟩ = 1 and ⟨Z⟩ = 0')&&ev.includes('<X>, <Y>, <Z> = [0.0, 1.0, 0.0]'),'expected values for H then S ['+ev.slice(0,90)+']');
+  ok(!(await page.locator('#c-qasm').textContent()).includes('measure')&&!(await page.locator('#c-qasm').textContent()).includes('bit[1] c;'),'OpenQASM without a measurement');
+  eq((await state(page)).code.mode,'expect','the choice is saved');
+  await page.locator('#c-paulibox > summary').click();
+  const pc=await page.locator('#c-pauli').textContent();
+  ok(pc.includes('Pauli("X").dot(Pauli("Y"))')&&pc.includes('Pauli("ZX") is X on qubit 0 and Z on qubit 1'),'Pauli snippet shown');
+  await page.locator('#c-paulibox details summary').click();
+  eq(await page.locator('#c-pout').textContent(),'iZ\nTrue\nFalse\n1.0\n0.0','what the snippet prints');
+  await page.click('#c-pcopy');await page.waitForTimeout(200);
+  ok(/Copied|Selected/.test(await page.locator('#c-pcopy').textContent()),'copy snippet responds');
+  await page.check('#c-mode-counts');
+  ok(await page.locator('#c-axisgroup').isVisible()&&(await page.locator('#c-code').textContent()).includes('SHOTS = 2500'),'back to counts with the earlier axis and shots');
+  await page.check('#c-target-device');
   // build a circuit in Explore
   await page.click('#view-code a[data-go="u1-explore"]');
   await page.click('#e-starts button:nth-child(3)');             // |+>
@@ -361,6 +397,11 @@ async function overflow(page,label){
   await page.click('#view-explore a[data-go="u1-code"]');
   code=await page.locator('#c-code').textContent();
   ok(code.includes('thermal_relaxation_error(1.0, 1, 0.5)')&&code.includes('depolarizing_error(0.2, 1)')&&code.includes('AerSimulator'),'noise steps as Aer instructions');
+  await page.check('#c-mode-expect');
+  code=await page.locator('#c-code').textContent();
+  ok(code.includes('qc.save_expectation_value(op, [0], label=name)')&&code.includes('values in the model:'),'noisy expectation values come from the density matrix');
+  ok((await page.locator('#c-expect').textContent()).includes('less than 1: the noise steps have left a mixed state'),'the noisy vector is shorter than 1');
+  await page.check('#c-mode-counts');
   ok(await page.locator('#c-target-device').isDisabled()&&await page.locator('#c-target-simulator').isChecked(),'device targets are closed for a noisy circuit');
   ok(await page.locator('#c-tnote').isVisible(),'the reason is given');
   eq(await page.locator('#c-code .ln.chg').count(),0,'no line to change in the noisy script');
@@ -377,9 +418,9 @@ async function overflow(page,label){
 
   console.log('K. about page, data, routes');
   await page.click('.top a[data-go="about"]');
-  eq(await page.locator('#v-checks li').count(),21,'21 self-checks listed');
+  eq(await page.locator('#v-checks li').count(),26,'26 self-checks listed');
   eq(await page.locator('#v-checks li.bad').count(),0,'all self-checks pass');
-  eq(await page.locator('#v-discuss tbody tr').count(),12,'discussion table');
+  eq(await page.locator('#v-discuss tbody tr').count(),15,'discussion table');
   ok(await page.locator('#v-tags tbody tr').count()>=40,'tag table');
   const csv=await page.locator('#v-log').inputValue();
   S=await state(page);
@@ -394,13 +435,13 @@ async function overflow(page,label){
   await page.goto(FILE+'#u1-code');ok(await page.locator('#view-code').isVisible(),'deep link to a part');
   await page.goto(FILE+'#practice');await page.reload();ok(await page.locator('#view-practice').isVisible(),'old link from version 0.2 still lands on practice');
   await page.goto(FILE+'#nonsense');await page.reload();ok(await page.locator('#view-home').isVisible(),'unknown link lands on home');
-  ok((await page.locator('#h-status').textContent()).includes('50 of 50 practice items answered'),'home shows progress ['+await page.locator('#h-status').textContent()+']');
+  ok((await page.locator('#h-status').textContent()).includes('65 of 65 practice items answered'),'home shows progress ['+await page.locator('#h-status').textContent()+']');
   await page.click('.top a[data-go="u1"]');await page.click('#unit-tabs a[data-go="u1-practice"]');
   await page.click('#p-restart');
   ok((await page.locator('#p-restart').textContent()).includes('Click again'),'start over asks twice');
   await page.click('#p-restart');
   S=await state(page);
-  ok(Object.keys(S.items).length===0&&S.groups.S.pos===0&&S.log.length>100&&Object.keys(S.discuss).length===11,'start over resets practice and keeps the response log and discussion');
+  ok(Object.keys(S.items).length===0&&S.groups.S.pos===0&&S.log.length>100&&Object.keys(S.discuss).length===14,'start over resets practice and keeps the response log and discussion');
   await page.click('.top a[data-go="about"]');
   await page.click('#v-clear');await page.click('#v-clear');
   ok((await page.locator('#v-log').inputValue())==='No responses yet.','clear my data empties the log');
@@ -451,6 +492,7 @@ async function overflow(page,label){
   await overflow(p2,'phone practice after answering');
   await p2.goto(FILE+'#u1-code');await p2.reload();await overflow(p2,'phone code');
   ok(await p2.evaluate(()=>{const p=document.getElementById('c-code');return p.scrollWidth>p.clientWidth;}),'phone: wide code scrolls inside its own box');
+  await p2.check('#c-mode-expect');await p2.locator('#c-paulibox > summary').click();await overflow(p2,'phone code, expectation values and Pauli snippet');
   await ph.close();
 
   console.log(errs.length?'console errors: '+JSON.stringify(errs,null,1):'no console errors');

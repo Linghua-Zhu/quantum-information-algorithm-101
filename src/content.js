@@ -6,7 +6,7 @@ var COURSE={
       line:'The geometry everything else stands on. It also serves introductory mechanics and electromagnetism.',
       plan:['Adding vectors and taking components','Projecting one vector onto another','Cross product and the right-hand rule','Superposition of fields','Complex numbers as arrows: magnitude and phase']},
     {n:'1',title:'One qubit',open:true,go:'u1-goals',
-      line:'States, gates, measurement and noise, all on the Bloch sphere.'},
+      line:'States, gates, measurement, Pauli operators and noise, all on the Bloch sphere.'},
     {n:'2',title:'Two qubits',open:false,
       line:'Why one sphere per qubit is not enough.',
       plan:['Product states and entangled states','CNOT and the Bell states','Measuring one qubit of a pair','Correlations that two separate spheres cannot hold']},
@@ -40,12 +40,17 @@ var GOALS=[
     text:'Predict the result of a short sequence of gates, and explain why the order matters.'},
   {id:'g5',group:'M',concepts:['M1','M2','M3'],short:'Predict a measurement',
     text:'Get outcome probabilities along x, y or z from the projection of the state, and say what state the qubit is in afterwards.'},
+  {id:'g7',group:'O',concepts:['O1'],short:'Use the Pauli operators',
+    text:'Write X, Y and Z as matrices, use each one both as a gate and as a measurement, and read ⟨X⟩, ⟨Y⟩ and ⟨Z⟩ off the sphere.'},
+  {id:'g8',group:'O',concepts:['O2','O3'],short:'Multiply Pauli operators and strings',
+    text:'Multiply Pauli operators, decide whether two Pauli strings commute, and say what commuting means for measuring them.'},
   {id:'g6',group:'N',concepts:['N1','N2','N3'],short:'Reason about noise and data',
     text:'Place mixed states inside the ball, predict how relaxation, dephasing and depolarizing noise move a state, and tell the scatter of a finite number of shots from a systematic shift.'}
 ];
 
 // Start here
 var XZ={u:[1,0,0],w:[0,0,1]};
+function matHTML(a,b,c,d){return '<span class="mat"><span>'+a+'</span><span>'+b+'</span><span>'+c+'</span><span>'+d+'</span></span>';}
 var INTRO=[
   {id:'why',title:'What the sphere is for',
     html:[
@@ -134,6 +139,60 @@ var INTRO=[
     after:'<p class="txt">What state the qubit is in after the measurement is one of the things the practice asks you to predict.</p>',
     fig:{scene:function(){var s=fromAngles(120,0),f=[0,0,s[2]];return {state:s,hint:{axis:[0,0,1]},lines:[{a:s,b:f}],marks:[{v:f,cls:'foot',label:'−0.50'}]};},
       cap:'The dashed line drops the arrow onto the measurement axis.'}},
+  {id:'paulis',title:'Pauli operators',
+    html:[
+      '<p class="txt">The Pauli operators are three 2×2 matrices.</p>',
+      '<p class="eq">X = '+matHTML('0','1','1','0')+' &nbsp; Y = '+matHTML('0','−i','i','0')+' &nbsp; Z = '+matHTML('1','0','0','−1')+'</p>',
+      '<p class="txt">On the basis states they act like this.</p>',
+      '<ul class="plain"><li>X|0⟩ = |1⟩ and X|1⟩ = |0⟩.</li><li>Y|0⟩ = i|1⟩ and Y|1⟩ = −i|0⟩.</li><li>Z|0⟩ = |0⟩ and Z|1⟩ = −|1⟩.</li></ul>',
+      '<p class="txt">Each one has two roles.</p>',
+      '<ul class="plain"><li>As a gate it is a half turn about its own axis. The matrix of Rx(180°) is −iX, which differs from X only by a global phase.</li>',
+      '<li>As a measurement its eigenvalues +1 and −1 are the two outcomes, and its eigenstates are the two ends of its axis: |+⟩ and |−⟩ for X, |+i⟩ and |−i⟩ for Y, |0⟩ and |1⟩ for Z.</li></ul>',
+      '<p class="txt">The expectation value of a Pauli operator is the projection of the state onto its axis, so the three of them together give the Bloch vector.</p>',
+      '<p class="eq">⟨X⟩ = x, &nbsp; ⟨Y⟩ = y, &nbsp; ⟨Z⟩ = z</p>',
+      '<p class="txt">The state itself can be written with them as ρ = (I + xX + yY + zZ)/2. This also holds for the points inside the ball, which come later on this page. A turn by α about the axis n is</p>',
+      '<p class="eq">R<sub>n</sub>(α) = cos(α/2) I − i sin(α/2) (n<sub>x</sub>X + n<sub>y</sub>Y + n<sub>z</sub>Z)</p>'
+    ].join(''),
+    fig:{scene:function(){
+        var s=fromAngles(50,35),fx=[s[0],0,0],fy=[0,s[1],0],fz=[0,0,s[2]];
+        return {state:s,lines:[{a:s,b:fx},{a:s,b:fy},{a:s,b:fz}],marks:[{v:fx,cls:'foot',label:'⟨X⟩ = '+f2(s[0])},{v:fy,cls:'foot',label:'⟨Y⟩ = '+f2(s[1])},{v:fz,cls:'foot',label:'⟨Z⟩ = '+f2(s[2])}]};
+      },cap:'The projections of the state onto the three axes are ⟨X⟩, ⟨Y⟩ and ⟨Z⟩.'}},
+  {id:'ex-pauli',kind:'Worked example',title:'An expectation value',
+    task:'The state is at θ = 60°, φ = 90°. What is ⟨Y⟩, and how often does a Y measurement give +i?',
+    steps:[
+      '⟨Y⟩ is the y component of the Bloch vector: sin 60° · sin 90° = 0.866.',
+      'The outcomes of a Y measurement are +1 for |+i⟩ and −1 for |−i⟩. Their average is ⟨Y⟩ = P(+i) − P(−i) = 2P(+i) − 1.',
+      'So P(+i) = (1 + 0.866)/2 = 0.933.',
+      'Check the answer. The state leans toward +y, so +i should be the more likely outcome. It is.'
+    ],
+    fig:{scene:function(){var s=fromAngles(60,90),f=[0,s[1],0];return {state:s,hint:{axis:[0,1,0]},lines:[{a:s,b:f}],marks:[{v:f,cls:'foot',label:'0.866'}]};},
+      cap:'The dashed line drops the state onto the y axis.'}},
+  {id:'comm',title:'Commutation and Pauli strings',
+    html:[
+      '<p class="txt">Each Pauli operator squares to the identity: X² = Y² = Z² = I. Two different ones multiply to the third, with a factor i.</p>',
+      '<p class="eq">XY = iZ, &nbsp; YZ = iX, &nbsp; ZX = iY</p>',
+      '<p class="txt">In the reverse order the sign flips: YX = −iZ, so XY = −YX. Two operators with this property anticommute. Their commutator is</p>',
+      '<p class="eq">[X, Y] = XY − YX = 2iZ</p>',
+      '<p class="txt">The products follow the cross product. For two unit vectors a and b, with a·σ = a<sub>x</sub>X + a<sub>y</sub>Y + a<sub>z</sub>Z,</p>',
+      '<p class="eq">(a·σ)(b·σ) = (a·b) I + i (a×b)·σ</p>',
+      '<p class="txt">For a along x and b along y, x × y = z, which gives XY = iZ.</p>',
+      '<p class="txt">Commutation decides what can be known at the same time. Two observables that commute share their eigenstates, so a state can have a definite value of both. X and Z anticommute. No state has a definite value of both, and on the sphere no point sits at the end of the x axis and at the end of the z axis.</p>',
+      '<h4>Pauli strings</h4>',
+      '<p class="txt">On several qubits, a Pauli string puts one of I, X, Y and Z on each qubit. X⊗Z means X on the first qubit and Z on the second. Two strings multiply letter by letter.</p>',
+      '<p class="txt">To decide whether two strings commute, count the positions where they hold two different Pauli letters. Positions with I do not count, because I commutes with everything. Each counted position gives a factor −1 when the order is swapped. An even count means the strings commute, and an odd count means they anticommute.</p>',
+      '<p class="txt">On a product state each qubit has its own Bloch vector. There the expectation value of a string is the product of the expectation values for each qubit, for example ⟨X⊗Z⟩ = ⟨X⟩<sub>1</sub>⟨Z⟩<sub>2</sub>. States that are not product states come in Unit 2.</p>'
+    ].join(''),
+    fig:{scene:function(){return {marks:[{v:[1,0,0],cls:'ma',vec:true,label:'X'},{v:[0,1,0],cls:'ma',vec:true,label:'Y'},{v:[0,0,1],cls:'mb',vec:true,label:'XY = iZ'}]};},
+      cap:'X along x times Y along y gives iZ, along x × y = z.'}},
+  {id:'ex-comm',kind:'Worked example',title:'Two Pauli strings',
+    task:'Do X⊗Z and Z⊗X commute? What is their product?',
+    steps:[
+      'First position: X and Z are two different Pauli letters, so they anticommute.',
+      'Second position: Z and X anticommute as well.',
+      'Two positions anticommute, an even number, so the strings commute.',
+      'The product, letter by letter: (X⊗Z)(Z⊗X) = (XZ)⊗(ZX) = (−iY)⊗(iY) = Y⊗Y.',
+      'Check the answer. In the other order, (ZX)⊗(XZ) = (iY)⊗(−iY) = Y⊗Y as well, as it must be for strings that commute.'
+    ]},
   {id:'ball',title:'Inside the ball',wide:true,
     html:[
       '<p class="txt">So far every state sat on the surface. Points inside the ball are states too. They describe a qubit whose state is partly uncertain, for example because noise has acted on it. The practice shows them in a cross-section: a flat cut through the ball that contains the vertical axis. In a cross-section you can place a point anywhere inside the circle.</p>',
@@ -322,6 +381,57 @@ var DISCUSS=[
         limit:'They differ along x. The original state has an x component of sin 60° = 0.87. The inside point has none, because the measurement erased the relative phase.'}
     ],
     more:'Pure dephasing moves a state straight toward the z axis. What does that suggest the surroundings are doing to the qubit?'},
+  {id:'dO1',concept:'O1',title:'Applying Z and measuring Z',src:'',
+    stem:'A qubit is in |+⟩. One student applies the gate Z to it. Another student measures Z on an identical qubit. Are the two qubits now in the same state?',
+    scene:function(){return {state:[1,0,0],hint:{axis:[0,0,1]}};},
+    reveal:function(sp,done){sp.load({state:[1,0,0],ghost:[1,0,0],hint:{axis:[0,0,1]}});sp.animate([{from:[1,0,0],axis:AX.z,angle:PI}],function(){sp.state=[-1,0,0];sp.draw();done();});},
+    options:[
+      {t:'No: after the gate the qubit is in |−⟩, and after the measurement it is in |0⟩ or |1⟩, at random',ok:true,
+        why:'Applying Z is a half turn about the z axis. It takes |+⟩ to |−⟩ every time, and nothing random happens. Measuring Z is a different process. It gives 0 or 1, each with probability 0.5, and leaves the qubit in |0⟩ or |1⟩. The same matrix Z plays two different roles.'},
+      {t:'Yes: Z is the same matrix in both cases',
+        from:'Both processes carry the name Z, and the matrix is the same.',
+        limit:'A gate multiplies the state by the matrix. A measurement does not. It picks one eigenstate of Z at random, with probabilities from the projection of the state. Z|+⟩ = |−⟩ is what the gate does, not what the measurement does.'},
+      {t:'Yes: both leave the qubit in an eigenstate of Z',
+        from:'A measurement of Z does leave the qubit in an eigenstate of Z.',
+        limit:'The gate does not. Z|+⟩ = |−⟩, which lies on the equator and is not an eigenstate of Z.'},
+      {t:'No: the gate leaves |+⟩ unchanged, because Z only changes a phase',
+        from:'Z multiplies the |1⟩ part by −1, which is a change of phase.',
+        limit:'Only one of the two terms changes, so it is a relative phase. A relative phase moves the point, here from |+⟩ to |−⟩.'}
+    ],
+    more:'Which states does the gate Z leave exactly in place? What does a Z measurement do to those same states?'},
+  {id:'dO2',concept:'O2',title:'Definite X and definite Z',src:'',
+    stem:'Is there a state of one qubit for which both an X measurement and a Z measurement have a certain outcome?',
+    scene:function(){return {marks:[{v:[1,0,0],cls:'part'},{v:[0,0,1],cls:'part'}]};},
+    options:[
+      {t:'Yes: a superposition of |0⟩ and |+⟩ keeps the certainty of both',
+        from:'A superposition seems to combine the properties of the states in it.',
+        limit:'A certain X outcome needs the point at an end of the x axis, and a certain Z outcome needs it at an end of the z axis. Any superposition of |0⟩ and |+⟩ is a single point, and it cannot be in both places.'},
+      {t:'Yes: the state halfway between |0⟩ and |+⟩',
+        from:'It leans toward +z and toward +x, so both measurements favour the positive outcome.',
+        limit:'Leaning is not certainty. At θ = 45°, φ = 0° both projections are 0.71, so each measurement gives the positive outcome with probability 0.85, not 1.'},
+      {t:'No: X and Z anticommute, so no state is an eigenstate of both',ok:true,
+        why:'A certain outcome needs an eigenstate. The eigenstates of X are the ends of the x axis, those of Z the ends of the z axis, and no point is both. This is what anticommuting means for measurement. Since XZ = −ZX, X and Z share no eigenstate.'},
+      {t:'Yes, if X and Z are measured at the same time',
+        from:'Measuring both at once seems to avoid one measurement disturbing the other.',
+        limit:'No measurement gives both values at once. Measuring X leaves the qubit in |+⟩ or |−⟩, and a Z measurement after that gives 0 or 1 at random.'}
+    ],
+    more:'Which pairs of Pauli strings on two qubits can both have definite values in the same state? Try X⊗X and Z⊗Z.'},
+  {id:'dO3',concept:'O3',title:'Do X⊗X and Z⊗Z commute?',src:'',
+    stem:'X and Z anticommute. Do the two-qubit strings X⊗X and Z⊗Z commute?',
+    options:[
+      {t:'No: they anticommute, because X and Z anticommute',
+        from:'Each pair of letters anticommutes, so the strings seem to anticommute as well.',
+        limit:'Swapping the strings gives a factor −1 at each position where the letters anticommute. Here there are two such positions, and (−1)² = +1.'},
+      {t:'Yes: each position gives a factor −1, and the two factors cancel',ok:true,
+        why:'(X⊗X)(Z⊗Z) = (XZ)⊗(XZ) = (−iY)⊗(−iY) = −Y⊗Y. In the other order, (ZX)⊗(ZX) = (iY)⊗(iY) = −Y⊗Y. The two products are equal, so the strings commute. Two qubits can therefore have definite values of both X⊗X and Z⊗Z. The Bell states of Unit 2 do.'},
+      {t:'No: they act on the same two qubits, so they cannot both be measured',
+        from:'Two measurements on the same qubits seem bound to disturb each other.',
+        limit:'Sharing qubits is not the test. What matters is whether the operators commute, and X⊗X and Z⊗Z do. They share their eigenstates, so both can be measured on the same pair.'},
+      {t:'Yes: Pauli strings always commute',
+        from:'Some strings that look different, such as X⊗I and I⊗X, do commute.',
+        limit:'X⊗I and Z⊗I anticommute, since one position holds two different Pauli letters. Whether two strings commute depends on how many such positions there are.'}
+    ],
+    more:'Find all two-qubit Pauli strings other than I⊗I that commute with both X⊗X and Z⊗Z.'},
   {id:'dN1',concept:'N1',title:'Either 0 or 1?',src:'Passante, Emigh, Shaffer 2015',
     stem:'A classmate says: “A qubit in |+⟩ is really either 0 or 1. We just do not know which until we look.” Which experiment, repeated on many qubits prepared the same way, shows that this picture is wrong?',
     options:[

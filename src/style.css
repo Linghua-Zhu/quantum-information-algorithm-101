@@ -1,10 +1,11 @@
+@font-face{font-family:"QIP Sym";src:local("STIX Two Math"),local("STIXTwoMath-Regular"),local("Cambria Math"),local("Apple Symbols"),local("Segoe UI Symbol"),local("DejaVu Serif");unicode-range:U+2297}
 :root{
   --paper:#ffffff;--ink:#1f1f1f;--muted:#5d6470;--rule:#d5d9e2;--wash:#f4f5f8;
   --navy:#3c5488;--coral:#e64b35;--teal:#00a087;--slate:#8491b4;
   --act:#d6efe9;--chg:#fbdad4;
-  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
-  --serif:Georgia,"Times New Roman",Times,serif;
-  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:"QIP Sym","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:"QIP Sym",Georgia,"Times New Roman",Times,serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono","QIP Sym",monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -268,6 +269,7 @@ ol.goals .gp{font-size:13px;color:var(--muted);margin-top:8px;display:flex;gap:6
 .lesson h4{font-size:15px;font-weight:600;margin:22px 0 8px}
 .lesson .kind+h3{margin-top:0}
 .nw{white-space:nowrap}
+.mat{display:inline-grid;grid-template-columns:auto auto;gap:0 .9em;vertical-align:middle;padding:.05em .5em;margin:0 .15em;border-left:1.5px solid var(--ink);border-right:1.5px solid var(--ink);border-radius:5px;text-align:center;line-height:1.35}
 .lesson .kind{font-size:13px;color:var(--muted);margin-bottom:2px}
 .lesson .txt{max-width:38em}
 .lesson .eq{font-family:var(--serif);font-size:18px;margin:10px 0 10px 22px}

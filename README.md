@@ -11,7 +11,7 @@ A course tool for a first course in quantum information and quantum programming.
 | Unit | Topic | |
 |---|---|---|
 | 0 | Vectors, rotations and phase | In preparation |
-| 1 | One qubit: states, gates, measurement and noise on the Bloch sphere | Open |
+| 1 | One qubit: states, gates, measurement, Pauli operators and noise on the Bloch sphere | Open |
 | 2 | Two qubits: product states, entanglement, CNOT and the Bell states | In preparation |
 | 3 | Algorithms: Deutsch-Jozsa, Grover search, teleportation, phase estimation, the variational eigensolver | In preparation |
 | 4 | Noise and real hardware | In preparation |

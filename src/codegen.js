@@ -53,6 +53,7 @@ function gateLines(start,ops,withNoise,L){
 }
 function usesPi(ops){return ops.some(function(op){return op.t==='gate'&&!CG_GATE[op.name];});}
 function genQiskit(spec){
+  if(spec.mode==='expect')return genQiskitExpect(spec);
   var A=CG_AXIS[spec.axis],noisy=hasNoise(spec.ops),target=noisy?'simulator':spec.target,L=[],shots=spec.shots;
   var r=circuitState(spec.start,spec.ops,false),pr=dot(r,AXM[spec.axis].v);
   function push(t,m){L.push({t:t,m:m||''});}
@@ -139,6 +140,111 @@ function genQiskit(spec){
     pip:noisy?'pip install qiskit qiskit-aer':CG_TARGETS[target].pip,p:(1+pr)/2,e:pr,axis:spec.axis,
     spread:Math.sqrt(Math.max(0,1-pr*pr)/shots)};
 }
+function genQiskitExpect(spec){
+  var noisy=hasNoise(spec.ops),target=noisy?'simulator':spec.target,L=[],r=circuitState(spec.start,spec.ops,false);
+  var sim=target==='simulator',fake=target==='fake_device',dev=target==='device';
+  function push(t,m){L.push({t:t,m:m||''});}
+  push('# Quantum Information and Programming 101');
+  push('# Unit 1, one qubit');
+  push('# Circuit: '+circuitAscii(spec.start,spec.ops)+', expectation values of X, Y and Z');
+  push('');
+  if(usesPi(spec.ops))push('from math import pi');
+  push('from qiskit import QuantumCircuit');
+  push('from qiskit.quantum_info import SparsePauliOp');
+  if(noisy){
+    push('from qiskit_aer import AerSimulator');
+    push('from qiskit_aer.noise import depolarizing_error, thermal_relaxation_error');
+    push('');
+    push('# This circuit has noise steps from Explore. They are a model of noise,');
+    push('# so this script runs on a simulator only. A real device supplies its');
+    push('# own noise. Remove the noise steps in Explore to get a script that can');
+    push('# also run on a real quantum computer.');
+  }else{
+    push('');
+    push('# Where to run. This is the one line to change:');
+    push('#   "simulator"    an ideal simulator on your computer, no account needed');
+    push('#   "fake_device"  a simulator that imitates a real device, noise included');
+    push('#   "device"       a real quantum computer at IBM, needs a free account');
+    push('RUN_ON = "'+target+'"','chg');
+  }
+  push('');
+  push('# 1. Build the circuit. The qubit starts in |0>. No measurement is needed.');
+  push('qc = QuantumCircuit(1)');
+  var G=[];gateLines(spec.start,spec.ops,noisy,G);G.forEach(function(x){push(x.t);});
+  push('');
+  push('# 2. The observables, one Pauli operator each.');
+  push('observables = [SparsePauliOp("X"), SparsePauliOp("Y"), SparsePauliOp("Z")]');
+  push('');
+  if(noisy){
+    push('# 3. Run it on a simulator that can apply the noise steps.');
+    push('for name, op in zip("XYZ", observables):');
+    push('    qc.save_expectation_value(op, [0], label=name)');
+    push('sim = AerSimulator(method="density_matrix")');
+    push('data = sim.run(qc).result().data()');
+    push('values = [data[name] for name in "XYZ"]');
+  }else{
+    push('# 3. Run it.');
+    push('if RUN_ON == "simulator":');
+    push('    from qiskit.primitives import StatevectorEstimator',sim?'act':'');
+    push('    estimator = StatevectorEstimator()',sim?'act':'');
+    push('    job = estimator.run([(qc, observables)])',sim?'act':'');
+    push('else:');
+    push('    from qiskit.transpiler import generate_preset_pass_manager',sim?'':'act');
+    push('    try:                                # qiskit-ibm-runtime 0.50 or later',sim?'':'act');
+    push('        from qiskit_ibm_runtime.executor_estimator import Estimator',sim?'':'act');
+    push('    except ImportError:                 # earlier versions',sim?'':'act');
+    push('        from qiskit_ibm_runtime import EstimatorV2 as Estimator',sim?'':'act');
+    push('    if RUN_ON == "fake_device":');
+    push('        from qiskit_ibm_runtime.fake_provider import FakeManilaV2',fake?'act':'');
+    push('        backend = FakeManilaV2()',fake?'act':'');
+    push('    else:');
+    push('        from qiskit_ibm_runtime import QiskitRuntimeService',dev?'act':'');
+    push('        service = QiskitRuntimeService()   # reads your saved API key',dev?'act':'');
+    push('        backend = service.least_busy(simulator=False, operational=True)',dev?'act':'');
+    push('    print("running on:", backend.name)',sim?'':'act');
+    push('    # A device has its own small set of gates. Rewrite the circuit in them.',sim?'':'act');
+    push('    pm = generate_preset_pass_manager(backend=backend, optimization_level=1)',sim?'':'act');
+    push('    isa = pm.run(qc)',sim?'':'act');
+    push('    # The device numbers its qubits its own way. Move the observables along.',sim?'':'act');
+    push('    observables = [op.apply_layout(isa.layout) for op in observables]',sim?'':'act');
+    push('    estimator = Estimator(mode=backend)',sim?'':'act');
+    push('    job = estimator.run([(isa, observables)])',sim?'':'act');
+    push('    print("job id:", job.job_id(), "(a real device puts the job in a queue)")',sim?'':'act');
+    push('values = job.result()[0].data.evs');
+  }
+  push('');
+  push('# 4. Read the result. The three values are the components of the Bloch vector.');
+  push('#    Adding 0.0 prints a tiny negative rounding error as 0.0 instead of -0.0.');
+  push('print("<X>, <Y>, <Z> =", [round(float(v), 4) + 0.0 for v in values])');
+  push('print("'+(noisy?'values in the model':'values without noise')+': <X> = '+pyNum(r[0])+', <Y> = '+pyNum(r[1])+', <Z> = '+pyNum(r[2])+'")');
+  return {lines:L,text:L.map(function(x){return x.t;}).join('\n')+'\n',target:target,simOnly:noisy,mode:'expect',
+    pip:noisy?'pip install qiskit qiskit-aer':CG_TARGETS[target].pip,r:r};
+}
+function pyFloat(x){return Number.isInteger(x)?x.toFixed(1):String(x);}
+function evsOutput(gen){
+  return '<X>, <Y>, <Z> = ['+gen.r.map(function(x){return pyFloat(Number(pyNum(x)));}).join(', ')+']\n'+gen.lines[gen.lines.length-1].t.replace(/^print\("/,'').replace(/"\)$/,'');
+}
+var PAULI_SNIPPET=[
+  '# Pauli operators in Qiskit',
+  'from qiskit import QuantumCircuit',
+  'from qiskit.quantum_info import Pauli, Statevector',
+  '',
+  '# Products and commutation',
+  'print(Pauli("X").dot(Pauli("Y")))           # the product X times Y',
+  'print(Pauli("XX").commutes(Pauli("ZZ")))    # do XX and ZZ commute?',
+  'print(Pauli("XI").commutes(Pauli("ZX")))    # do XI and ZX commute?',
+  '',
+  '# Qubit order. Qiskit writes qubit 0 as the rightmost letter.',
+  '# Pauli("ZX") is X on qubit 0 and Z on qubit 1. This course writes it X⊗Z.',
+  'qc = QuantumCircuit(2)',
+  'qc.h(0)                                     # qubit 0 in |+>, qubit 1 in |0>',
+  'state = Statevector(qc)',
+  'zx = state.expectation_value(Pauli("ZX")).real   # X on qubit 0, Z on qubit 1',
+  'xz = state.expectation_value(Pauli("XZ")).real   # Z on qubit 0, X on qubit 1',
+  'print(round(zx, 4))',
+  'print(round(xz, 4))'
+].join('\n')+'\n';
+var PAULI_SNIPPET_OUT='iZ\nTrue\nFalse\n1.0\n0.0\n';
 function genQasm(spec){
   var A=CG_AXIS[spec.axis],L=['OPENQASM 3.0;','include "stdgates.inc";','qubit[1] q;','bit[1] c;'],skipped=0;
   CG_PREP[spec.start].forEach(function(m){L.push(m+' q[0];');});
@@ -147,6 +253,7 @@ function genQasm(spec){
     if(CG_GATE[op.name])L.push(CG_GATE[op.name]+' q[0];');
     else{var g=gateOf(op.name);L.push('r'+g.param+'('+g.deg+' * pi / 180) q[0];');}
   });
+  if(spec.mode==='expect'){L.splice(L.indexOf('bit[1] c;'),1);return {text:L.join('\n')+'\n',skipped:skipped};}
   A.pre.forEach(function(m){L.push(m+' q[0];');});
   L.push('c[0] = measure q[0];');
   return {text:L.join('\n')+'\n',skipped:skipped};

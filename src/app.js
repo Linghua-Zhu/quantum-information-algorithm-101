@@ -73,6 +73,31 @@ var TAGINFO={
   'shot-noise-everywhere':['Shot noise on an eigenstate','Scatter where every shot gives the same outcome',''],
   'shrink-as-shot-noise':['Systematic gap read as shot noise','A gap that does not shrink with more shots',''],
   'more-shots':['More shots for a converged estimate','More shots asked for after convergence',''],
+  'eigen-sign':['Eigenvalue sign swapped','The other end of the axis',''],
+  'eigen-axis':['Eigenstate of another operator','An end of a different axis',''],
+  'eigen-assume':['State taken as an eigenstate','The state left in place by an operator that moves it',''],
+  'prob-for-exp':['Probability given as expectation value','(1 + ⟨P⟩)/2 in place of ⟨P⟩',''],
+  'exp-wrong-component':['Wrong component','The component along another axis',''],
+  'exp-sign':['Expectation value with the wrong sign','−⟨P⟩ in place of ⟨P⟩',''],
+  'op-sign':['Product in the wrong order','The sign of the reversed product',''],
+  'missing-i':['Factor i left out','The result without its factor ±i',''],
+  'product-identity':['Product taken as the identity','I for a product of two different Pauli operators',''],
+  'y-sign':['Sign of i in Y','−i in place of i, or the reverse',''],
+  'commute-all':['Pauli operators taken to commute','XZ = ZX',''],
+  'half-commutator':['Commutator off by a factor 2','iZ in place of 2iZ',''],
+  'global-phase-matrix':['Matrix taken up to a phase','X in place of −iX',''],
+  'rot-sign':['Rotation with the wrong sign','iX in place of −iX',''],
+  'any-anticommute':['Strings judged position by position','Anticommute because some letters anticommute',''],
+  'count-identity':['Identity counted as anticommuting','Positions with I counted',''],
+  'parity-miscount':['Anticommuting positions miscounted','The wrong parity of anticommuting positions',''],
+  'neither':['Neither commuting nor anticommuting','An option that Pauli strings never have',''],
+  'string-sign':['Sign of a string product','The product with the opposite sign',''],
+  'phase-dropped':['Phase factor dropped','The product without its factor ±i or −1',''],
+  'phase-added':['Phase factor added','A factor ±i where the product has none',''],
+  'square-not-identity':['Square kept as the letter','Z·Z kept as Z instead of I',''],
+  'string-order':['Qubits swapped in a string','The value with the two qubits exchanged',''],
+  'string-average':['Average in place of product','(⟨P⟩₁ + ⟨Q⟩₂)/2 in place of the product',''],
+  'one-factor':['One qubit only','The value for one of the two qubits',''],
   'unclassified':['Unclassified','No tagged answer nearby','']
 };
 TAGINFO['axis-y']=TAGINFO['axis-z']=TAGINFO['axis-x'];TAGINFO['last-only']=TAGINFO['first-only'];
@@ -105,7 +130,7 @@ function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGrou
 function fresh(){
   var p=freshPractice();
   return {v:3,seed:20261006,group:p.group,groups:p.groups,items:p.items,free:p.free,tags:p.tags,review:p.review,log:[],
-    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator'},unitTab:'u1-goals',seenStart:false};
+    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},unitTab:'u1-goals',seenStart:false};
 }
 function opValid(op){
   if(!op||typeof op!=='object')return false;
@@ -173,7 +198,7 @@ function repair(s){
   var ex=out.explore;
   out.explore=(typeof ex.start==='string'&&has(STARTS,ex.start)&&Array.isArray(ex.ops)&&ex.ops.length<=24&&ex.ops.every(opValid))?{start:ex.start,ops:ex.ops.map(cleanOp)}:{start:'zero',ops:[]};
   var c=out.code;
-  out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator'};
+  out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator',mode:c.mode==='expect'?'expect':'counts'};
   if(PART_ROUTE.indexOf(out.unitTab)<0)out.unitTab='u1-goals';
   return out;
 }
@@ -311,7 +336,10 @@ $('p-groups').onclick=function(e){
 };
 function predictControls(R){
   if(R.mode==='point'||R.mode==='slice')return '<p class="readout" id="p-read">No point placed yet.</p>';
-  if(R.mode==='number')return '<p class="field"><label for="p-num">'+esc(R.numLabel)+' =</label><input type="number" id="p-num" min="0" max="1" step="0.01" inputmode="decimal" placeholder="0.50"></p>';
+  if(R.mode==='number'){
+    var lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;
+    return '<p class="field"><label for="p-num">'+esc(R.numLabel)+' =</label><input type="number" id="p-num" min="'+lo+'" max="'+hi+'" step="0.01"'+(lo<0?'':' inputmode="decimal"')+' placeholder="0.50"></p>';
+  }
   if(R.mode==='multi')return '<div class="opts row2" id="p-opts" role="group" aria-label="Measurements">'+R.options.map(function(o){return '<label><input type="checkbox" value="'+o.k+'"> '+esc(o.t)+'</label>';}).join('')+'<label><input type="checkbox" value="none"> '+esc(R.noneText)+'</label></div>';
   return '<div class="opts" id="p-opts" role="radiogroup" aria-label="Answers">'+R.options.map(function(o,i){return '<label><input type="radio" name="p-choice" value="'+i+'"> <span>'+esc(o.t)+'</span></label>';}).join('')+'</div>';
 }
@@ -322,6 +350,7 @@ function renderItem(){
   renderGroups();
   if(!it){renderSummary();return;}
   var R=buildItem(it),rv=S.group==='R',g=rv?S.review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
+  $('view-practice').querySelector('.stage').classList.toggle('nofig',!!R.nofig);
   ps.load(R.scene());ps.setPlacing(R.mode==='point'||R.mode==='slice');ps.draw();
   var pos=rv?'Review, item '+(g.pos+1)+' of '+g.queue.length:g.mode==='starter'?'Item '+(g.pos+1)+' of '+g.queue.length:'More practice, item '+(g.freeN+1);
   var extra='';
@@ -364,7 +393,10 @@ ps.onPlace=function(p){
 function readResponse(){
   var R=cur,e=null,v=null;
   if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':'Place a point on the sphere first.';}
-  else if(R.mode==='number'){var raw=$('p-num').value.trim();v=parseFloat(raw);if(raw===''||!(v>=0&&v<=1)){v=null;e='Type a number between 0 and 1.';}}
+  else if(R.mode==='number'){
+    var raw=$('p-num').value.trim(),lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;v=parseFloat(raw);
+    if(raw===''||!(v>=lo&&v<=hi)){v=null;e='Type a number between '+String(lo).replace('-','\u2212')+' and '+hi+'.';}
+  }
   else if(R.mode==='multi'){var sel=[],none=false;each($('p-opts').querySelectorAll('input:checked'),function(b){if(b.value==='none')none=true;else sel.push(b.value);});if(!sel.length&&!none)e='Select at least one option.';else v=sel;}
   else{var c=$('p-opts').querySelector('input:checked');if(!c)e='Choose an answer.';else v=parseInt(c.value,10);}
   return {v:v,e:e};
@@ -425,6 +457,7 @@ function renderStrip(){
 }
 function renderSummary(){
   cur=null;phase='idle';curLog=null;
+  $('view-practice').querySelector('.stage').classList.remove('nofig');
   ps.load({state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),true);show($('p-flatnote'),false);
   $('p-head').removeAttribute('data-item');$('p-head').removeAttribute('data-level');
   if(S.group==='R'){reviewSummary();renderStrip();return;}
@@ -450,7 +483,7 @@ function reviewSummary(){
   GROUP_ORDER.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
   var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts()?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary','u1-discuss','Go to the discussion questions');
   if(!attempts()){
-    h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in the four topics come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
+    h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in each topic come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
     b=onward;
   }else if(more){
     h='<p class="prompt">'+(done?'That set is done. ':'')+(more===1?'One more item is':more+' more items are')+' due for review.</p>';
@@ -633,9 +666,8 @@ var EXAMPLE={start:'zero',ops:[{t:'gate',name:'H'},{t:'gate',name:'S'}]};
 var codeNow='',qasmNow='';
 function codeSpec(){
   var own=E.ops.length>0||E.start!=='zero',c=own?E:EXAMPLE;
-  return {own:own,start:c.start,ops:c.ops,axis:S.code.axis,shots:S.code.shots,target:S.code.target};
+  return {own:own,start:c.start,ops:c.ops,axis:S.code.axis,shots:S.code.shots,target:S.code.target,mode:S.code.mode};
 }
-function pyFloat(x){return Number.isInteger(x)?x.toFixed(1):String(x);}
 function howTo(target,gen){
   var py='<li>You need Python 3.10 or later.</li>',
       run='<li>Copy the code into a file named <code>unit1_circuit.py</code> and run it:<pre>python unit1_circuit.py</pre></li>',
@@ -668,11 +700,27 @@ function expectHTML(sp,gen){
   }
   return h;
 }
+function evsHTML(sp,gen){
+  var r=gen.r,onDevice=!gen.simOnly&&gen.target!=='simulator',len=Math.sqrt(dot(r,r)),h='';
+  var out=evsOutput(gen);
+  h+='<p>'+(gen.simOnly?'In the noise model':'Without noise')+': ⟨X⟩ = '+pyNum(r[0])+', ⟨Y⟩ = '+pyNum(r[1])+' and ⟨Z⟩ = '+pyNum(r[2])+'. ';
+  if(!gen.simOnly)h+='The vector has length 1, as it does for every pure state.</p>';
+  else h+=len<0.99995?'The vector has length '+pyNum(len)+', less than 1: the noise steps have left a mixed state.</p>':'The vector has length 1: the state is still pure.</p>';
+  if(!onDevice){
+    h+='<p>'+(gen.simOnly?'The simulator computes the values of the model exactly':'StatevectorEstimator computes the values exactly from the state')+', so the output is the same every time:</p><pre>'+esc(out)+'</pre>';
+  }else{
+    h+='<p>The script first prints the name of the device and the id of the job'+(gen.target==='device'?', then waits in the queue':'')+'. Without noise the rest of the output would look like this:</p><pre>'+esc(out)+'</pre>'+
+      '<p>On a device, real or imitated, expect values a little different from these. Gate errors and decoherence tend to shorten the Bloch vector. The Estimator corrects most readout errors by default, and each value is estimated from a finite number of shots, so the values also scatter from one run to the next. A value near +1 or −1 can even land slightly beyond it. Unit 4 takes these apart.</p>';
+  }
+  return h;
+}
 function renderCode(){
-  var sp=codeSpec(),gen=genQiskit(sp),qa=genQasm(sp),A=CG_AXIS[sp.axis],noisy=gen.simOnly,sh=$('c-shots');
+  var sp=codeSpec(),gen=genQiskit(sp),qa=genQasm(sp),A=CG_AXIS[sp.axis],noisy=gen.simOnly,sh=$('c-shots'),ex=sp.mode==='expect';
   codeNow=gen.text;qasmNow=qa.text;
-  $('c-circuit').innerHTML=opsHTML(sp.start,sp.ops,true)+'<span class="gate meas">Measure '+A.name+'</span>';
+  $('c-circuit').innerHTML=opsHTML(sp.start,sp.ops,true)+'<span class="gate meas">'+(ex?'⟨X⟩ ⟨Y⟩ ⟨Z⟩':'Measure '+A.name)+'</span>';
   $('c-cnote').textContent=sp.own?'This is the circuit from Explore.':'Explore has no steps yet, so this is an example: H, then S, starting from |0⟩.';
+  each($('c-mode').querySelectorAll('input'),function(i){i.checked=i.value===sp.mode;});
+  show($('c-axisgroup'),!ex);show($('c-shotsgroup'),!ex);
   each($('c-axis').querySelectorAll('input'),function(i){i.checked=i.value===sp.axis;});
   each($('c-target').querySelectorAll('input'),function(i){i.checked=i.value===gen.target;i.disabled=noisy&&i.value!=='simulator';});
   if(document.activeElement!==sh){sh.value=sp.shots;show($('c-serr'),false);}
@@ -681,10 +729,14 @@ function renderCode(){
   $('c-howto').innerHTML=howTo(gen.target,gen);
   $('c-key').innerHTML=noisy?'<span>A script for a simulator with a noise model</span>':'<span><i class="c"></i>The one line to change</span><span><i class="a"></i>The lines that run with this choice</span>';
   $('c-code').innerHTML=gen.lines.map(function(l){return '<span class="ln'+(l.m?' '+l.m:'')+'">'+esc(l.t)+'\n</span>';}).join('');
-  $('c-expect').innerHTML=expectHTML(sp,gen);
+  $('c-expect').innerHTML=ex?evsHTML(sp,gen):expectHTML(sp,gen);
   $('c-qasm').innerHTML=qa.text.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
-  $('c-qnote').textContent='OpenQASM is a plain text format for circuits that many quantum programming tools read.'+(qa.skipped?' Noise steps are not part of the language, so '+(qa.skipped===1?'the noise step is':'the '+qa.skipped+' noise steps are')+' left out here.':'');
+  $('c-qnote').textContent='OpenQASM is a plain text format for circuits that many quantum programming tools read.'+(ex?' The observables are not part of the circuit, so the text ends without a measurement.':'')+(qa.skipped?' Noise steps are not part of the language, so '+(qa.skipped===1?'the noise step is':'the '+qa.skipped+' noise steps are')+' left out here.':'');
 }
+$('c-pauli').innerHTML=PAULI_SNIPPET.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
+$('c-pout').textContent=PAULI_SNIPPET_OUT.replace(/\n$/,'');
+$('c-pcopy').onclick=function(){copyText(PAULI_SNIPPET,$('c-pcopy'),$('c-pauli'));};
+$('c-mode').onchange=function(e){var v=e.target.value;if(v==='counts'||v==='expect'){S.code.mode=v;store.save(S);renderCode();}};
 $('c-axis').onchange=function(e){if(CG_AXIS[e.target.value]){S.code.axis=e.target.value;store.save(S);renderCode();}};
 $('c-target').onchange=function(e){if(CG_TARGETS[e.target.value]){S.code.target=e.target.value;store.save(S);renderCode();}};
 $('c-shots').oninput=function(){
@@ -809,7 +861,7 @@ function renderAbout(){
   Object.keys(TAGINFO).forEach(function(t){var i=TAGINFO[t];if(t==='unclassified'||seen[i[0]])return;seen[i[0]]=1;rows.push(i);});
   $('v-tags').innerHTML='<thead><tr><th>Tag</th><th>The student\u2019s answer matches</th><th>Reported in</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';}).join('')+'</tbody>';
   $('v-discuss').innerHTML='<thead><tr><th>No.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+DISCUSS.map(function(q,j){return '<tr><td>'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';}).join('')+'</tbody>';
-  $('v-checks').innerHTML=selfChecks().concat(selfChecks2()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
+  $('v-checks').innerHTML=selfChecks().concat(selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
   $('v-log').value=S.log.length?csv():'No responses yet.';
 }
 $('v-copy').onclick=function(){copyText($('v-log').value,$('v-copy'),$('v-log'));};

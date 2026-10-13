@@ -32,6 +32,7 @@ python3 test/verify_code.py cases.json
 |---|---|
 | `src/core.js` | Vectors, rotations and gates |
 | `src/items.js` | Practice items and their feedback |
+| `src/paulis.js` | Pauli operators and Pauli strings: practice items and their checks |
 | `src/sphere.js` | The Bloch sphere figure |
 | `src/content.js` | Course map, goals, Start here and Discuss |
 | `src/codegen.js` | Qiskit and OpenQASM output |

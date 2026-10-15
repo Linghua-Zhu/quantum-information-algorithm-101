@@ -13,13 +13,18 @@ function toTop(el){try{el.scrollIntoView({block:'start'});}catch(_){}}
 
 function has(o,k){return o!=null&&Object.prototype.hasOwnProperty.call(o,k);}
 function isInt(x,lo,hi){return typeof x==='number'&&x===Math.floor(x)&&x>=lo&&x<=hi;}
-var ITEM=Object.create(null),ITEM_GROUP=Object.create(null),CONCEPT_ITEMS=Object.create(null),N_ITEMS=0;
-GROUP_ORDER.forEach(function(k){GROUPS[k].starter.forEach(function(it){
-  ITEM[it.id]=it;ITEM_GROUP[it.id]=k;(CONCEPT_ITEMS[it.concept]||(CONCEPT_ITEMS[it.concept]=[])).push(it.id);N_ITEMS++;
-});});
-var ROUTES=['home','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about'];
-var VIEW={'home':'home','u1-goals':'goals','u1-start':'start','u1-practice':'practice','u1-discuss':'discuss','u1-explore':'explore','u1-code':'code','research':'research','about':'about'};
-var PART_ROUTE=['u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code'];
+var ITEM=Object.create(null),ITEM_GROUP=Object.create(null),ITEM_UNIT=Object.create(null),CONCEPT_ITEMS=Object.create(null),UNIT_N={};
+UNIT_ORDER.forEach(function(u){UNIT_N[u]=0;UNITS[u].groups.forEach(function(k){GROUPS[k].starter.forEach(function(it){
+  ITEM[it.id]=it;ITEM_GROUP[it.id]=k;ITEM_UNIT[it.id]=u;(CONCEPT_ITEMS[it.concept]||(CONCEPT_ITEMS[it.concept]=[])).push(it.id);UNIT_N[u]++;
+});});});
+var PARTS=['goals','start','practice','discuss','explore','code'];
+var ROUTES=['home','units','research','about'],VIEW={home:'home',units:'units',research:'research',about:'about'};
+UNIT_ORDER.forEach(function(u){PARTS.forEach(function(p){var r=u+'-'+p;ROUTES.push(r);VIEW[r]=(p==='explore'||p==='code')?UNITS[u][p]:p;});});
+function partRoutes(u){return PARTS.map(function(p){return u+'-'+p;});}
+var VIEWS=[];ROUTES.forEach(function(x){if(VIEWS.indexOf(VIEW[x])<0)VIEWS.push(VIEW[x]);});
+var UID='u1';
+function U(){return UNITS[UID];}
+function US(){return S.units[UID];}
 var LET='ABCD';
 var KETS={zero:'|0⟩',one:'|1⟩',plus:'|+⟩',minus:'|−⟩',plusi:'|+i⟩',minusi:'|−i⟩'};
 
@@ -98,6 +103,62 @@ var TAGINFO={
   'string-order':['Qubits swapped in a string','The value with the two qubits exchanged',''],
   'string-average':['Average in place of product','(⟨P⟩₁ + ⟨Q⟩₂)/2 in place of the product',''],
   'one-factor':['One qubit only','The value for one of the two qubits',''],
+  'sub-for-add':['Difference for a sum','a − b or b − a in place of a + b, the tip-to-tip error','Nguyen and Meltzer 2003; Barniol and Zavala 2014'],
+  'add-for-sub':['Sum for a difference','a + b in place of a − b',''],
+  'rev-sub':['Difference reversed','b − a in place of a − b',''],
+  'average-for-sum':['Average for a sum','Half the sum, the midpoint between the tips','Nguyen and Meltzer 2003; Barniol and Zavala 2014'],
+  'only-one-vector':['One vector alone','One of the two vectors, unchanged',''],
+  'only-one-charge':['One charge alone','The field of one charge, the other left out',''],
+  'component-sign':['Component sign','One component with the wrong sign',''],
+  'scaled-wrong':['Coefficient dropped','A sum with a coefficient left out',''],
+  'sin-cos-swapped':['Sine and cosine swapped','The other component','Barniol and Zavala 2014'],
+  'length-for-component':['Length for a component','The whole length in place of a component',''],
+  'added-components':['Components added','The components added instead of combined by Pythagoras or paired in a product',''],
+  'no-sqrt':['Square root missing','The sum of squares, without the root',''],
+  'one-component':['One component for the length','The larger component in place of the length',''],
+  'dot-product-of-lengths':['Dot product without the cosine','|a| |b| in place of a · b','Barniol and Zavala 2014'],
+  'dot-sign':['Dot product sign','−a · b in place of a · b',''],
+  'cross-for-dot':['Cross product for the dot product','|a| |b| sin θ in place of a · b','Barniol and Zavala 2014'],
+  'supplement':['Supplementary angle','180° minus the angle between the vectors',''],
+  'one-vector-angle':['Angle from the x axis','The angle of one vector with the x axis, not between the two',''],
+  'assumed-perpendicular':['Assumed perpendicular','90° for vectors that are not perpendicular',''],
+  'proj-swapped':['Projection the other way','The projection of b onto a',''],
+  'unit-vector':['Unit vector for the projection','The unit vector along b',''],
+  'no-projection':['Vector not projected','a itself in place of its projection',''],
+  'perp-component':['Perpendicular part','The part of a perpendicular to b',''],
+  'unnormalized':['Projection not normalised','(a · b) b without the division by |b|²',''],
+  'proj-sign':['Projection reversed','The projection pointing the wrong way',''],
+  'off-the-line':['Projection off the line','A point not on the line of b',''],
+  'left-hand':['Left-hand rule','The opposite direction: b × a, or the sense of a negative turn','Barniol and Zavala 2014'],
+  'in-plane':['Cross product in the plane','One of the two vectors in place of their cross product',''],
+  'sum-for-cross':['Sum for the cross product','The sum or difference of the vectors',''],
+  'cos-for-sin':['Cosine for sine','|a| |b| cos θ in place of |a| |b| sin θ','Barniol and Zavala 2014'],
+  'ignored-angle':['Angle ignored','|a| |b| without the sine',''],
+  'toward-axis':['Motion toward the axis','A point moved toward the rotation axis',''],
+  'stays':['Point taken as fixed','No motion for a point off the axis',''],
+  'sign-of-charge':['Sign of a charge','The field with a charge’s sign reversed',''],
+  'added-magnitudes':['Sizes added','The sizes added along one direction, or lengths added in a product',''],
+  'inverse-not-square':['1/r in place of 1/r²','A field falling off as 1/r, or as 1/r³',''],
+  'wrong-way':['Ratio inverted','The ratio of fields the wrong way round',''],
+  'ignored-distance':['Distance ignored','The same field at every distance',''],
+  'conjugate':['Complex conjugate','The imaginary part with the wrong sign',''],
+  'parts-swapped':['Real and imaginary swapped','(b, a) in place of (a, b)',''],
+  'negated':['Negative of the number','−z in place of z',''],
+  'angle-sign':['Angle sign','The angle measured clockwise',''],
+  'magnitude-dropped':['Length r dropped','e^(i\u03b8) in place of r e^(i\u03b8)',''],
+  'cross-sign':['Cross terms added','a\u2093b\u1d67 + a\u1d67b\u2093 in place of a\u2093b\u1d67 \u2212 a\u1d67b\u2093',''],
+  'magnitude-as-real':['Angle dropped','r e^(iθ) placed at angle 0',''],
+  'phase-as-magnitude':['Angle used as a length','The angle taken for the modulus, or angles multiplied',''],
+  'added-not-multiplied':['Sum for a product','z + w in place of z w',''],
+  'componentwise-product':['Parts multiplied separately','(ac, bd) in place of (ac − bd, ad + bc)',''],
+  'phase-subtracted':['Angles subtracted','The angle of a quotient in place of a product',''],
+  'magnitudes-added':['Lengths added in a product','|z| + |w| in place of |z| |w|',''],
+  'conjugate-real':['Real part flipped','−a + bi in place of a − bi',''],
+  'added-parts':['Parts added for the modulus','|a| + |b| in place of √(a² + b²)',''],
+  'real-part-only':['One part for the modulus','|a| or |b| in place of the modulus',''],
+  'quadrant':['Quadrant missed','The arctangent without the quadrant',''],
+  'magnitude-for-phase':['Modulus for the angle','|z| in place of arg z',''],
+  'rotated-clockwise':['Turned the wrong way','A turn by −φ in place of φ',''],
   'unclassified':['Unclassified','No tagged answer nearby','']
 };
 TAGINFO['axis-y']=TAGINFO['axis-z']=TAGINFO['axis-x'];TAGINFO['last-only']=TAGINFO['first-only'];
@@ -126,11 +187,14 @@ function mark(items,id,ok,retry,day){
   return r;
 }
 function freshGroup(k){return {mode:'starter',queue:GROUPS[k].starter.map(function(i){return {id:i.id};}),pos:0,freeN:0};}
-function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGroup(k);});return {group:'S',groups:g,items:{},free:{},tags:{},review:{day:-1,queue:[],pos:0}};}
+function freshUnit(u){return {group:UNITS[u].groups[0],dq:0,tab:u+'-goals',review:{day:-1,queue:[],pos:0}};}
+function freshUnits(){var o={};UNIT_ORDER.forEach(function(u){o[u]=freshUnit(u);});return o;}
+function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGroup(k);});return {groups:g,items:{},free:{},tags:{}};}
 function fresh(){
   var p=freshPractice();
-  return {v:3,seed:20261006,group:p.group,groups:p.groups,items:p.items,free:p.free,tags:p.tags,review:p.review,log:[],
-    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},unitTab:'u1-goals',seenStart:false};
+  return {v:3,seed:20261006,units:freshUnits(),groups:p.groups,items:p.items,free:p.free,tags:p.tags,log:[],
+    discuss:{},explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},
+    explore0:{a:[2,1],b:[1,2],show:{sum:true,diff:false,proj:false}},lastUnit:'u0',seenStart:{}};
 }
 function opValid(op){
   if(!op||typeof op!=='object')return false;
@@ -154,9 +218,12 @@ function cleanEntry(q){var e={id:q.id};if(q.retry){e.retry=true;if(typeof q.day=
 function repair(s){
   var f=fresh(),out={},k,r;
   if(!s||typeof s!=='object'||s.v!==3)return f;
+  if(!s.units||typeof s.units!=='object'){s.units={u1:{group:s.group,dq:s.dq,tab:s.unitTab,review:s.review}};if(s.seenStart===true)s.seenStart={u1:true};if(UNIT_ORDER.indexOf(s.lastUnit)<0)s.lastUnit='u1';}
   for(k in f)out[k]=(s[k]==null||typeof s[k]!==typeof f[k]||Array.isArray(s[k])!==Array.isArray(f[k]))?f[k]:s[k];
   if(!isFinite(out.seed))out.seed=f.seed;
-  out.seed|=0;out.seenStart=!!out.seenStart;
+  out.seed|=0;
+  var seen={};UNIT_ORDER.forEach(function(u){if(has(out.seenStart,u)&&out.seenStart[u])seen[u]=true;});out.seenStart=seen;
+  if(UNIT_ORDER.indexOf(out.lastUnit)<0)out.lastUnit='u0';
   var items={};
   for(k in out.items){
     r=out.items[k];
@@ -176,20 +243,26 @@ function repair(s){
     groups[g]={mode:x.mode==='free'?'free':'starter',queue:x.queue.map(cleanEntry),pos:isInt(x.pos,0,x.queue.length)?x.pos:0,freeN:isInt(x.freeN,0,1e7)?x.freeN:0};
   });
   out.groups=groups;
-  if(GROUP_ORDER.indexOf(out.group)<0&&out.group!=='R')out.group='S';
-  var rv=out.review;
-  if(!Array.isArray(rv.queue)||!isInt(rv.day,-1e7,1e7))out.review={day:-1,queue:[],pos:0};
-  else{
-    var rq=rv.queue.filter(function(q){return q&&typeof q==='object'&&typeof q.id==='string'&&ITEM[q.id]&&items[q.id];}).slice(0,60).map(cleanEntry);
-    out.review={day:rv.day,queue:rq,pos:isInt(rv.pos,0,rq.length)?rv.pos:rq.length};
-  }
-  var dis={};
-  DISCUSS.forEach(function(q){
+  var units={};
+  UNIT_ORDER.forEach(function(u){
+    var x=has(out.units,u)?out.units[u]:null,fu=freshUnit(u),def=UNITS[u];
+    if(!x||typeof x!=='object'){units[u]=fu;return;}
+    var rv=x.review,rvo;
+    if(!rv||typeof rv!=='object'||!Array.isArray(rv.queue)||!isInt(rv.day,-1e7,1e7))rvo=fu.review;
+    else{
+      var rq=rv.queue.filter(function(q){return q&&typeof q==='object'&&typeof q.id==='string'&&ITEM[q.id]&&ITEM_UNIT[q.id]===u&&items[q.id];}).slice(0,60).map(cleanEntry);
+      rvo={day:rv.day,queue:rq,pos:isInt(rv.pos,0,rq.length)?rv.pos:rq.length};
+    }
+    units[u]={group:(def.groups.indexOf(x.group)>=0||x.group==='R')?x.group:def.groups[0],dq:isInt(x.dq,0,def.discuss.length-1)?x.dq:0,tab:partRoutes(u).indexOf(x.tab)>=0?x.tab:u+'-goals',review:rvo};
+  });
+  out.units=units;
+  var dis={},allQ=[];
+  UNIT_ORDER.forEach(function(u){allQ=allQ.concat(UNITS[u].discuss);});
+  allQ.forEach(function(q){
     var d=has(out.discuss,q.id)?out.discuss[q.id]:null,n=q.options.length-1;
     if(d&&typeof d==='object'&&isInt(d.first,0,n)&&(d.final==null||isInt(d.final,0,n)))dis[q.id]={first:d.first,final:d.final==null?null:d.final};
   });
   out.discuss=dis;
-  out.dq=isInt(out.dq,0,DISCUSS.length-1)?out.dq:0;
   var free={},tags={};
   for(k in CONCEPTS){r=has(out.free,k)?out.free[k]:null;if(r&&typeof r==='object'&&isInt(r.n,0,1e7)&&isInt(r.c,0,1e7))free[k]={n:r.n,c:r.c};}
   for(k in out.tags)if(has(out.tags,k)&&has(TAGINFO,k.split('+')[0])&&isInt(out.tags[k],1,1e7))tags[k]=out.tags[k];
@@ -199,7 +272,9 @@ function repair(s){
   out.explore=(typeof ex.start==='string'&&has(STARTS,ex.start)&&Array.isArray(ex.ops)&&ex.ops.length<=24&&ex.ops.every(opValid))?{start:ex.start,ops:ex.ops.map(cleanOp)}:{start:'zero',ops:[]};
   var c=out.code;
   out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator',mode:c.mode==='expect'?'expect':'counts'};
-  if(PART_ROUTE.indexOf(out.unitTab)<0)out.unitTab='u1-goals';
+  var e0=out.explore0;
+  function vec2(v){return Array.isArray(v)&&v.length===2&&v.every(function(x){return typeof x==='number'&&x>=-4&&x<=4;})?[Math.round(v[0]*100)/100,Math.round(v[1]*100)/100]:null;}
+  out.explore0={a:vec2(e0.a)||[2,1],b:vec2(e0.b)||[1,2],show:{sum:!!(e0.show&&e0.show.sum),diff:!!(e0.show&&e0.show.diff),proj:!!(e0.show&&e0.show.proj)}};
   return out;
 }
 function migrate(o){
@@ -207,7 +282,7 @@ function migrate(o){
   try{
     if(!o||typeof o!=='object'||o.v!==2||!o.groups||typeof o.groups!=='object')return s;
     GROUP_ORDER.forEach(function(k){if(has(o.groups,k))s.groups[k]=o.groups[k];});
-    if(GROUP_ORDER.indexOf(o.group)>=0)s.group=o.group;
+    if(UNITS.u1.groups.indexOf(o.group)>=0)s.units.u1.group=o.group;s.lastUnit='u1';
     if(o.tags&&typeof o.tags==='object')s.tags=o.tags;
     (Array.isArray(o.log)?o.log:[]).forEach(function(r){
       if(!r||typeof r!=='object'||typeof r.item!=='string')return;
@@ -227,8 +302,8 @@ var S=(function(){
   return o?migrate(o):fresh();
 })();
 function logRow(row){S.log.push(row);if(S.log.length>1500)S.log.shift();return row;}
-function attempts(){var n=0,k;for(k in S.items)if(S.items[k].n)n++;return n;}
-function discussed(){var n=0;DISCUSS.forEach(function(q){var d=S.discuss[q.id];if(d&&d.final!=null)n++;});return n;}
+function attempts(u){var n=0,k;for(k in S.items)if(S.items[k].n&&(!u||ITEM_UNIT[k]===u))n++;return n;}
+function discussed(u){var n=0;UNITS[u||UID].discuss.forEach(function(q){var d=S.discuss[q.id];if(d&&d.final!=null)n++;});return n;}
 function markOf(id){var r=S.items[id];if(!r||!r.n)return '';return r.last?(r.m?'rec':'ok'):'miss';}
 function pipsFor(ids){
   var n={ok:0,rec:0,miss:0,none:0},h='';
@@ -273,28 +348,28 @@ function copyText(text,btn,el){
 }
 
 // Practice
-var ps=new Sphere($('p-sphere'),'Bloch sphere. Click to place your prediction. Drag to turn the view.');
-var cur=null,phase='idle',cls=null,resp=null,curLog=null,pDirty=true;
-function G(){return S.groups[S.group];}
-function dueIds(){
-  var d=today(),out=[],id,r;
-  for(id in S.items){r=S.items[id];if(ITEM[id]&&r.n>0&&r.due<=d&&r.day<d)out.push(id);}
+var ps=new FigSlot($('p-sphere'),'Bloch sphere. Click to place your prediction. Drag to turn the view.','A plane with a grid. Click to place the tip of your arrow.');
+var cur=null,phase='idle',cls=null,resp=null,curLog=null,pDirty=true,pUnit=null;
+function G(){return S.groups[US().group];}
+function dueIds(u){
+  u=u||UID;var d=today(),out=[],id,r;
+  for(id in S.items){r=S.items[id];if(ITEM[id]&&ITEM_UNIT[id]===u&&r.n>0&&r.due<=d&&r.day<d)out.push(id);}
   return out;
 }
 function buildReview(){
   var d=today(),ids=dueIds();
   ids.sort(function(a,b){var x=S.items[a],y=S.items[b];return (x.box?1:0)-(y.box?1:0)||x.due-y.due||hashStr(a+':'+d)-hashStr(b+':'+d);});
-  S.review={day:d,queue:ids.slice(0,12).map(function(id){return {id:id};}),pos:0};
+  US().review={day:d,queue:ids.slice(0,12).map(function(id){return {id:id};}),pos:0};
 }
-function reviewLeft(){
-  var rv=S.review,n=dueIds().length,i;
+function reviewLeft(u){
+  u=u||UID;var rv=S.units[u].review,n=dueIds(u).length,i;
   if(rv.day===today())for(i=rv.pos;i<rv.queue.length;i++)if(rv.queue[i].retry)n++;
   return n;
 }
 function nextDue(){
   var d=today(),best=null,n=0,id,r,e;
   for(id in S.items){
-    r=S.items[id];if(!ITEM[id]||!r.n)continue;
+    r=S.items[id];if(!ITEM[id]||ITEM_UNIT[id]!==UID||!r.n)continue;
     e=Math.max(r.due,r.day+1);if(e<=d)continue;
     if(best===null||e<best){best=e;n=1;}else if(e===best)n++;
   }
@@ -302,9 +377,9 @@ function nextDue(){
 }
 function currentItem(){
   var q,it,c;
-  if(S.group==='R'){
-    var rv=S.review,d=today();
-    if(rv.day!==d){buildReview();store.save(S);rv=S.review;}
+  if(US().group==='R'){
+    var rv=US().review,d=today();
+    if(rv.day!==d){buildReview();store.save(S);rv=US().review;}
     while(rv.pos<rv.queue.length){q=rv.queue[rv.pos];if(!q.retry&&S.items[q.id]&&S.items[q.id].day>=d)rv.pos++;else break;}
     if(rv.pos>=rv.queue.length)return null;
     q=rv.queue[rv.pos];c=copyOf(ITEM[q.id]);c.level=3;c.retry=!!q.retry;c.review=true;return c;
@@ -319,20 +394,20 @@ function currentItem(){
     q=g.queue[g.pos];it=ITEM[q.id];if(!it)return null;
     c=copyOf(it);c.retry=!!q.retry;return c;
   }
-  return GROUPS[S.group].gen(g.freeN,S.seed);
+  return GROUPS[US().group].gen(g.freeN,S.seed);
 }
 function renderGroups(){
-  var h='',n=reviewLeft();
-  GROUP_ORDER.forEach(function(k){
+  var h='',n=reviewLeft(),cg=US().group;
+  U().groups.forEach(function(k){
     var g=S.groups[k],st=g.mode==='free'?'more practice':g.pos>=g.queue.length?'done':g.pos?g.pos+' of '+g.queue.length+' done':'';
-    h+='<button type="button" data-g="'+k+'"'+(k===S.group?' aria-current="true"':'')+'>'+GROUPS[k].name+(st?'<small>'+st+'</small>':'')+'</button>';
+    h+='<button type="button" data-g="'+k+'"'+(k===cg?' aria-current="true"':'')+'>'+GROUPS[k].name+(st?'<small>'+st+'</small>':'')+'</button>';
   });
-  h+='<button type="button" data-g="R"'+(S.group==='R'?' aria-current="true"':'')+'>Review'+(n?'<small>'+n+' due</small>':'')+'</button>';
+  h+='<button type="button" data-g="R"'+(cg==='R'?' aria-current="true"':'')+'>Review'+(n?'<small>'+n+' due</small>':'')+'</button>';
   $('p-groups').innerHTML=h;
 }
 $('p-groups').onclick=function(e){
   var b=closest(e.target,'button[data-g]');if(!b)return;
-  S.group=b.getAttribute('data-g');store.save(S);renderItem();
+  US().group=b.getAttribute('data-g');store.save(S);renderItem();
 };
 function predictControls(R){
   if(R.mode==='point'||R.mode==='slice')return '<p class="readout" id="p-read">No point placed yet.</p>';
@@ -344,12 +419,13 @@ function predictControls(R){
   return '<div class="opts" id="p-opts" role="radiogroup" aria-label="Answers">'+R.options.map(function(o,i){return '<label><input type="radio" name="p-choice" value="'+i+'"> <span>'+esc(o.t)+'</span></label>';}).join('')+'</div>';
 }
 function renderItem(){
-  pDirty=false;
-  show($('p-intro'),!S.seenStart&&!attempts());
+  pDirty=false;pUnit=UID;
+  $('p-intro').innerHTML='First time here? '+link('','unit-start','Start here')+' '+esc(U().practiceIntro);
+  show($('p-intro'),!S.seenStart[UID]&&!attempts(UID));
   var it=currentItem();
   renderGroups();
   if(!it){renderSummary();return;}
-  var R=buildItem(it),rv=S.group==='R',g=rv?S.review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
+  var R=buildItem(it),rv=US().group==='R',g=rv?US().review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
   $('view-practice').querySelector('.stage').classList.toggle('nofig',!!R.nofig);
   ps.load(R.scene());ps.setPlacing(R.mode==='point'||R.mode==='slice');ps.draw();
   var pos=rv?'Review, item '+(g.pos+1)+' of '+g.queue.length:g.mode==='starter'?'Item '+(g.pos+1)+' of '+g.queue.length:'More practice, item '+(g.freeN+1);
@@ -383,16 +459,19 @@ function renderItem(){
   var numEl=$('p-num');if(numEl)numEl.oninput=function(){show($('p-lockerr'),false);};
   if(opts&&R.mode==='choice')opts.onchange=function(){show($('p-lockerr'),false);};
   setupNumbers(R);
-  show($('p-resetview'),R.mode!=='slice');show($('p-flatnote'),R.mode==='slice');
+  show($('p-resetview'),R.mode!=='slice'&&!R.plane);show($('p-flatnote'),R.mode==='slice');
+  $('p-legend').innerHTML=R.plane?'<span><i class="k-state"></i>Result</span><span><i class="k-vec"></i>Given vectors</span><span><i class="k-pred"></i>Your prediction</span>'
+    :UID==='u0'?'<span><i class="k-state"></i>Result</span><span><i class="k-vec"></i>Given vectors</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Motion</span>'
+    :'<span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span>';
   renderStrip();
 }
 ps.onPlace=function(p){
   if(phase!=='predict'||!cur)return;
-  ps.pred=p;ps.draw();$('p-read').textContent='Your point: '+cur.respText(p)+'.';show($('p-lockerr'),false);
+  ps.pred=p;ps.draw();$('p-read').textContent=(cur.plane?'Your arrow: ':'Your point: ')+cur.respText(p)+'.';show($('p-lockerr'),false);
 };
 function readResponse(){
   var R=cur,e=null,v=null;
-  if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':'Place a point on the sphere first.';}
+  if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':R.plane?'Place the tip of the arrow on the grid first.':'Place a point on the sphere first.';}
   else if(R.mode==='number'){
     var raw=$('p-num').value.trim(),lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;v=parseFloat(raw);
     if(raw===''||!(v>=lo&&v<=hi)){v=null;e='Type a number between '+String(lo).replace('-','\u2212')+' and '+hi+'.';}
@@ -433,7 +512,7 @@ function compare(){
   $('p-next').onclick=function(){renderItem();toTop($('p-groups'));};
 }
 function record(R,c){
-  var it=R.item,ok=c.tag==='correct',rv=S.group==='R',Q=rv?S.review:G(),starter=!!ITEM[it.id];
+  var it=R.item,ok=c.tag==='correct',rv=US().group==='R',Q=rv?US().review:G(),starter=!!ITEM[it.id];
   if(starter)mark(S.items,it.id,ok,!!it.retry,today());
   else{var f=S.free[it.concept]||(S.free[it.concept]={n:0,c:0});f.n++;if(ok)f.c++;}
   if(!ok){
@@ -446,25 +525,29 @@ function record(R,c){
 }
 function renderStrip(){
   var h='';
-  GROUP_ORDER.forEach(function(k){GROUPS[k].concepts.forEach(function(c){
+  U().groups.forEach(function(k){GROUPS[k].concepts.forEach(function(c){
     h+='<div class="c"><b>'+c+'</b>'+esc(CONCEPTS[c])+pipsFor(CONCEPT_ITEMS[c])+'</div>';
   });});
   h+='<div class="striptools"><span><span class="pip ok"></span>Right on the first try</span><span><span class="pip rec"></span>Right after a miss</span><span><span class="pip miss"></span>Missed on the last try</span><span><span class="pip"></span>Not tried yet</span><button type="button" class="link" id="p-restart">Start over</button></div>';
   $('p-strip').innerHTML=h;
-  twoStep($('p-restart'),'Start over','Click again to reset your practice progress',function(){
-    var p=freshPractice();S.group=p.group;S.groups=p.groups;S.items=p.items;S.free=p.free;S.tags=p.tags;S.review=p.review;store.save(S);renderItem();
+  twoStep($('p-restart'),'Start over','Click again to reset your practice progress in this unit',function(){
+    var f=freshUnit(UID),id;
+    U().groups.forEach(function(k){S.groups[k]=freshGroup(k);GROUPS[k].concepts.forEach(function(x){delete S.free[x];});});
+    for(id in S.items)if(ITEM_UNIT[id]===UID)delete S.items[id];
+    S.units[UID].group=f.group;S.units[UID].review=f.review;
+    store.save(S);renderItem();
   });
 }
 function renderSummary(){
   cur=null;phase='idle';curLog=null;
   $('view-practice').querySelector('.stage').classList.remove('nofig');
-  ps.load({state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),true);show($('p-flatnote'),false);
+  ps.load(UID==='u0'?{plane:true}:{state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),UID!=='u0');show($('p-flatnote'),false);
   $('p-head').removeAttribute('data-item');$('p-head').removeAttribute('data-level');
-  if(S.group==='R'){reviewSummary();renderStrip();return;}
-  var def=GROUPS[S.group],low=def.name.toLowerCase(),n=0,c=0,rec=0,miss=0;
+  if(US().group==='R'){reviewSummary();renderStrip();return;}
+  var def=GROUPS[US().group],low=def.name.toLowerCase(),n=0,c=0,rec=0,miss=0;
   def.starter.forEach(function(it){var r=S.items[it.id];if(!r||!r.n)return;n++;if(r.first)c++;var m=markOf(it.id);if(m==='rec')rec++;else if(m==='miss')miss++;});
   var top=Object.keys(S.tags).sort(function(a,b){return S.tags[b]-S.tags[a];})[0];
-  var ni=GROUP_ORDER.indexOf(S.group)+1,next=ni<GROUP_ORDER.length?GROUP_ORDER[ni]:null;
+  var order=U().groups,ni=order.indexOf(US().group)+1,next=ni<order.length?order[ni]:null;
   $('p-head').innerHTML=
     '<p class="meta"><span>'+def.name+'</span><span>Starter set complete</span></p>'+
     '<p class="prompt">You finished the starter set on '+low+'. Right on the first try: '+c+' of '+n+'.</p>'+
@@ -472,17 +555,17 @@ function renderSummary(){
     (top?'<p class="note">Most frequent slip so far: '+esc(tagName(top).toLowerCase())+', '+plural(S.tags[top]|0,'time','times')+'.</p>':'')+
     '<p class="note">These items come back under Review. Missed items return tomorrow, the others in 3 days.</p>';
   $('p-steps').innerHTML=
-    '<div class="row" style="margin-top:18px">'+(next?'<button type="button" class="primary" id="p-nextgroup">Go on to '+GROUPS[next].name.toLowerCase()+'</button>':link('primary','u1-discuss','Go on to the discussion questions'))+'<button type="button" class="ghost" id="p-more">More practice on '+low+'</button></div>'+
-    (S.group==='G'?'<p class="note">More practice on gates draws from '+count(COUNTS.one)+' single-gate and '+count(COUNTS.two)+' two-gate items, without hints.</p>':'<p class="note">More practice items are generated without hints.</p>');
+    '<div class="row" style="margin-top:18px">'+(next?'<button type="button" class="primary" id="p-nextgroup">Go on to '+GROUPS[next].name.toLowerCase()+'</button>':link('primary',UID+'-discuss','Go on to the discussion questions'))+'<button type="button" class="ghost" id="p-more">More practice on '+low+'</button></div>'+
+    (US().group==='G'?'<p class="note">More practice on gates draws from '+count(COUNTS.one)+' single-gate and '+count(COUNTS.two)+' two-gate items, without hints.</p>':'<p class="note">More practice items are generated without hints.</p>');
   $('p-more').onclick=function(){G().mode='free';store.save(S);renderItem();};
-  if(next)$('p-nextgroup').onclick=function(){S.group=next;store.save(S);renderItem();};
+  if(next)$('p-nextgroup').onclick=function(){US().group=next;store.save(S);renderItem();};
   renderStrip();
 }
 function reviewSummary(){
-  var more=dueIds().length,nx=nextDue(),done=S.review.day===today()&&S.review.queue.length>0,h,b,open=null;
-  GROUP_ORDER.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
-  var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts()?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary','u1-discuss','Go to the discussion questions');
-  if(!attempts()){
+  var rv=US().review,more=dueIds().length,nx=nextDue(),done=rv.day===today()&&rv.queue.length>0,h,b,open=null;
+  U().groups.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
+  var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts(UID)?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary',UID+'-discuss','Go to the discussion questions');
+  if(!attempts(UID)){
     h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in each topic come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
     b=onward;
   }else if(more){
@@ -495,21 +578,26 @@ function reviewSummary(){
   $('p-head').innerHTML='<p class="meta"><span>Review</span><span></span></p>'+h;
   $('p-steps').innerHTML='<div class="row" style="margin-top:18px">'+b+'</div>';
   if($('p-reviewmore'))$('p-reviewmore').onclick=function(){buildReview();store.save(S);renderItem();};
-  if($('p-togroup'))$('p-togroup').onclick=function(){S.group=open;store.save(S);renderItem();};
+  if($('p-togroup'))$('p-togroup').onclick=function(){US().group=open;store.save(S);renderItem();};
 }
 function setupNumbers(R){
   var box=$('p-numbers'),on=R.mode==='point'||R.mode==='slice';show(box,on);if(!on)return;
-  var slice=R.mode==='slice';
-  $('p-n1l').firstChild.nodeValue=slice?'across ':'θ ';$('p-n2l').firstChild.nodeValue=slice?'up ':'φ ';
+  var slice=R.mode==='slice',pl=!!R.plane,cx=pl&&ps.active.axes;
+  $('p-n1l').firstChild.nodeValue=pl?(cx?'Re ':'x '):slice?'across ':'θ ';$('p-n2l').firstChild.nodeValue=pl?(cx?'Im ':'y '):slice?'up ':'φ ';
   var a=$('p-n1'),b=$('p-n2');a.value='';b.value='';
-  a.min=slice?-1:0;a.max=slice?1:180;a.step=slice?0.05:1;a.placeholder=slice?'0.5':'90';
-  b.min=slice?-1:0;b.max=slice?1:360;b.step=slice?0.05:1;b.placeholder=slice?'0.5':'45';
+  a.min=pl?-4:slice?-1:0;a.max=pl?4:slice?1:180;a.step=pl?0.25:slice?0.05:1;a.placeholder=pl?'2':slice?'0.5':'90';
+  b.min=pl?-4:slice?-1:0;b.max=pl?4:slice?1:360;b.step=pl?0.25:slice?0.05:1;b.placeholder=pl?'1':slice?'0.5':'45';
+  $('p-numbers').querySelector('summary').textContent=pl?'Enter the components':'Place by numbers';
   show($('p-angerr'),false);
 }
 $('p-resetview').onclick=function(){ps.resetView();};
 $('p-placeangles').onclick=function(){
   var e=$('p-angerr'),a=parseFloat($('p-n1').value),b=parseFloat($('p-n2').value);
   if(phase!=='predict'||!cur){e.textContent='This item is already locked in.';show(e,true);return;}
+  if(cur.plane){
+    if(!(a>=-4&&a<=4)||!(b>=-4&&b<=4)){e.textContent='Enter two components between −4 and 4.';show(e,true);return;}
+    show(e,false);ps.onPlace(v2snap([a,b],0.25));return;
+  }
   if(cur.mode==='slice'){
     if(!(a>=-1&&a<=1)||!(b>=-1&&b<=1)||Math.hypot(a,b)>1.0001){e.textContent='Enter two numbers between −1 and 1 that lie inside the circle.';show(e,true);return;}
     show(e,false);ps.onPlace(add(scale(ps.slice.u,a),scale(ps.slice.w,b)));return;
@@ -518,37 +606,37 @@ $('p-placeangles').onclick=function(){
   show(e,false);ps.onPlace(fromAngles(a,b));
 };
 function enterPractice(){
-  if(pDirty||phase==='idle')renderItem();
-  else{show($('p-intro'),!S.seenStart&&!attempts());renderGroups();ps.draw();}
+  if(pDirty||phase==='idle'||pUnit!==UID)renderItem();
+  else{show($('p-intro'),!S.seenStart[UID]&&!attempts(UID));renderGroups();ps.draw();}
 }
 
 // Discuss
-var dsp=new Sphere($('d-sphere'),'Figure for the discussion question.');
-var dDirty=true;
+var dsp=new FigSlot($('d-sphere'),'Figure for the discussion question. Drag to turn it.','Figure for the discussion question.');
+var dDirty=true,dUnit=null;
 function dOptions(q,name){
   return '<div class="opts" role="radiogroup" aria-label="Answers" id="'+name+'">'+q.options.map(function(o,i){
     return '<label><input type="radio" name="'+name+'" value="'+i+'"> <span class="letter">'+LET[i]+'</span><span>'+esc(o.t)+'</span></label>';
   }).join('')+'</div>';
 }
 function renderDiscuss(){
-  dDirty=false;
-  var q=DISCUSS[S.dq],D=S.discuss[q.id]||{first:null,final:null},st=D.final!=null?3:D.first!=null?2:1,h='';
-  GROUP_ORDER.forEach(function(k){
+  dDirty=false;dUnit=UID;
+  var DQ=U().discuss,dq=US().dq,q=DQ[dq],D=S.discuss[q.id]||{first:null,final:null},st=D.final!=null?3:D.first!=null?2:1,h='';
+  U().groups.forEach(function(k){
     h+='<span class="qg"><span>'+GROUPS[k].name+'</span>';
-    DISCUSS.forEach(function(x,j){
+    DQ.forEach(function(x,j){
       if(GROUPS[k].concepts.indexOf(x.concept)<0)return;
       var d=S.discuss[x.id],s=d&&d.final!=null?(x.options[d.final].ok?'ok':'no'):'';
-      h+='<button type="button" data-q="'+j+'"'+(s?' class="'+s+'"':'')+(j===S.dq?' aria-current="true"':'')+' aria-label="Question '+(j+1)+': '+esc(x.title)+(s==='ok'?'. Answered, your final answer holds':s==='no'?'. Answered, your final answer does not hold':'')+'">'+(j+1)+'</button>';
+      h+='<button type="button" data-q="'+j+'"'+(s?' class="'+s+'"':'')+(j===dq?' aria-current="true"':'')+' aria-label="Question '+(j+1)+': '+esc(x.title)+(s==='ok'?'. Answered, your final answer holds':s==='no'?'. Answered, your final answer does not hold':'')+'">'+(j+1)+'</button>';
     });
     h+='</span>';
   });
   $('d-nav').innerHTML=h;
   var sc=q.scene?q.scene():null;
   $('d-stage').classList.toggle('nofig',!sc);
-  if(sc){dsp.load(sc);dsp.draw();$('d-cap').textContent=sc.slice?'A cross-section through the x and z axes.':'Drag the figure to turn it.';show($('d-resetview'),!sc.slice);}
+  if(sc){dsp.load(sc);dsp.draw();$('d-cap').textContent=sc.plane?'The figure for this question.':sc.slice?'A cross-section through the x and z axes.':'Drag the figure to turn it.';show($('d-resetview'),!sc.slice&&!sc.plane);}
   else dsp.stop();
   show($('d-replay'),!!sc&&!!q.reveal&&st===3);
-  h='<p class="meta"><span>'+esc(CONCEPTS[q.concept])+'</span><span>Question '+(S.dq+1)+' of '+DISCUSS.length+'</span></p>';
+  h='<p class="meta"><span>'+esc(CONCEPTS[q.concept])+'</span><span>Question '+(dq+1)+' of '+DQ.length+'</span></p>';
   (q.circuits||[]).forEach(function(c){h+='<div class="circuit" aria-hidden="true"><span class="cname">'+esc(c.name)+'</span>'+circuitHTML(c.start,c.gates)+'</div>';});
   h+='<p class="prompt">'+esc(q.stem)+'</p>';
   $('d-head').setAttribute('data-q',q.id);$('d-head').innerHTML=h;
@@ -588,9 +676,9 @@ function renderDiscuss(){
   if(st===2){$('d-lock2').onclick=function(){lock(2);};$('d-o2').onchange=function(){show($('d-err2'),false);};}
   if(st===3){
     $('d-next').onclick=function(){
-      var n=DISCUSS.length,j=(S.dq+1)%n,i,c,d;
-      for(i=1;i<=n;i++){c=(S.dq+i)%n;d=S.discuss[DISCUSS[c].id];if(!d||d.final==null){j=c;break;}}
-      S.dq=j;store.save(S);renderDiscuss();toTop($('d-nav'));
+      var n=DQ.length,j=(dq+1)%n,i,c,d;
+      for(i=1;i<=n;i++){c=(dq+i)%n;d=S.discuss[DQ[c].id];if(!d||d.final==null){j=c;break;}}
+      US().dq=j;store.save(S);renderDiscuss();toTop($('d-nav'));
     };
     $('d-redo').onclick=function(){delete S.discuss[q.id];store.save(S);renderDiscuss();};
   }
@@ -598,11 +686,11 @@ function renderDiscuss(){
 }
 $('d-nav').onclick=function(e){
   var b=closest(e.target,'button[data-q]');if(!b)return;
-  S.dq=parseInt(b.getAttribute('data-q'),10);store.save(S);renderDiscuss();
+  US().dq=parseInt(b.getAttribute('data-q'),10);store.save(S);renderDiscuss();
 };
 $('d-resetview').onclick=function(){dsp.resetView();};
-$('d-replay').onclick=function(){var q=DISCUSS[S.dq];if(q.reveal)q.reveal(dsp,function(){});};
-function enterDiscuss(){if(dDirty)renderDiscuss();else dsp.draw();}
+$('d-replay').onclick=function(){var q=U().discuss[US().dq];if(q.reveal)q.reveal(dsp,function(){});};
+function enterDiscuss(){if(dDirty||dUnit!==UID)renderDiscuss();else dsp.draw();}
 
 // Explore
 var es=new Sphere($('e-sphere'),'Bloch sphere sandbox. Drag to turn the view.');
@@ -749,14 +837,74 @@ $('c-copy').onclick=function(){copyText(codeNow,$('c-copy'),$('c-code'));};
 $('c-tohow').onclick=function(){var t=$('c-howh');try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}};
 $('c-qcopy').onclick=function(){copyText(qasmNow,$('c-qcopy'),$('c-qasm'));};
 
+// Explore, Unit 0
+var e0=new Plane($('e0-plane'),'A plane with two vectors, a and b. Change the components to move them.');
+var E0={a:[2,1],b:[1,2],show:{sum:true,diff:false,proj:false},busy:false};
+function e0Load(){E0.a=S.explore0.a.slice();E0.b=S.explore0.b.slice();E0.show=copyOf(S.explore0.show);E0.busy=false;e0.stop();e0Fill();e0Render();}
+function e0Save(){S.explore0={a:E0.a.slice(),b:E0.b.slice(),show:copyOf(E0.show)};store.save(S);}
+function e0Fill(){
+  $('e0-ax').value=nt(E0.a[0]).replace('−','-');$('e0-ay').value=nt(E0.a[1]).replace('−','-');$('e0-bx').value=nt(E0.b[0]).replace('−','-');$('e0-by').value=nt(E0.b[1]).replace('−','-');
+  $('e0-sum').checked=E0.show.sum;$('e0-diff').checked=E0.show.diff;$('e0-proj').checked=E0.show.proj;
+}
+function e0Scene(){
+  var a=E0.a,b=E0.b,vs=[{v:a,cls:'ma',label:'a'},{v:b,cls:'mb',label:'b'}],lines=[],marks=[],arcs=[];
+  if(E0.show.sum){vs.push({tail:a,v:b,cls:'ghost'});vs.push({v:v2add(a,b),cls:'sum',label:'a + b'});}
+  if(E0.show.diff){vs.push({tail:a,v:v2scale(b,-1),cls:'ghost'});vs.push({v:v2sub(a,b),cls:'sum',label:'a − b'});}
+  if(E0.show.proj&&v2len(b)>1e-9){var pr=v2proj(a,b),u=v2unit(b);lines.push({a:v2scale(u,-4.3),b:v2scale(u,4.3),cls:'thin'},{a:a,b:pr});marks.push({p:pr,cls:'foot',label:'proj',dx:6,dy:14});vs.push({v:pr,cls:'sum'});}
+  if(v2len(a)>1e-9&&v2len(b)>1e-9)arcs.push(arcAB(a,b,0.7,'θ'));
+  return {plane:true,vectors:vs,lines:lines,marks:marks,arcs:arcs};
+}
+function cplx(z){var r=v2len(z);return ct(z)+' = '+f2(r)+' e^(i·'+f2(argDeg(z))+'°)';}
+function e0Render(){
+  e0.load(e0Scene());e0.draw();
+  var a=E0.a,b=E0.b,la=v2len(a),lb=v2len(b),d=v2dot(a,b),ok=la>1e-9&&lb>1e-9,prod=[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+  $('e0-vals').innerHTML='<span>|a| = '+f2(la)+'</span><span>|b| = '+f2(lb)+'</span><span>a + b = '+vt(v2add(a,b))+'</span><br>'+
+    '<span>a · b = '+f2(d)+'</span><span>θ = '+(ok?f2(v2between(a,b))+'°':'–')+'</span><span>a × b = '+f2(v2cross(a,b))+' along z</span><br>'+
+    '<span>projection of a onto b: '+(lb>1e-9?vt(v2proj(a,b))+', length '+f2(d/lb):'–')+'</span><br>'+
+    '<span>as complex numbers: a = '+cplx(a)+', b = '+cplx(b)+'</span><br><span>a b = '+cplx(prod)+'</span>';
+  if(route==='u0-code')renderCode0();
+}
+function e0Read(id){var v=parseFloat($(id).value);return v>=-4&&v<=4?Math.round(v*100)/100:null;}
+function e0Input(){
+  var ax=e0Read('e0-ax'),ay=e0Read('e0-ay'),bx=e0Read('e0-bx'),by=e0Read('e0-by'),er=$('e0-err');
+  if(ax===null||ay===null||bx===null||by===null){er.textContent='Enter components between −4 and 4.';show(er,true);return;}
+  show(er,false);if(E0.busy)return;
+  E0.a=[ax,ay];E0.b=[bx,by];e0Render();e0Save();
+}
+['e0-ax','e0-ay','e0-bx','e0-by'].forEach(function(id){$(id).oninput=e0Input;$(id).onchange=function(){if(e0Read(id)===null)e0Fill();};});
+['sum','diff','proj'].forEach(function(k){$('e0-'+k).onchange=function(){if(E0.busy){this.checked=E0.show[k];return;}E0.show[k]=this.checked;e0Render();e0Save();};});
+$('e0-rotate').onclick=function(){
+  var er=$('e0-rerr'),d=Math.round(parseFloat($('e0-angle').value)*100)/100,a0=E0.a.slice();
+  if(!(d>=-360&&d<=360)||d===0){er.textContent='Enter an angle between −360 and 360 degrees, not zero.';show(er,true);return;}
+  var a1=v2rot(a0,d);a1=[Math.round(a1[0]*100)/100,Math.round(a1[1]*100)/100];
+  if(Math.abs(a1[0])>4||Math.abs(a1[1])>4){er.textContent='The turned arrow would leave the grid. Shorten a first.';show(er,true);return;}
+  if(E0.busy||v2len(a0)<1e-9)return;
+  show(er,false);E0.busy=true;
+  var base=e0Scene();e0.load(base);
+  e0.animateFn(function(e){var N=24,seg=[],upto=Math.round(e*N);for(var j=0;j<=upto;j++)seg.push(v2rot(a0,d*j/N));return {state:v2rot(a0,d*e),trail:[seg],vectors:[]};},reducedMotion()?0:400+Math.abs(d)*4,function(){E0.busy=false;E0.a=a1;e0Fill();e0Render();e0Save();});
+};
+$('e0-swap').onclick=function(){if(E0.busy)return;var t=E0.a;E0.a=E0.b;E0.b=t;e0Fill();e0Render();e0Save();};
+
+// Code, Unit 0
+var code0Now='';
+function renderCode0(){
+  var g=genNumpy(E0.a,E0.b);code0Now=g.text;
+  $('c0-code').innerHTML=g.text.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
+  $('c0-expect').textContent=g.out;
+  $('c0-note').textContent='a = '+vt(E0.a)+' and b = '+vt(E0.b)+', the vectors from Explore.';
+}
+$('c0-copy').onclick=function(){copyText(code0Now,$('c0-copy'),$('c0-code'));};
+function enterExplore0(){e0.draw();}
+
 // Goals
 function renderGoals(){
   var h='';
-  GOALS.forEach(function(g){
+  $('g-lead').textContent=U().goalsLead;$('g-prereq').textContent=U().prereq;
+  U().goals.forEach(function(g){
     var ids=[],right=0,miss=0,dn=0,dq=[];
     g.concepts.forEach(function(c){ids=ids.concat(CONCEPT_ITEMS[c]||[]);});
     ids.forEach(function(id){var m=markOf(id);if(m==='miss')miss++;else if(m)right++;});
-    DISCUSS.forEach(function(q,j){if(g.concepts.indexOf(q.concept)<0)return;dq.push(j);var d=S.discuss[q.id];if(d&&d.final!=null)dn++;});
+    U().discuss.forEach(function(q,j){if(g.concepts.indexOf(q.concept)<0)return;dq.push(j);var d=S.discuss[q.id];if(d&&d.final!=null)dn++;});
     h+='<li><div><h3>'+esc(g.short)+'</h3><p class="gt">'+esc(g.text)+'</p>'+
       '<p class="gp"><span>Practice: '+right+' of '+ids.length+' right'+(miss?', '+miss+' to revisit':'')+pipsFor(ids)+'</span>'+
       '<span>Discuss: '+dn+' of '+dq.length+' answered</span>'+
@@ -767,18 +915,19 @@ function renderGoals(){
 }
 $('g-list').onclick=function(e){
   var b=closest(e.target,'button');if(!b)return;
-  if(b.hasAttribute('data-pg')){S.group=b.getAttribute('data-pg');pDirty=true;store.save(S);go('u1-practice',true);}
-  else if(b.hasAttribute('data-dq')){S.dq=parseInt(b.getAttribute('data-dq'),10);dDirty=true;store.save(S);go('u1-discuss',true);}
+  if(b.hasAttribute('data-pg')){US().group=b.getAttribute('data-pg');pDirty=true;store.save(S);go(UID+'-practice',true);}
+  else if(b.hasAttribute('data-dq')){US().dq=parseInt(b.getAttribute('data-dq'),10);dDirty=true;store.save(S);go(UID+'-discuss',true);}
 };
 
 // Start here
-var startFigs=null;
+var startBuilt={};
 function buildStart(){
-  var toc='',body=$('s-body');startFigs=[];
-  INTRO.forEach(function(sec){
+  var toc='',body=document.createElement('div'),figs=[],u=UID;
+  body.id='s-body-'+u;$('s-body').appendChild(body);
+  U().intro.forEach(function(sec){
     toc+='<button type="button" class="link" data-sec="'+sec.id+'">'+esc(sec.title)+'</button>';
     var el=document.createElement('section'),h;
-    el.className='lesson'+(sec.fig?'':' wide');el.id='sec-'+sec.id;
+    el.className='lesson'+(sec.fig?'':' wide');el.id='sec-'+sec.id;el.setAttribute('data-unit',u);
     h='<div>'+(sec.kind?'<p class="kind">'+esc(sec.kind)+'</p>':'')+'<h3>'+esc(sec.title)+'</h3>';
     if(sec.task)h+='<p class="task">'+sec.task+'</p><ol class="worked">'+sec.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol>';
     if(sec.html)h+=sec.html;
@@ -787,23 +936,27 @@ function buildStart(){
     if(sec.fig)h+='<figure class="fig"><div id="s-fig-'+sec.id+'"></div><figcaption>'+esc(sec.fig.cap)+(sec.fig.play?'<div class="row"><button type="button" class="ghost" id="s-play-'+sec.id+'">Play</button></div>':'')+'</figcaption></figure>';
     el.innerHTML=h;body.appendChild(el);
     if(!sec.fig)return;
-    var sp=new Sphere($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap);
-    sp.load(sec.fig.scene());sp.draw();startFigs.push(sp);
+    var sp=sec.fig.plane?new Plane($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap):new Sphere($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap);
+    sp.load(sec.fig.scene());sp.draw();figs.push(sp);
     if(sec.fig.play){
       var btn=$('s-play-'+sec.id);
       btn.onclick=function(){btn.disabled=true;sp.load(sec.fig.scene());sec.fig.play(sp,function(){btn.disabled=false;btn.textContent='Play again';});};
     }
   });
-  $('s-toc').innerHTML=toc;
-  $('s-toc').onclick=function(e){
-    var b=closest(e.target,'button[data-sec]');if(!b)return;
-    var t=$('sec-'+b.getAttribute('data-sec'));
-    try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}
-  };
+  startBuilt[u]={body:body,toc:toc,figs:figs};
 }
+$('s-toc').onclick=function(e){
+  var b=closest(e.target,'button[data-sec]');if(!b)return;
+  var t=$('sec-'+b.getAttribute('data-sec'));
+  try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}
+};
 function enterStart(){
-  if(!startFigs)buildStart();else startFigs.forEach(function(sp){sp.draw();});
-  if(!S.seenStart){S.seenStart=true;store.save(S);}
+  if(!startBuilt[UID])buildStart();
+  var b=startBuilt[UID];
+  UNIT_ORDER.forEach(function(u){if(startBuilt[u])startBuilt[u].body.hidden=u!==UID;});
+  $('s-toc').innerHTML=b.toc;$('s-lead').textContent=U().startLead;
+  b.figs.forEach(function(sp){sp.draw();});
+  if(!S.seenStart[UID]){S.seenStart[UID]=true;store.save(S);}
 }
 
 // Home
@@ -814,19 +967,25 @@ function homeScene(){
 function renderHome(){
   if(!hs){hs=new Sphere($('h-sphere'),'Bloch sphere. The state moves from |0⟩ to |+⟩ under H, then on to |+i⟩ under S.');homeScene();}
   else hs.draw();
-  var a=attempts(),d=discussed(),due=reviewLeft(),h,st,miss=0,id;
+  var a=attempts(),d=0,due=0,dueUnit=null,h,st=[],lu=S.lastUnit;
+  UNIT_ORDER.forEach(function(u){d+=discussed(u);var n=reviewLeft(u);if(n&&!dueUnit){dueUnit=u;due=n;}});
   if(!a&&!d){
-    h=S.seenStart?link('primary','u1-practice','Go to practice')+link('ghost','u1-start','Read the introduction again')
-                 :link('primary','u1-start','Start here')+link('ghost','u1-goals','See the goals of unit 1');
-    st='Unit 1, One qubit, is open. It begins with a short introduction to the Bloch sphere.';
+    h=S.seenStart.u0?link('primary','u0-practice','Go to practice')+link('ghost','u0-start','Read the introduction again')
+                    :link('primary','u0-start','Start here')+link('ghost','u1-goals','Skip to Unit 1');
+    st='Units 0 and 1 are open. Unit 0 is the geometry of arrows and phases. Unit 1 is the qubit on the Bloch sphere. Students who already know vectors and complex numbers can start with Unit 1.';
   }else{
-    for(id in S.items)if(markOf(id)==='miss')miss++;
-    h=(due?'<button type="button" class="primary" id="h-review">Review '+plural(due,'item','items')+'</button>'+link('ghost','u1-practice','Continue practice'):link('primary','u1-practice','Continue practice'))+
-      link('ghost','u1-discuss','Discuss')+link('ghost','u1-goals','Your progress');
-    st='Unit 1: '+a+' of '+N_ITEMS+' practice items answered'+(miss?', '+miss+' to revisit':'')+'. '+d+' of '+DISCUSS.length+' discussion questions answered.';
+    h=(due?'<button type="button" class="primary" id="h-review">Review '+plural(due,'item','items')+'</button>'+link('ghost',lu+'-practice','Continue practice'):link('primary',lu+'-practice','Continue practice'))+
+      link('ghost',lu+'-discuss','Discuss')+link('ghost',lu+'-goals','Your progress');
+    UNIT_ORDER.forEach(function(u){
+      var n=attempts(u),dn=discussed(u),miss=0,id;
+      if(!n&&!dn)return;
+      for(id in S.items)if(ITEM_UNIT[id]===u&&markOf(id)==='miss')miss++;
+      st.push('Unit '+UNITS[u].n+': '+n+' of '+UNIT_N[u]+' practice items answered'+(miss?', '+miss+' to revisit':'')+'. '+dn+' of '+UNITS[u].discuss.length+' discussion questions answered.');
+    });
+    st=st.join(' ');
   }
   $('h-cta').innerHTML=h;$('h-status').textContent=st;
-  if($('h-review'))$('h-review').onclick=function(){S.group='R';pDirty=true;store.save(S);go('u1-practice',true);};
+  if($('h-review'))$('h-review').onclick=function(){S.units[dueUnit].group='R';pDirty=true;store.save(S);go(dueUnit+'-practice',true);};
 }
 $('h-play').onclick=function(){
   if(!hs)return;
@@ -836,12 +995,13 @@ $('h-play').onclick=function(){
 function renderMap(){
   var h='';
   COURSE.units.forEach(function(u){
+    var uid=u.open&&u.go?u.go.split('-')[0]:null,pr=uid?partRoutes(uid):[];
     h+='<div class="unit'+(u.open?' open':'')+'"><div class="un">'+esc(u.n)+'</div><div class="ub"><h3>'+(u.go?'<a href="#'+u.go+'" data-go="'+u.go+'">'+esc(u.title)+'</a>':esc(u.title))+'</h3><p>'+esc(u.line)+'</p>';
-    if(u.open)h+='<div class="parts">'+COURSE.parts.map(function(p,i){return '<a href="#'+PART_ROUTE[i]+'" data-go="'+PART_ROUTE[i]+'">'+esc(p[0])+'</a>';}).join('')+'</div>';
+    if(uid)h+='<div class="parts">'+COURSE.parts.map(function(p,i){return '<a href="#'+pr[i]+'" data-go="'+pr[i]+'">'+esc(p[0])+'</a>';}).join('')+'</div>';
     if(u.plan)h+='<details><summary>Planned contents</summary><ul>'+u.plan.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></details>';
     h+='</div><div class="us">'+(u.open?'Open':u.n==='R'?'Topics in preparation':'In preparation')+'</div></div>';
   });
-  $('h-map').innerHTML=h;
+  $('h-map').innerHTML=h;$('u-map').innerHTML=h;
   $('h-parts').innerHTML=COURSE.parts.map(function(p){return '<dt>'+esc(p[0])+'</dt><dd>'+esc(p[1])+'</dd>';}).join('');
 }
 
@@ -860,39 +1020,52 @@ function renderAbout(){
   var seen={},rows=[];
   Object.keys(TAGINFO).forEach(function(t){var i=TAGINFO[t];if(t==='unclassified'||seen[i[0]])return;seen[i[0]]=1;rows.push(i);});
   $('v-tags').innerHTML='<thead><tr><th>Tag</th><th>The student\u2019s answer matches</th><th>Reported in</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';}).join('')+'</tbody>';
-  $('v-discuss').innerHTML='<thead><tr><th>No.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+DISCUSS.map(function(q,j){return '<tr><td>'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';}).join('')+'</tbody>';
-  $('v-checks').innerHTML=selfChecks().concat(selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
+  var drows='';
+  UNIT_ORDER.forEach(function(u){UNITS[u].discuss.forEach(function(q,j){drows+='<tr><td>'+UNITS[u].n+'.'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';});});
+  $('v-discuss').innerHTML='<thead><tr><th>Unit, no.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+drows+'</tbody>';
+  $('v-checks').innerHTML=selfChecks0().concat(selfChecks(),selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
   $('v-log').value=S.log.length?csv():'No responses yet.';
 }
 $('v-copy').onclick=function(){copyText($('v-log').value,$('v-copy'),$('v-log'));};
 twoStep($('v-clear'),'Clear my data','Click again to erase everything',function(){
   store.clear();S=fresh();ps.stop();dsp.stop();pDirty=true;dDirty=true;cur=null;phase='idle';
   es.stop();E.busy=false;E.start='zero';E.ops=[];eRecompute();eRender();$('e-mout').textContent='';show($('e-serr'),false);
+  e0Load();
   renderAbout();$('v-clearnote').textContent='Cleared.';
 });
 
 // Routes
 var route=null;
-var ENTER={'home':renderHome,'u1-goals':renderGoals,'u1-start':enterStart,'u1-practice':enterPractice,'u1-discuss':enterDiscuss,
-  'u1-explore':function(){es.draw();},'u1-code':renderCode,'about':renderAbout};
+var ENTER={'home':renderHome,'units':renderUnits,'goals':renderGoals,'start':enterStart,'practice':enterPractice,'discuss':enterDiscuss,
+  'explore':function(){es.draw();},'code':renderCode,'explore0':enterExplore0,'code0':renderCode0,'about':renderAbout};
 function resolveRoute(r){
-  if(r==='u1')return S.unitTab;
+  var m=/^(u\d)$/.exec(r);
+  if(m&&UNITS[m[1]])return S.units[m[1]].tab;
+  if(r.indexOf('unit-')===0){var t=(route&&/^u\d-/.test(route)?UID:S.lastUnit)+'-'+r.slice(5);return ROUTES.indexOf(t)>=0?t:'home';}
   if(r==='practice'||r==='explore')return 'u1-'+r;
   if(r==='evidence')return 'about';
   return ROUTES.indexOf(r)>=0?r:'home';
 }
+function setUnit(u){
+  if(u===UID&&$('unit-tabs').children.length)return;
+  UID=u;var d=UNITS[u];
+  $('unit-title').innerHTML='<span>Unit '+esc(d.n)+'</span><h1>'+esc(d.title)+'</h1>';
+  $('unit-tabs').setAttribute('aria-label','Parts of unit '+d.n);
+  $('unit-tabs').innerHTML=PARTS.map(function(p,i){return '<a href="#'+u+'-'+p+'" data-go="'+u+'-'+p+'" data-nav="'+u+'-'+p+'">'+esc(COURSE.parts[i][0])+'</a>';}).join('');
+}
 function go(r,push){
   r=resolveRoute(r);
-  var inUnit=r.indexOf('u1-')===0,changed=r!==route;
+  var um=/^(u\d)-/.exec(r),inUnit=!!um,changed=r!==route;
+  if(inUnit)setUnit(um[1]);
   route=r;
-  ROUTES.forEach(function(x){show($('view-'+VIEW[x]),x===r);});
+  VIEWS.forEach(function(v){show($('view-'+v),VIEW[r]===v);});
   show($('unit-head'),inUnit);
   each(document.querySelectorAll('[data-nav]'),function(a){
     var n=a.getAttribute('data-nav');
-    if(n===r||(n==='u1'&&inUnit))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    if(n===r||(n==='units'&&(inUnit||r==='units')))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
   });
-  if(inUnit&&S.unitTab!==r){S.unitTab=r;store.save(S);}
-  if(ENTER[r])ENTER[r]();
+  if(inUnit&&(US().tab!==r||S.lastUnit!==UID)){US().tab=r;S.lastUnit=UID;store.save(S);}
+  if(ENTER[VIEW[r]])ENTER[VIEW[r]]();
   if(push&&changed){
     try{history.pushState(null,'','#'+r);}catch(e){try{location.hash=r;}catch(e2){}}
     try{window.scrollTo(0,0);}catch(e3){}
@@ -913,9 +1086,11 @@ window.addEventListener('storage',function(e){
   S=s&&s.v===3?repair(s):fresh();
   ps.stop();dsp.stop();es.stop();cur=null;phase='idle';pDirty=true;dDirty=true;
   E.busy=false;E.start=S.explore.start;E.ops=S.explore.ops.slice();eRecompute();eRender();$('e-mout').textContent='';
-  if(ENTER[route])ENTER[route]();
+  e0Load();
+  if(ENTER[VIEW[route]])ENTER[VIEW[route]]();
 });
 
-renderMap();eRecompute();eRender();
+function renderUnits(){}
+renderMap();eRecompute();eRender();e0Load();
 go((location.hash||'').slice(1)||'home',false);
 })();

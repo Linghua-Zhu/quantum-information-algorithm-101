@@ -113,6 +113,28 @@ svg.sphere.flat.placing{cursor:crosshair}
 .s-mk-mb{fill:var(--paper);stroke:var(--navy);stroke-width:2}
 .s-mkv-mb{stroke:var(--navy);stroke-width:1.8;stroke-dasharray:4 3}
 .s-marklabel{font-family:var(--sans);font-size:9.5px;font-weight:600;fill:var(--ink)}
+.s-mk-pt{fill:var(--ink)}
+svg.plane{cursor:default}
+svg.plane.placing{cursor:crosshair}
+.pl-grid{fill:none;stroke:var(--rule);stroke-width:.7}
+.pl-half{fill:var(--slate);opacity:.55}
+.pl-axis{stroke:var(--muted);stroke-width:.9}
+.pl-axname{font-family:var(--serif);font-size:11px;font-style:italic;fill:var(--ink)}
+.pl-tick{font-family:var(--sans);font-size:7.5px;fill:var(--muted)}
+.pl-circle{fill:none;stroke:var(--slate);stroke-width:.8;stroke-dasharray:2 2.5}
+.pl-anchor{fill:var(--ink)}
+.pl-line-thin{stroke:var(--slate);stroke-width:.8}
+.pl-v-ma,.pl-v-mb,.pl-v-state,.pl-v-sum,.pl-v-ghost,.pl-v-pred{stroke-linecap:round;fill:none}
+.pl-v-ma{stroke:var(--navy);stroke-width:2.2}.pl-h-ma,.pl-dot-ma{fill:var(--navy)}
+.pl-v-mb{stroke:var(--navy);stroke-width:1.8;stroke-dasharray:4 3}.pl-h-mb,.pl-dot-mb{fill:var(--navy)}
+.pl-v-state{stroke:var(--teal);stroke-width:2.6}.pl-h-state,.pl-dot-state{fill:var(--teal)}
+.pl-v-sum{stroke:var(--teal);stroke-width:2.2}.pl-h-sum,.pl-dot-sum{fill:var(--teal)}
+.pl-v-ghost{stroke:var(--slate);stroke-width:1.3;stroke-dasharray:3 3}.pl-h-ghost,.pl-dot-ghost{fill:var(--slate)}
+.pl-v-pred{stroke:var(--coral);stroke-width:1.6}.pl-h-pred,.pl-dot-pred{fill:var(--coral)}
+.pl-label{font-family:var(--serif);font-size:11px;font-style:italic;fill:var(--ink)}
+.pl-label-state,.pl-label-sum{fill:var(--teal);font-weight:600}
+.pl-q-plus{fill:var(--coral);stroke:none}.pl-q-minus{fill:var(--navy);stroke:none}
+.pl-qsign{font-family:var(--sans);font-size:11px;font-weight:700;fill:var(--paper)}
 figcaption{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;align-items:flex-start;border-top:1px solid var(--rule);padding-top:10px}
 .legend{display:flex;gap:6px 14px;flex-wrap:wrap}
 .legend i,dl.marks i{display:inline-block;vertical-align:middle}
@@ -121,6 +143,7 @@ figcaption{font-size:13px;color:var(--muted);display:flex;justify-content:space-
 .k-pred{width:10px;height:10px;border:2.5px solid var(--coral);border-radius:50%}
 .k-path{width:16px;height:0;border-top:2.5px solid var(--teal)}
 .k-start{width:16px;height:0;border-top:1.5px dashed var(--slate)}
+.k-vec{width:16px;height:0;border-top:2.2px solid var(--navy)}
 .figtools{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
 .angles{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .angles input{width:74px}
@@ -341,22 +364,15 @@ details.inclass textarea{margin-top:8px}
   <a class="brand" href="#home" data-go="home">Quantum Information and Programming 101</a>
   <nav class="tabs" id="nav" aria-label="Course">
     <a href="#home" data-go="home" data-nav="home">Home</a>
-    <a href="#u1-goals" data-go="u1" data-nav="u1">Unit 1: One qubit</a>
+    <a href="#units" data-go="units" data-nav="units">Units</a>
     <a href="#research" data-go="research" data-nav="research">Research</a>
     <a href="#about" data-go="about" data-nav="about">About</a>
   </nav>
 </header>
 <main id="main">
 <div class="unit-head" id="unit-head" hidden>
-  <div class="unit-title"><span>Unit 1</span><h1>One qubit</h1></div>
-  <nav class="tabs" id="unit-tabs" aria-label="Parts of unit 1">
-    <a href="#u1-goals" data-go="u1-goals" data-nav="u1-goals">Goals</a>
-    <a href="#u1-start" data-go="u1-start" data-nav="u1-start">Start here</a>
-    <a href="#u1-practice" data-go="u1-practice" data-nav="u1-practice">Practice</a>
-    <a href="#u1-discuss" data-go="u1-discuss" data-nav="u1-discuss">Discuss</a>
-    <a href="#u1-explore" data-go="u1-explore" data-nav="u1-explore">Explore</a>
-    <a href="#u1-code" data-go="u1-code" data-nav="u1-code">Code</a>
-  </nav>
+  <div class="unit-title" id="unit-title"></div>
+  <nav class="tabs" id="unit-tabs" aria-label="Parts of the unit"></nav>
 </div>
 
 <section id="view-home">
@@ -390,40 +406,49 @@ details.inclass textarea{margin-top:8px}
   <h2 class="sec">About this tool</h2>
   <div class="about">
     <p class="txt">Linghua Zhu made this tool for a first course in quantum information and quantum programming. It runs in your browser. There is no login, and your answers are stored on this device only.</p>
-    <p class="txt">Unit 1 is open. The other units and the research topics are in preparation. The <a href="#about" data-go="about">About</a> page explains how the tool is designed and lists its sources.</p>
+    <p class="txt">Units 0 and 1 are open. The other units and the research topics are in preparation. The <a href="#about" data-go="about">About</a> page explains how the tool is designed and lists its sources.</p>
+  </div>
+</section>
+
+<section id="view-units" hidden>
+  <div class="page">
+    <h1>Units</h1>
+    <p class="lead">Unit 0 is the geometry: vectors, projections, the right-hand rule and complex numbers as arrows. Unit 1 puts a qubit on the Bloch sphere. Each open unit has the same six parts.</p>
+    <h2 class="vh">The units</h2>
+    <div class="map" id="u-map"></div>
   </div>
 </section>
 
 <section id="view-goals" hidden>
   <div class="page">
     <h2>What you will be able to do</h2>
-    <p class="lead">Unit 1 has eight goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
+    <p class="lead" id="g-lead"></p>
     <ol class="goals" id="g-list"></ol>
     <h3>What you need before you start</h3>
-    <p class="txt">Sines and cosines, vectors with three components, and complex numbers in the form e<sup>iφ</sup>. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.</p>
-    <div class="row" style="margin-top:18px"><a class="primary" href="#u1-start" data-go="u1-start">Start here</a><a class="ghost" href="#u1-practice" data-go="u1-practice">Go to practice</a></div>
+    <p class="txt" id="g-prereq"></p>
+    <div class="row" style="margin-top:18px"><a class="primary" href="#unit-start" data-go="unit-start">Start here</a><a class="ghost" href="#unit-practice" data-go="unit-practice">Go to practice</a></div>
   </div>
 </section>
 
 <section id="view-start" hidden>
   <div class="page" style="max-width:none">
     <h2>Start here</h2>
-    <p class="lead">Read this once before the practice. It gives the conventions for the sphere and one worked example for each topic. The practice then asks for the same steps with less and less help.</p>
+    <p class="lead" id="s-lead"></p>
     <nav class="toc" id="s-toc" aria-label="On this page"></nav>
     <div id="s-body"></div>
-    <div class="row" style="border-top:1px solid var(--rule);padding-top:18px;margin-top:0"><a class="primary" href="#u1-practice" data-go="u1-practice">Go to practice</a><a class="ghost" href="#u1-goals" data-go="u1-goals">Back to the goals</a></div>
+    <div class="row" style="border-top:1px solid var(--rule);padding-top:18px;margin-top:0"><a class="primary" href="#unit-practice" data-go="unit-practice">Go to practice</a><a class="ghost" href="#unit-goals" data-go="unit-goals">Back to the goals</a></div>
   </div>
 </section>
 
 <section id="view-practice" hidden>
   <h2 class="vh">Practice</h2>
-  <p class="note" id="p-intro" style="margin:0 0 14px" hidden>First time here? <a href="#u1-start" data-go="u1-start">Start here</a> explains how to read the sphere and how the practice works.</p>
+  <p class="note" id="p-intro" style="margin:0 0 14px" hidden></p>
   <nav class="groups" id="p-groups" aria-label="Topics"></nav>
   <div class="stage poe">
     <figure class="fig">
       <div id="p-sphere"></div>
       <figcaption>
-        <div class="legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span></div>
+        <div class="legend" id="p-legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span></div>
         <div class="figtools">
           <button type="button" class="link" id="p-resetview">Reset view</button><span id="p-flatnote" hidden>Cross-section through the z axis</span>
           <details id="p-numbers"><summary>Place by numbers</summary>
@@ -554,6 +579,56 @@ details.inclass textarea{margin-top:8px}
   </div>
 </section>
 
+<section id="view-explore0" hidden>
+  <h2 class="vh">Explore</h2>
+  <div class="stage">
+    <figure class="fig">
+      <div id="e0-plane"></div>
+      <figcaption><div class="legend"><span><i class="k-vec"></i>a and b</span><span><i class="k-path"></i>Results</span><span><i class="k-start"></i>Moved copies</span></div></figcaption>
+    </figure>
+    <div>
+      <p class="note" style="margin:0 0 14px">A sandbox with no questions. Set two vectors and watch their sum, difference and projection. The Code part computes the same numbers with NumPy.</p>
+      <div class="group"><h3>Vectors</h3>
+        <div class="row"><label>a = (<input type="number" id="e0-ax" min="-4" max="4" step="0.25" style="width:70px">, <input type="number" id="e0-ay" min="-4" max="4" step="0.25" style="width:70px">)</label></div>
+        <div class="row"><label>b = (<input type="number" id="e0-bx" min="-4" max="4" step="0.25" style="width:70px">, <input type="number" id="e0-by" min="-4" max="4" step="0.25" style="width:70px">)</label><button type="button" class="ghost" id="e0-swap">Swap a and b</button></div>
+        <p class="err" id="e0-err" hidden></p>
+      </div>
+      <div class="group"><h3>Show</h3>
+        <div class="opts row2"><label><input type="checkbox" id="e0-sum"> a + b</label><label><input type="checkbox" id="e0-diff"> a − b</label><label><input type="checkbox" id="e0-proj"> projection of a onto b</label></div>
+      </div>
+      <div class="group"><h3>Turn a</h3>
+        <div class="row"><label>Angle <input type="number" id="e0-angle" value="90" min="-360" max="360" step="15"> °</label><button type="button" class="ghost" id="e0-rotate">Turn a</button></div>
+        <p class="note">A positive angle turns counterclockwise. Turning by 90° is the same as multiplying the complex number a by i.</p>
+        <p class="err" id="e0-rerr" hidden></p>
+      </div>
+      <div class="group"><h3>Numbers</h3><div class="vals" id="e0-vals"></div>
+        <div class="row" style="margin-top:10px"><a class="ghost" href="#u0-code" data-go="u0-code">See these numbers as code</a></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="view-code0" hidden>
+  <h2 class="vh">Code</h2>
+  <div class="codegrid">
+    <div>
+      <div class="group"><h3>The vectors</h3>
+        <p class="note" id="c0-note" style="margin:0 0 10px"></p>
+        <div class="row"><a class="ghost" href="#u0-explore" data-go="u0-explore">Change them in Explore</a></div>
+      </div>
+      <div class="group"><p class="note" style="margin:0">The script uses NumPy, the library that every quantum programming tool is built on. The same functions return in Unit 1: a state is an array, a gate is a matrix, and <code>@</code> applies it.</p></div>
+    </div>
+    <div>
+      <div class="codebar"><div class="codekey"><span>A script for NumPy</span></div><button type="button" class="ghost" id="c0-copy">Copy the code</button></div>
+      <pre class="code" id="c0-code" tabindex="0" aria-label="Python code for these vectors"></pre>
+      <h3 class="sub3">How to run it</h3>
+      <div class="howto"><ol><li>You need Python 3.10 or later.</li><li>Install NumPy once, in a terminal:<pre>pip install numpy</pre></li><li>Copy the code into a file named <code>unit0_vectors.py</code> and run it:<pre>python unit0_vectors.py</pre></li></ol>
+        <p class="note">In a notebook, put <code>%pip install numpy</code> in one cell and the code in the next.</p></div>
+      <p class="note" style="margin-top:12px">Before you run the script, write down what you expect it to print. Then compare.</p>
+      <details style="margin-top:14px" id="c0-expectbox"><summary>What should come out</summary><pre class="code" id="c0-expect" style="margin-top:8px" tabindex="0" aria-label="Expected output"></pre></details>
+    </div>
+  </div>
+</section>
+
 <section id="view-research" hidden>
   <div class="page">
     <h1>Research</h1>
@@ -617,12 +692,14 @@ details.inclass textarea{margin-top:8px}
     <h2 class="sec">References</h2>
     <ul class="refs" id="v-refs">
       <li>Ainsworth, S. (2006). DeFT: A conceptual framework for considering learning with multiple representations. <i>Learning and Instruction, 16</i>(3), 183–198. <a href="https://doi.org/10.1016/j.learninstruc.2006.03.001" target="_blank" rel="noopener">https://doi.org/10.1016/j.learninstruc.2006.03.001</a></li>
+      <li>Barniol, P., &amp; Zavala, G. (2014). Test of understanding of vectors: A reliable multiple-choice vector concept test. <i>Physical Review Special Topics - Physics Education Research, 10</i>(1), 010121. <a href="https://doi.org/10.1103/PhysRevSTPER.10.010121" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevSTPER.10.010121</a></li>
       <li>Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., &amp; Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. <i>Psychological Bulletin, 132</i>(3), 354–380. <a href="https://doi.org/10.1037/0033-2909.132.3.354" target="_blank" rel="noopener">https://doi.org/10.1037/0033-2909.132.3.354</a></li>
       <li>Crouch, C. H., Fagen, A. P., Callan, J. P., &amp; Mazur, E. (2004). Classroom demonstrations: Learning tools or entertainment? <i>American Journal of Physics, 72</i>(6), 835–838. <a href="https://doi.org/10.1119/1.1707018" target="_blank" rel="noopener">https://doi.org/10.1119/1.1707018</a></li>
       <li>Crouch, C. H., &amp; Mazur, E. (2001). Peer Instruction: Ten years of experience and results. <i>American Journal of Physics, 69</i>(9), 970–977. <a href="https://doi.org/10.1119/1.1374249" target="_blank" rel="noopener">https://doi.org/10.1119/1.1374249</a></li>
       <li>Hattie, J., &amp; Timperley, H. (2007). The power of feedback. <i>Review of Educational Research, 77</i>(1), 81–112. <a href="https://doi.org/10.3102/003465430298487" target="_blank" rel="noopener">https://doi.org/10.3102/003465430298487</a></li>
       <li>Hu, P., Li, Y., Mong, R. S. K., &amp; Singh, C. (2024). Student understanding of the Bloch sphere. <i>European Journal of Physics, 45</i>(2), 025705. <a href="https://doi.org/10.1088/1361-6404/ad2393" target="_blank" rel="noopener">https://doi.org/10.1088/1361-6404/ad2393</a></li>
       <li>Hu, P., Li, Y., &amp; Singh, C. (2024). Investigating and improving student understanding of the basics of quantum computing. <i>Physical Review Physics Education Research, 20</i>(2), 020108. <a href="https://doi.org/10.1103/PhysRevPhysEducRes.20.020108" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevPhysEducRes.20.020108</a></li>
+      <li>Nguyen, N.-L., &amp; Meltzer, D. E. (2003). Initial understanding of vector concepts among students in introductory physics courses. <i>American Journal of Physics, 71</i>(6), 630–638. <a href="https://doi.org/10.1119/1.1571831" target="_blank" rel="noopener">https://doi.org/10.1119/1.1571831</a></li>
       <li>McDermott, L. C. (2001). Oersted Medal Lecture 2001: “Physics Education Research—The key to student learning.” <i>American Journal of Physics, 69</i>(11), 1127–1137. <a href="https://doi.org/10.1119/1.1389280" target="_blank" rel="noopener">https://doi.org/10.1119/1.1389280</a></li>
       <li>Passante, G., Emigh, P. J., &amp; Shaffer, P. S. (2015). Student ability to distinguish between superposition states and mixed states in quantum mechanics. <i>Physical Review Special Topics - Physics Education Research, 11</i>(2), 020135. <a href="https://doi.org/10.1103/PhysRevSTPER.11.020135" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevSTPER.11.020135</a></li>
       <li>Renkl, A., &amp; Atkinson, R. K. (2003). Structuring the transition from example study to problem solving in cognitive skill acquisition: A cognitive load perspective. <i>Educational Psychologist, 38</i>(1), 15–22. <a href="https://doi.org/10.1207/S15326985EP3801_3" target="_blank" rel="noopener">https://doi.org/10.1207/S15326985EP3801_3</a></li>
@@ -1738,9 +1815,10 @@ Sphere.prototype.head=function(a,b,s,cls){
   return '<polygon class="'+cls+'" points="'+f1(b.x)+','+f1(b.y)+' '+f1(bx-uy*w)+','+f1(by+ux*w)+' '+f1(bx+uy*w)+','+f1(by-ux*w)+'"/>';
 };
 var LABELS=[['|0⟩','z',[0,0,1]],['|1⟩','',[0,0,-1]],['|+⟩','x',[1,0,0]],['|−⟩','',[-1,0,0]],['|+i⟩','y',[0,1,0]],['|−i⟩','',[0,-1,0]]];
+var LABELS_XYZ=[['+z','',[0,0,1]],['−z','',[0,0,-1]],['+x','',[1,0,0]],['−x','',[-1,0,0]],['+y','',[0,1,0]],['−y','',[0,-1,0]]];
 Sphere.prototype.visibleLabels=function(B){
-  var self=this;if(!this.slice)return LABELS;
-  return LABELS.filter(function(L){var q=self.proj(L[2],B);return Math.hypot(q.x,q.y)>60;});
+  var self=this,L0=this.labelSet||LABELS;if(!this.slice)return L0;
+  return L0.filter(function(L){var q=self.proj(L[2],B);return Math.hypot(q.x,q.y)>60;});
 };
 Sphere.prototype.draw=function(){
   var B=this.basis(),R=this.R,P=[],self=this,i,j,sl=this.slice;
@@ -1850,7 +1928,7 @@ Sphere.prototype.stop=function(){this._gen++;if(this._raf)cancelAnimationFrame(t
 Sphere.prototype.clearScene=function(){this.stop();this.state=null;this.ghost=null;this.pred=null;this.trailSteps=[];this.hint=null;this.guides=[];this.marks=[];this.lines=[];this.arcs=[];};
 Sphere.prototype.load=function(sc){
   sc=sc||{};
-  this.clearScene();this.setSlice(sc.slice||null);
+  this.clearScene();this.setSlice(sc.slice||null);this.labelSet=sc.axes==='xyz'?LABELS_XYZ:null;
   this.state=sc.state||null;this.ghost=sc.ghost||null;this.hint=sc.hint||null;this.guides=sc.guides||[];this.marks=sc.marks||[];this.lines=sc.lines||[];this.arcs=sc.arcs||[];this.trailSteps=sc.trail||[];
 };
 function reducedMotion(){return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}
@@ -1888,6 +1966,735 @@ Sphere.prototype.animatePath=function(fn,dur,done,base){
   this._raf=requestAnimationFrame(frame);
 };
 function arcPath(axis,angle,from){var N=Math.max(8,Math.ceil(Math.abs(angle)/DEG/3)),seg=[];for(var j=0;j<=N;j++)seg.push(rot(axis,angle*j/N,from));return seg;}
+// A plane with a grid, drawn in SVG. Vectors are arrows from a tail point.
+function v2add(a,b){return [a[0]+b[0],a[1]+b[1]];}
+function v2sub(a,b){return [a[0]-b[0],a[1]-b[1]];}
+function v2scale(a,s){return [a[0]*s,a[1]*s];}
+function v2dot(a,b){return a[0]*b[0]+a[1]*b[1];}
+function v2len(a){return Math.hypot(a[0],a[1]);}
+function v2cross(a,b){return a[0]*b[1]-a[1]*b[0];}
+function v2dist(a,b){return Math.hypot(a[0]-b[0],a[1]-b[1]);}
+function v2ang(a){return Math.atan2(a[1],a[0])/DEG;}
+function v2rot(a,deg){var c=Math.cos(deg*DEG),s=Math.sin(deg*DEG);return [a[0]*c-a[1]*s,a[0]*s+a[1]*c];}
+function v2unit(a){var l=v2len(a)||1;return [a[0]/l,a[1]/l];}
+function v2between(a,b){return Math.acos(clamp(v2dot(a,b)/((v2len(a)*v2len(b))||1),-1,1))/DEG;}
+function v2proj(a,b){var l=v2len(b);return l<1e-9?[0,0]:v2scale(b,v2dot(a,b)/(l*l));}
+function v2snap(p,step){return [Math.round(p[0]/step)*step,Math.round(p[1]/step)*step];}
+
+function Plane(host,label,opts){
+  opts=opts||{};
+  this.range=opts.range||4;this.R=120;
+  this.svg=document.createElementNS(SVGNS,'svg');
+  this.svg.setAttribute('viewBox','-150 -150 300 300');this.svg.setAttribute('class','sphere plane');
+  this.svg.setAttribute('role','img');this.svg.setAttribute('aria-label',label);
+  this.layer=document.createElementNS(SVGNS,'g');this.svg.appendChild(this.layer);host.appendChild(this.svg);
+  this.placing=false;this.onPlace=null;this._raf=0;this._gen=0;this.dyn=null;
+  this.clearScene();this._bind();this.draw();
+}
+Plane.prototype.clearScene=function(){
+  this.stop();this.state=null;this.ghost=null;this.pred=null;this.vectors=[];this.marks=[];this.lines=[];this.arcs=[];this.trailSteps=[];
+  this.anchor=[0,0];this.axes=null;this.circle=false;this.hint=null;this.dyn=null;this.slice=null;this.stateLabel=null;
+};
+Plane.prototype.load=function(sc){
+  sc=sc||{};this.clearScene();
+  this.range=sc.range||4;
+  this.state=sc.state||null;this.ghost=sc.ghost||null;this.vectors=sc.vectors||[];this.marks=sc.marks||[];this.lines=sc.lines||[];this.arcs=sc.arcs||[];
+  this.trailSteps=sc.trail||[];this.anchor=sc.anchor||[0,0];this.axes=sc.axes||null;this.circle=!!sc.circle;this.hint=sc.hint||null;this.stateLabel=sc.stateLabel||null;
+};
+Plane.prototype.px=function(p){var k=this.R/this.range;return {x:p[0]*k,y:-p[1]*k};};
+Plane.prototype.arrow=function(tail,v,cls,label,width){
+  var a=this.px(tail),b=this.px(v2add(tail,v)),l=Math.hypot(b.x-a.x,b.y-a.y),h='';
+  if(l<0.5){h='<circle class="pl-dot-'+cls+'" cx="'+f1(a.x)+'" cy="'+f1(a.y)+'" r="3.5"/>';}
+  else{
+    var s=Math.min(9,l*0.5),ux=(b.x-a.x)/l,uy=(b.y-a.y)/l,ex=b.x-ux*s*0.6,ey=b.y-uy*s*0.6;
+    h='<line class="pl-v-'+cls+'" x1="'+f1(a.x)+'" y1="'+f1(a.y)+'" x2="'+f1(ex)+'" y2="'+f1(ey)+'"/>';
+    var w=s*0.45,bx=b.x-ux*s,by=b.y-uy*s;
+    h+='<polygon class="pl-h-'+cls+'" points="'+f1(b.x)+','+f1(b.y)+' '+f1(bx-uy*w)+','+f1(by+ux*w)+' '+f1(bx+uy*w)+','+f1(by-ux*w)+'"/>';
+  }
+  if(label){
+    var ux2=l<0.5?0:(b.x-a.x)/l,uy2=l<0.5?-1:(b.y-a.y)/l,lx=b.x+ux2*11,ly=b.y+uy2*11;
+    h+='<text class="pl-label pl-label-'+cls+'" x="'+f1(lx)+'" y="'+f1(ly+3.5)+'" text-anchor="middle">'+label+'</text>';
+  }
+  return h;
+};
+Plane.prototype.draw=function(){
+  var P=[],R=this.R,n=this.range,k=R/n,self=this,i,d=this.dyn||{};
+  function ln(cls,a,b){return '<line class="'+cls+'" x1="'+f1(a.x)+'" y1="'+f1(a.y)+'" x2="'+f1(b.x)+'" y2="'+f1(b.y)+'"/>';}
+  var g='',dots='';
+  for(i=-n;i<=n;i++){
+    if(i===0)continue;
+    g+='M'+f1(i*k)+' '+f1(-R)+'L'+f1(i*k)+' '+f1(R)+'M'+f1(-R)+' '+f1(i*k)+'L'+f1(R)+' '+f1(i*k);
+  }
+  for(i=-2*n+1;i<2*n;i+=2)for(var j=-2*n+1;j<2*n;j+=2)dots+='<circle cx="'+f1(i*k/2)+'" cy="'+f1(j*k/2)+'" r="0.8"/>';
+  P.push('<path class="pl-grid" d="'+g+'"/><g class="pl-half">'+dots+'</g>');
+  var ax=this.axes||{x:'x',y:'y'},ox=this.px([-n-0.25,0]),oxe=this.px([n+0.25,0]),oy=this.px([0,-n-0.25]),oye=this.px([0,n+0.25]);
+  P.push(ln('pl-axis',ox,oxe)+ln('pl-axis',oy,oye));
+  P.push('<text class="pl-axname" x="'+f1(oxe.x-2)+'" y="'+f1(oxe.y-6)+'" text-anchor="end">'+ax.x+'</text><text class="pl-axname" x="'+f1(oye.x+6)+'" y="'+f1(oye.y+9)+'">'+ax.y+'</text>');
+  for(i=-n;i<=n;i++){if(!i)continue;var tx=this.px([i,0]),ty=this.px([0,i]);P.push('<text class="pl-tick" x="'+f1(tx.x)+'" y="'+f1(tx.y+10)+'" text-anchor="middle">'+i+'</text><text class="pl-tick" x="'+f1(ty.x-5)+'" y="'+f1(ty.y+3)+'" text-anchor="end">'+i+'</text>');}
+  if(this.circle)P.push('<circle class="pl-circle" r="'+f1(k)+'"/>');
+  (this.lines||[]).concat(d.lines||[]).forEach(function(l){P.push(ln(l.cls?'pl-line-'+l.cls:'s-proj',self.px(l.a),self.px(l.b)));});
+  (this.arcs||[]).concat(d.arcs||[]).forEach(function(c){
+    var cc=c.c||[0,0],a0=c.a*DEG,a1=c.b*DEG,K=24,dd='',t,p;
+    for(var q=0;q<=K;q++){t=a0+(a1-a0)*q/K;p=self.px(v2add(cc,[c.r*Math.cos(t),c.r*Math.sin(t)]));dd+=(q?'L':'M')+f1(p.x)+' '+f1(p.y);}
+    P.push('<path class="s-arc" d="'+dd+'"/>');
+    if(c.label){t=(a0+a1)/2;p=self.px(v2add(cc,[(c.r+0.38)*Math.cos(t),(c.r+0.38)*Math.sin(t)]));P.push('<text class="s-arclabel" x="'+f1(p.x)+'" y="'+f1(p.y+3.5)+'" text-anchor="middle">'+c.label+'</text>');}
+  });
+  (d.trail||this.trailSteps||[]).forEach(function(st){
+    if(!st||st.length<2)return;var dd='';
+    st.forEach(function(p,q){var w=self.px(p);dd+=(q?'L':'M')+f1(w.x)+' '+f1(w.y);});
+    P.push('<path class="s-trail" d="'+dd+'"/>');
+  });
+  var ghost=d.ghost!==undefined?d.ghost:this.ghost;
+  if(ghost)P.push(this.arrow(ghost.tail||this.anchor,ghost.v||ghost,'ghost',ghost.label));
+  (this.vectors||[]).concat(d.vectors||[]).forEach(function(v){P.push(self.arrow(v.tail||[0,0],v.v,v.cls||'ma',v.label));});
+  (this.marks||[]).concat(d.marks||[]).forEach(function(m){
+    var q=self.px(m.p);
+    if(m.cls==='plus'||m.cls==='minus')P.push('<circle class="pl-q-'+m.cls+'" cx="'+f1(q.x)+'" cy="'+f1(q.y)+'" r="7"/><text class="pl-qsign" x="'+f1(q.x)+'" y="'+f1(q.y+3.6)+'" text-anchor="middle">'+(m.cls==='plus'?'+':'−')+'</text>');
+    else P.push('<circle class="s-mk-'+(m.cls||'foot')+'" cx="'+f1(q.x)+'" cy="'+f1(q.y)+'" r="'+(m.cls==='foot'?2.6:3.6)+'"/>');
+    if(m.label)P.push('<text class="s-marklabel" x="'+f1(q.x+(m.dx==null?9:m.dx))+'" y="'+f1(q.y+(m.dy==null?-6:m.dy))+'">'+m.label+'</text>');
+  });
+  var state=d.state!==undefined?d.state:this.state;
+  if(state)P.push(this.arrow(this.anchor,state,'state',d.stateLabel||this.stateLabel));
+  if(this.pred){var pr=this.px(v2add(this.anchor,this.pred));P.push(this.arrow(this.anchor,this.pred,'pred')+'<circle class="s-pred" cx="'+f1(pr.x)+'" cy="'+f1(pr.y)+'" r="6.5"/>');}
+  if(this.anchor[0]||this.anchor[1]){var an=this.px(this.anchor);P.push('<circle class="pl-anchor" cx="'+f1(an.x)+'" cy="'+f1(an.y)+'" r="3"/>');}
+  this.layer.innerHTML=P.join('');
+};
+Plane.prototype.pick=function(cx,cy){
+  var rc=this.svg.getBoundingClientRect(),s=300/rc.width,x=(cx-rc.left)*s-150,y=(cy-rc.top)*s-150,k=this.R/this.range;
+  var p=[x/k,-y/k],n=this.range+0.3;
+  if(Math.abs(p[0])>n||Math.abs(p[1])>n)return null;
+  p=v2snap([clamp(p[0],-this.range,this.range),clamp(p[1],-this.range,this.range)],0.25);
+  return v2sub(p,this.anchor);
+};
+Plane.prototype._bind=function(){
+  var self=this,svg=this.svg,down=null;
+  svg.addEventListener('pointerdown',function(e){if(e.pointerType==='mouse'&&e.button!==0)return;down={x:e.clientX,y:e.clientY,moved:false,id:e.pointerId};try{svg.setPointerCapture(e.pointerId);}catch(_){}});
+  svg.addEventListener('pointermove',function(e){if(!down)return;if(Math.hypot(e.clientX-down.x,e.clientY-down.y)>=8)down.moved=true;});
+  svg.addEventListener('pointerup',function(e){
+    if(!down)return;var d=down;down=null;try{svg.releasePointerCapture(d.id);}catch(_){}
+    if(!d.moved&&self.placing&&self.onPlace){var p=self.pick(e.clientX,e.clientY);if(p)self.onPlace(p);}
+  });
+  svg.addEventListener('pointercancel',function(){down=null;});
+};
+Plane.prototype.setPlacing=function(on){this.placing=on;this.svg.classList.toggle('placing',on);};
+Plane.prototype.resetView=function(){this.draw();};
+Plane.prototype.stop=function(){this._gen++;if(this._raf)cancelAnimationFrame(this._raf);this._raf=0;this.dyn=null;};
+// fn(t) returns a partial scene for progress t in [0,1]
+Plane.prototype.animateFn=function(fn,dur,done){this.stop();this._animate(fn,dur,done);};
+Plane.prototype._animate=function(fn,dur,done){
+  var self=this,gen=this._gen,reduce=reducedMotion(),t0=null;
+  function frame(now){
+    if(gen!==self._gen)return;
+    if(t0===null)t0=now;
+    var t=reduce?1:clamp((now-t0)/dur,0,1),e=t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+    self.dyn=fn(e);self.draw();
+    if(t<1)self._raf=requestAnimationFrame(frame);else{self._raf=0;self.dyn=null;if(done)done();}
+  }
+  this._raf=requestAnimationFrame(frame);
+};
+Plane.prototype.animatePath=function(fn,dur,done){
+  var N=40;
+  this.animateFn(function(e){var seg=[],upto=Math.round(e*N);for(var j=0;j<=upto;j++)seg.push(fn(j/N));return {state:fn(e),trail:[seg]};},dur,done);
+};
+// steps: [{v, from, to}] slide the vectors one after another
+Plane.prototype.animateSlide=function(steps,done){
+  var self=this,i=0,reduce=reducedMotion();this.stop();var gen=this._gen;
+  function next(){
+    if(gen!==self._gen)return;
+    if(i>=steps.length){if(done)done();return;}
+    var st=steps[i];
+    self._animate(function(e){
+      var vs=[];for(var q=0;q<i;q++)vs.push({tail:steps[q].to,v:steps[q].v,cls:steps[q].cls||'mb',label:steps[q].label});
+      vs.push({tail:v2add(st.from,v2scale(v2sub(st.to,st.from),e)),v:st.v,cls:st.cls||'mb',label:st.label});
+      return {vectors:vs};
+    },reduce?0:700,function(){i++;if(reduce||i>=steps.length)next();else setTimeout(next,200);});
+  }
+  next();
+};
+
+// One slot that holds a sphere and a plane and shows one of them
+function FigSlot(host,label,label2){
+  var self=this;
+  this.sphere=new Sphere(host,label);this.plane=new Plane(host,label2||label);
+  this.plane.svg.setAttribute('hidden','');this.active=this.sphere;this.onPlace=null;
+  this.sphere.onPlace=function(p){if(self.onPlace)self.onPlace(p);};
+  this.plane.onPlace=function(p){if(self.onPlace)self.onPlace(p);};
+}
+FigSlot.prototype.use=function(plane){
+  var next=plane?this.plane:this.sphere;
+  if(next===this.active)return;
+  this.active.stop();this.active.svg.setAttribute('hidden','');next.svg.removeAttribute('hidden');this.active=next;
+};
+FigSlot.prototype.load=function(sc){sc=sc||{};this.use(!!sc.plane);this.active.load(sc);};
+['draw','setPlacing','resetView','animate','animatePath','animateFn','animateSlide'].forEach(function(m){
+  FigSlot.prototype[m]=function(){var a=this.active;return a[m].apply(a,arguments);};
+});
+FigSlot.prototype.stop=function(){this.sphere.stop();this.plane.stop();};
+['state','ghost','pred','hint','slice','trailSteps','marks','lines','arcs','vectors','anchor','stateLabel','guides','labelSet'].forEach(function(p){
+  Object.defineProperty(FigSlot.prototype,p,{get:function(){return this.active[p];},set:function(v){this.active[p]=v;}});
+});
+// Unit 0: practice items on vectors, projections, cross products, fields and complex numbers
+var FIELD_K=4;
+function vt(v){return '('+nt(v[0])+', '+nt(v[1])+')';}
+function ct(z){
+  var a=Math.round(z[0]*100)/100,b=Math.round(z[1]*100)/100,re=a?nt(a):'',im='';
+  if(b){var m=Math.abs(b),ms=m===1?'':nt(m);im=(re?(b<0?' − ':' + '):(b<0?'−':''))+ms+'i';}
+  if(!re&&!im)return '0';
+  return re+im;
+}
+function sq(x){return (x<0?'('+nt(x)+')':nt(x))+'²';}
+function degT(d){return nt(d)+'°';}
+function polarT(r,deg){return (Math.abs(r-1)<1e-9?'':nt(r))+'e^(i·'+degT(deg)+')';}
+function argDeg(z){var a=v2ang(z);if(a<=-180+1e-9)a+=360;return a;}
+function v3of(v){return v.length===3?v:[v[0],v[1],0];}
+var TOLP=0.13;
+function pushP(ds,correct,tag,v,test){
+  if(v&&v2dist(v,correct)<0.1)return;
+  for(var i=0;i<ds.length;i++)if(ds[i].v&&v&&v2dist(ds[i].v,v)<0.1)return;
+  ds.push({tag:tag,v:v,test:test});
+}
+function classPlane(p,correct,ds){
+  var off=v2dist(p,correct);
+  if(off<=TOLP)return {tag:'correct',off:off};
+  var best=null,bd=1e9;
+  ds.forEach(function(d){if(!d.v)return;var q=v2dist(p,d.v);if(q<=TOLP&&q<bd){bd=q;best=d;}});
+  if(best)return {tag:best.tag,off:off};
+  for(var i=0;i<ds.length;i++)if(ds[i].test&&ds[i].test(p))return {tag:ds[i].tag,off:off};
+  return {tag:'unclassified',off:off};
+}
+function pushNum(ds,correct,tag,x,lo,hi){
+  if(!(x>=lo-1e-9&&x<=hi+1e-9)||Math.abs(x-correct)<0.06)return;
+  for(var i=0;i<ds.length;i++)if(Math.abs(ds[i].x-x)<0.06)return;
+  ds.push({tag:tag,x:x});
+}
+function fieldAt(charges,P){
+  var E=[0,0];
+  charges.forEach(function(c){var d=v2sub(P,c.p),r=v2len(d);if(r<1e-9)return;E=v2add(E,v2scale(d,FIELD_K*c.q/(r*r*r)));});
+  return E;
+}
+
+// Shared shape of a plane item
+function planeItem(item,sp){
+  var R={item:item,type:item.type,mode:sp.mode||'point',plane:sp.space!=='3d',answer:sp.answer};
+  R.prompt=sp.prompt;R.note=sp.note||'';R.how=sp.how||(R.mode==='point'?'Click or tap the grid where the tip of the arrow belongs.':R.mode==='number'?'Type the number.':'Choose one answer.');
+  R.scene=sp.scene;R.result=sp.result;R.reference=sp.reference;R.replay=!!sp.reveal;R.nofig=!!sp.nofig;
+  if(R.mode==='number'){R.numLabel=sp.numLabel;R.numMin=sp.numMin;R.numMax=sp.numMax;R.unit=sp.unit||'';}
+  if(R.mode==='choice'){R.options=sp.options;R.answer=sp.options.map(function(o){return !!o.ok;}).indexOf(true);}
+  R.classify=function(x){
+    if(R.mode==='point')return sp.space==='3d'?classPoint(x,sp.answer,sp.ds,true):classPlane(x,sp.answer,sp.ds);
+    if(R.mode==='number'){var c={off:Math.abs(x-sp.answer)};if(c.off<=(sp.tol||0.03))c.tag='correct';else{var best=null,bd=1e9;sp.ds.forEach(function(d){var q=Math.abs(x-d.x);if(q<=(sp.tol||0.03)+1e-9&&q<bd){bd=q;best=d;}});c.tag=best?best.tag:'unclassified';}return c;}
+    var o=sp.options[x];return {tag:o.ok?'correct':o.tag,off:o.ok?0:1,i:x};
+  };
+  R.feedback=function(c){if(c.tag==='correct')return 'Correct.';if(R.mode==='choice')return sp.options[c.i].fb;return sp.fb(c);};
+  R.respText=function(x){if(R.mode==='point')return sp.space==='3d'?dirName(x):vt(x);if(R.mode==='number')return nt(x)+(sp.unit||'');return sp.options[x].t;};
+  R.observe=function(fig,done){if(sp.reveal)sp.reveal(fig,done);else{fig.draw();done();}};
+  return R;
+}
+function arcAB(a,b,r,label){var a0=v2ang(a),d=Math.atan2(v2cross(a,b),v2dot(a,b))/DEG;return {a:a0,b:a0+d,r:r,label:label};}
+function vecs(a,b,la,lb){return [{v:a,cls:'ma',label:la||'a'},{v:b,cls:'mb',label:lb||'b'}];}
+
+// V: adding vectors
+function specAdd(item){
+  var a=item.a,b=item.b,c1=item.c1==null?1:item.c1,c2=item.c2==null?1:item.c2,ans=v2add(v2scale(a,c1),v2scale(b,c2)),ds=[];
+  var ca=v2scale(a,c1),cb=v2scale(b,c2),cterm=function(c,n){return c===1?n:c===-1?'−'+n:nt(c)+n;};
+  var expr=cterm(c1,'a')+(c2<0?' − ':' + ')+cterm(Math.abs(c2),'b');
+  if(c1===1&&c2===1){pushP(ds,ans,'sub-for-add',v2sub(a,b));pushP(ds,ans,'sub-for-add',v2sub(b,a));pushP(ds,ans,'average-for-sum',v2scale(ans,0.5));}
+  else if(c1===1&&c2===-1){pushP(ds,ans,'add-for-sub',v2add(a,b));pushP(ds,ans,'rev-sub',v2sub(b,a));}
+  else{pushP(ds,ans,'scaled-wrong',v2add(a,v2scale(b,c2>0?1:-1)));pushP(ds,ans,'scaled-wrong',v2add(v2scale(a,c1),b));pushP(ds,ans,'add-for-sub',v2add(ca,v2scale(cb,-1)));}
+  pushP(ds,ans,'only-one-vector',ca);pushP(ds,ans,'only-one-vector',cb);pushP(ds,ans,'only-one-vector',a);pushP(ds,ans,'only-one-vector',b);
+  pushP(ds,ans,'component-sign',[ans[0],-ans[1]]);pushP(ds,ans,'component-sign',[-ans[0],ans[1]]);
+  var how=ans[0]===0&&ans[1]===0?' If the result is the zero vector, click the origin.':'';
+  return {mode:'point',answer:ans,ds:ds,
+    prompt:'a = '+vt(a)+' and b = '+vt(b)+'. Place '+expr+'.',
+    note:item.level===1?'Shown: b moved so that its tail sits on the tip of a. Vectors add tip to tail.':item.level===2?'Add component by component, or slide one arrow to the tip of the other.':'',
+    how:'Click or tap the grid where the tip of '+expr+' belongs.'+how,
+    scene:function(){var sc={plane:true,vectors:vecs(a,b)};if(item.level===1&&c1===1&&c2===1)sc.ghost={tail:a,v:b};return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'sub-for-add':return 'That is a difference of the two vectors, not the sum. For a + b, slide b so its tail sits on the tip of a. The sum runs from the origin to the tip of b.';
+        case 'add-for-sub':return 'That is the sum. Subtracting b means adding −b, the arrow b turned around. Slide −b to the tip of a.';
+        case 'rev-sub':return 'That is b − a, the vector pointing the other way. a − b runs from the tip of b to the tip of a.';
+        case 'average-for-sum':return 'That is the midpoint between the two tips, half the sum. The sum itself reaches twice as far.';
+        case 'only-one-vector':return 'That is one of the vectors on its own. Both have to be added, component by component.';
+        case 'component-sign':return 'One component has the wrong sign. Add the x components together and the y components together, keeping each sign.';
+        case 'scaled-wrong':return 'A coefficient was left out. Multiply each vector by its number first, then add the results.';
+        default:return 'Not there. Add the components: x = '+nt(ca[0])+' + '+nt(cb[0])+' and y = '+nt(ca[1])+' + '+nt(cb[1])+'. The result is '+vt(ans)+'.';
+      }
+    },
+    result:expr+' = '+vt(ans)+'.',
+    reference:'Component by component: ('+nt(ca[0])+' + '+nt(cb[0])+', '+nt(ca[1])+' + '+nt(cb[1])+') = '+vt(ans)+'. On the figure, '+(c2<0?'turn b around to get −b, then ':'')+'slide the second arrow so its tail sits on the tip of the first. The result runs from the origin to the tip of the second arrow.',
+    reveal:function(fig,done){
+      var pr=fig.pred;fig.load({plane:true,vectors:vecs(a,b)});fig.pred=pr;fig.draw();
+      var first={tail:[0,0],v:ca,cls:'ma',label:cterm(c1,'a')},second={v:cb,from:[0,0],to:ca,cls:'mb',label:cterm(c2,'b')};
+      fig.animateSlide([second],function(){fig.vectors=vecs(a,b).concat([first,{tail:ca,v:cb,cls:'mb'}]);fig.state=ans;fig.stateLabel=expr;fig.draw();done();});
+    }};
+}
+// V: components and length
+function specComp(item){
+  var L=item.len,th=item.deg,v=[L*Math.cos(th*DEG),L*Math.sin(th*DEG)],want=item.which,ans=want==='x'?v[0]:v[1],ds=[],lo=-4.5,hi=4.5;
+  pushNum(ds,ans,'sin-cos-swapped',want==='x'?v[1]:v[0],lo,hi);pushNum(ds,ans,'component-sign',-ans,lo,hi);pushNum(ds,ans,'length-for-component',L,lo,hi);pushNum(ds,ans,'length-for-component',-L,lo,hi);
+  return {mode:'number',answer:ans,ds:ds,numLabel:want+' component',numMin:lo,numMax:hi,tol:0.03,
+    prompt:'A vector has length '+nt(L)+' and makes an angle of '+degT(th)+' with the +x axis, measured counterclockwise. What is its '+want+' component?',
+    note:item.level===1?'Shown: the vector, its angle, and the dashed drops to the two axes.':item.level===2?'x = length · cos(angle), y = length · sin(angle).':'',
+    scene:function(){var sc={plane:true,vectors:[{v:v,cls:'ma'}],arcs:[{a:0,b:th,r:0.9,label:'θ'}]};if(item.level===1)sc.lines=[{a:v,b:[v[0],0]},{a:v,b:[0,v[1]]}];return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'sin-cos-swapped':return 'That is the other component. With the angle measured from the +x axis, x = L cos θ and y = L sin θ.';
+        case 'component-sign':return 'The size is right but the sign is wrong. The '+want+' component is '+(ans<0?'negative':'positive')+' because the arrow points '+(want==='x'?(ans<0?'left':'right'):(ans<0?'down':'up'))+'.';
+        case 'length-for-component':return 'That is the length of the whole vector. A component is the length times the cosine or the sine of the angle.';
+        default:return 'Not quite. '+want+' = '+nt(L)+' · '+(want==='x'?'cos':'sin')+'('+degT(th)+') = '+f2(ans)+'.';
+      }
+    },
+    result:want+' = '+nt(L)+' · '+(want==='x'?'cos':'sin')+'('+degT(th)+') = '+f2(ans)+'.',
+    reference:'Drop a perpendicular from the tip to each axis. The x component is the shadow on the x axis, L cos θ, and the y component is the shadow on the y axis, L sin θ. Here that gives ('+f2(v[0])+', '+f2(v[1])+').',
+    reveal:function(fig,done){fig.lines=[{a:v,b:[v[0],0]},{a:v,b:[0,v[1]]}];fig.marks=[{p:[v[0],0],cls:'foot',label:f2(v[0]),dy:14,dx:-6},{p:[0,v[1]],cls:'foot',label:f2(v[1]),dx:-30,dy:-4}];fig.draw();done();}};
+}
+function specLen(item){
+  var v=item.v,ans=v2len(v),ds=[],hi=30;
+  pushNum(ds,ans,'added-components',Math.abs(v[0])+Math.abs(v[1]),0,hi);pushNum(ds,ans,'no-sqrt',v[0]*v[0]+v[1]*v[1],0,hi);pushNum(ds,ans,'one-component',Math.max(Math.abs(v[0]),Math.abs(v[1])),0,hi);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'length',numMin:0,numMax:hi,tol:0.03,
+    prompt:'What is the length of the vector '+vt(v)+'?',
+    note:item.level===1?'The vector and its two components form a right triangle.':'',
+    scene:function(){var sc={plane:true,vectors:[{v:v,cls:'ma'}]};if(item.level===1)sc.lines=[{a:v,b:[v[0],0]},{a:[0,0],b:[v[0],0]}];return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'added-components':return 'That adds the two components. They are the legs of a right triangle, so the length is the hypotenuse: the square root of the sum of their squares.';
+        case 'no-sqrt':return 'That is the sum of the squares. The length is its square root.';
+        case 'one-component':return 'That is the larger component alone. Both components contribute: length = √(x² + y²).';
+        default:return 'Not quite. Length = √('+sq(v[0])+' + '+sq(v[1])+') = '+f2(ans)+'.';
+      }
+    },
+    result:'Length = √('+nt(v[0]*v[0])+' + '+nt(v[1]*v[1])+') = '+f2(ans)+'.',
+    reference:'The components are the two legs of a right triangle and the vector is the hypotenuse. Pythagoras: length = √(x² + y²) = √('+nt(v[0]*v[0])+' + '+nt(v[1]*v[1])+') = '+f2(ans)+'.',
+    reveal:function(fig,done){fig.lines=[{a:v,b:[v[0],0]},{a:[0,0],b:[v[0],0]}];fig.draw();done();}};
+}
+// P: dot product, angle and projection
+function specDot(item){
+  var a=item.a,b=item.b,ans=v2dot(a,b),ds=[],hi=30,lo=-30,la=v2len(a),lb=v2len(b);
+  pushNum(ds,ans,'dot-product-of-lengths',la*lb,lo,hi);pushNum(ds,ans,'dot-sign',-ans,lo,hi);pushNum(ds,ans,'cross-for-dot',Math.abs(v2cross(a,b)),lo,hi);pushNum(ds,ans,'added-components',a[0]+b[0]+a[1]+b[1],lo,hi);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'a · b',numMin:lo,numMax:hi,tol:0.03,
+    prompt:'a = '+vt(a)+' and b = '+vt(b)+'. What is a · b?',
+    note:item.level===1?'a · b = aₓbₓ + aᵧbᵧ. It is also |a| |b| cos θ.':'',
+    scene:function(){return {plane:true,vectors:vecs(a,b),arcs:item.level<3?[arcAB(a,b,0.8,'θ')]:[]};},
+    fb:function(c){
+      switch(c.tag){
+        case 'dot-product-of-lengths':return 'That is |a| |b|, the product of the lengths. The dot product also carries cos θ, which is 1 only for parallel vectors.';
+        case 'dot-sign':return 'The size is right but the sign is wrong. The dot product is negative when the angle between the vectors is more than 90°, and positive when it is less.';
+        case 'cross-for-dot':return 'That is |a| |b| sin θ, the size of the cross product. The dot product uses the cosine: aₓbₓ + aᵧbᵧ.';
+        case 'added-components':return 'That adds all four components. The dot product multiplies matching components and adds the two products.';
+        default:return 'Not quite. a · b = '+nt(a[0])+'·'+nt(b[0])+' + '+nt(a[1])+'·'+nt(b[1])+' = '+nt(ans)+'.';
+      }
+    },
+    result:'a · b = '+nt(a[0])+'·'+nt(b[0])+' + '+nt(a[1])+'·'+nt(b[1])+' = '+nt(ans)+'.',
+    reference:'Multiply matching components and add: '+nt(a[0]*b[0])+' + '+nt(a[1]*b[1])+' = '+nt(ans)+'. As a check, |a| |b| cos θ = '+f2(la)+' · '+f2(lb)+' · cos('+Math.round(v2between(a,b))+'°) gives the same number. The sign says whether the vectors lean the same way.',
+    reveal:function(fig,done){fig.arcs=[arcAB(a,b,0.8,Math.round(v2between(a,b))+'°')];fig.draw();done();}};
+}
+function specAng(item){
+  var a=item.a,b=item.b,ans=v2between(a,b),ds=[];
+  pushNum(ds,ans,'supplement',180-ans,0,180);pushNum(ds,ans,'one-vector-angle',Math.abs(v2ang(a)),0,180);pushNum(ds,ans,'one-vector-angle',Math.abs(v2ang(b)),0,180);pushNum(ds,ans,'assumed-perpendicular',90,0,180);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'angle',numMin:0,numMax:180,unit:'°',tol:1,
+    prompt:'a = '+vt(a)+' and b = '+vt(b)+'. What is the angle between them, in degrees?',
+    note:item.level===1?'cos θ = a · b / (|a| |b|). The angle between two vectors is between 0° and 180°.':'',
+    scene:function(){return {plane:true,vectors:vecs(a,b)};},
+    fb:function(c){
+      switch(c.tag){
+        case 'supplement':return 'That is 180° minus the angle. Check the sign of the dot product: it is '+(v2dot(a,b)>0?'positive, so the angle is less than 90°':v2dot(a,b)<0?'negative, so the angle is more than 90°':'zero, so the angle is 90°')+'.';
+        case 'one-vector-angle':return 'That is the angle one vector makes with the x axis. The question asks for the angle between the two vectors.';
+        case 'assumed-perpendicular':return 'They are not perpendicular. Two vectors are perpendicular only when their dot product is 0, and here a · b = '+nt(v2dot(a,b))+'.';
+        default:return 'Not quite. cos θ = '+nt(v2dot(a,b))+' / ('+f2(v2len(a))+' · '+f2(v2len(b))+') = '+f2(v2dot(a,b)/(v2len(a)*v2len(b)))+', so θ = '+f2(ans)+'°.';
+      }
+    },
+    result:'θ = '+f2(ans)+'°.',
+    reference:'cos θ = a · b / (|a| |b|) = '+nt(v2dot(a,b))+' / ('+f2(v2len(a))+' · '+f2(v2len(b))+') = '+f2(v2dot(a,b)/(v2len(a)*v2len(b)))+'. So θ = '+f2(ans)+'°. The sign of the dot product tells you at once whether the angle is below or above 90°.',
+    reveal:function(fig,done){fig.arcs=[arcAB(a,b,0.8,f2(ans)+'°')];fig.draw();done();}};
+}
+function specProj(item){
+  var a=item.a,b=item.b,ans=v2proj(a,b),ds=[],ub=v2unit(b);
+  pushP(ds,ans,'proj-swapped',v2proj(b,a));pushP(ds,ans,'unit-vector',ub);pushP(ds,ans,'no-projection',a);pushP(ds,ans,'perp-component',v2sub(a,ans));pushP(ds,ans,'unnormalized',v2scale(b,v2dot(a,b)));pushP(ds,ans,'proj-sign',v2scale(ans,-1));
+  pushP(ds,ans,'off-the-line',null,function(p){return Math.abs(v2cross(p,ub))>0.2;});
+  var lineB=[{a:v2scale(ub,-4.5),b:v2scale(ub,4.5),cls:'thin'}];
+  return {mode:'point',answer:ans,ds:ds,
+    prompt:'a = '+vt(a)+' and b = '+vt(b)+'. Place the projection of a onto the direction of b.',
+    note:item.level===1?'Shown: the line through b. The projection is the foot of the perpendicular from the tip of a to that line.':item.level===2?'The projection lies on the line of b and has length a · b / |b|.':'',
+    how:'Click or tap the grid where the tip of the projection belongs.',
+    scene:function(){var sc={plane:true,vectors:vecs(a,b)};if(item.level===1)sc.lines=lineB;return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'proj-swapped':return 'That is the projection of b onto a. The question projects a onto the direction of b, so the answer lies on the line of b.';
+        case 'unit-vector':return 'That is the unit vector along b. The projection lies along the line of b, but its length is |a · b| / |b|, the shadow of a on that line'+(v2dot(a,b)<0?', and here it points against b because a · b is negative':'')+'.';
+        case 'no-projection':return 'That is a itself. The projection is the shadow of a on the line of b: drop a perpendicular from the tip of a to that line.';
+        case 'perp-component':return 'That is the part of a perpendicular to b, what is left after the projection is removed. The projection is the part along b.';
+        case 'unnormalized':return 'That is (a · b) b, which is too long. Divide by |b|², or use the unit vector of b: the length of the projection is a · b / |b|.';
+        case 'proj-sign':return 'The projection points the wrong way. Its sign follows a · b, which is '+(v2dot(a,b)>0?'positive':'negative')+' here.';
+        case 'off-the-line':return 'The projection onto the direction of b must lie on the line through b.';
+        default:return 'Not there. The projection is (a · b / |b|²) b = '+vt(ans)+'.';
+      }
+    },
+    result:'The projection of a onto b is '+vt(ans)+'.',
+    reference:'Drop a perpendicular from the tip of a to the line through b. The foot is the projection. In numbers it is (a · b / |b|²) b = ('+nt(v2dot(a,b))+' / '+nt(v2dot(b,b))+') '+vt(b)+' = '+vt(ans)+'. The component of a along b is a · b / |b| = '+f2(v2dot(a,b)/v2len(b))+': the length of the projection, with a minus sign when it points against b.',
+    reveal:function(fig,done){fig.lines=lineB.concat([{a:a,b:ans}]);fig.marks=[{p:ans,cls:'foot'}];fig.state=ans;fig.draw();done();}};
+}
+// X: cross product
+function specCross(item){
+  var a=v3of(item.a),b=v3of(item.b),c=cross(a,b),ans=unit(c),ds=[];
+  pushD(ds,ans,'left-hand',scale(ans,-1),true);pushD(ds,ans,'in-plane',unit(a),true);pushD(ds,ans,'in-plane',unit(b),true);
+  if(vlen(add(a,b))>1e-6)pushD(ds,ans,'sum-for-cross',unit(add(a,b)),true);if(vlen(add(a,scale(b,-1)))>1e-6)pushD(ds,ans,'sum-for-cross',unit(add(a,scale(b,-1))),true);
+  function name(v){return isCardinal3(v)||'('+f2(v[0])+', '+f2(v[1])+', '+f2(v[2])+')';}
+  return {mode:'point',space:'3d',answer:ans,ds:ds,
+    prompt:'a points along '+name(a)+' and b points along '+name(b)+'. Place the direction of a × b.',
+    note:item.level===1?'Shown: the two vectors and the plane they lie in. a × b is perpendicular to that plane. Right hand: fingers along a, curl toward b, thumb gives a × b.':item.level===2?'a × b is perpendicular to both a and b. The right hand picks which of the two perpendicular directions.':'',
+    how:'Click or tap the sphere in the direction of a × b. Drag to turn the view.',
+    scene:function(){var sc={axes:'xyz',marks:[{v:unit(a),cls:'ma',vec:true,label:'a'},{v:unit(b),cls:'mb',vec:true,label:'b'}]};if(item.level===1)sc.guides=[{n:ans,h:0}];return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'left-hand':return 'That is b × a, the opposite direction. Fingers of the right hand along a, curl them toward b, and the thumb points along a × b.';
+        case 'in-plane':return 'That is one of the two vectors. a × b is perpendicular to both of them, so it sticks out of their plane.';
+        case 'sum-for-cross':return 'That lies in the plane of a and b, like their sum or difference. The cross product is perpendicular to that plane.';
+        default:return 'Not there. a × b is perpendicular to both vectors and the right-hand rule picks the side: '+name(ans)+'.';
+      }
+    },
+    result:'a × b points along '+name(ans)+'.',
+    reference:'a × b is perpendicular to the plane of a and b. Of the two perpendicular directions, the right hand picks one: fingers along a, curl toward b, thumb along a × b. Here that gives '+name(ans)+'. The order matters: b × a points the other way.',
+    reveal:function(fig,done){fig.marks=[{v:unit(a),cls:'ma',vec:true,label:'a'},{v:unit(b),cls:'mb',vec:true,label:'b'}];fig.guides=[{n:ans,h:0}];fig.state=ans;fig.draw();done();}};
+}
+function dirName(v){var c=isCardinal3(v);if(c)return c;var a=toAngles(v);return 'θ = '+Math.round(a.theta)+'°, φ = '+(Math.round(a.phi)%360)+'°';}
+function isCardinal3(v){var u=unit(v),N=[['+x',[1,0,0]],['−x',[-1,0,0]],['+y',[0,1,0]],['−y',[0,-1,0]],['+z',[0,0,1]],['−z',[0,0,-1]]];for(var i=0;i<N.length;i++)if(angDeg(N[i][1],u)<1)return N[i][0];return null;}
+function specCrossMag(item){
+  var a=item.a,b=item.b,ans=Math.abs(v2cross(a,b)),ds=[],hi=30,la=v2len(a),lb=v2len(b);
+  pushNum(ds,ans,'cos-for-sin',Math.abs(v2dot(a,b)),0,hi);pushNum(ds,ans,'ignored-angle',la*lb,0,hi);pushNum(ds,ans,'cross-sign',Math.abs(a[0]*b[1]+a[1]*b[0]),0,hi);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'|a × b|',numMin:0,numMax:hi,tol:0.03,
+    prompt:'a = '+vt(a)+' and b = '+vt(b)+' lie in the xy plane. What is the size of a × b?',
+    note:item.level===1?'|a × b| = |a| |b| sin θ, the area of the parallelogram spanned by a and b. In components it is |aₓbᵧ − aᵧbₓ|.':'',
+    scene:function(){var sc={plane:true,vectors:vecs(a,b)};if(item.level===1)sc.lines=[{a:a,b:v2add(a,b),cls:'thin'},{a:b,b:v2add(a,b),cls:'thin'}];return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'cos-for-sin':return 'That is the dot product, |a| |b| cos θ. The cross product uses the sine: |aₓbᵧ − aᵧbₓ|.';
+        case 'ignored-angle':return 'That is |a| |b|, which is the size only when the vectors are perpendicular. Multiply by sin θ, or use aₓbᵧ − aᵧbₓ.';
+        case 'cross-sign':return 'The cross terms are right, but they are subtracted, not added: |aₓbᵧ − aᵧbₓ|.';
+        default:return 'Not quite. |a × b| = |'+nt(a[0])+'·'+nt(b[1])+' − '+nt(a[1])+'·'+nt(b[0])+'| = '+nt(ans)+'.';
+      }
+    },
+    result:'|a × b| = |'+nt(a[0])+'·'+nt(b[1])+' − '+nt(a[1])+'·'+nt(b[0])+'| = '+nt(ans)+'.',
+    reference:ans<1e-9?'a and b are parallel, so the parallelogram they span has no area and a × b is the zero vector: |aₓbᵧ − aᵧbₓ| = 0.':'For two vectors in the xy plane, a × b points along ±z and its size is |aₓbᵧ − aᵧbₓ| = '+nt(ans)+'. That number is the area of the parallelogram with sides a and b, which is |a| |b| sin θ.',
+    reveal:function(fig,done){fig.lines=[{a:a,b:v2add(a,b),cls:'thin'},{a:b,b:v2add(a,b),cls:'thin'}];fig.draw();done();}};
+}
+function specSense(item){
+  var n=item.axis,v=item.from,ans=unit(cross(n,v)),opts=[];
+  function nm(u){return isCardinal3(u);}
+  opts.push({t:'Toward '+nm(ans),ok:true});
+  opts.push({t:'Toward '+nm(scale(ans,-1)),tag:'left-hand',fb:'That is the sense of a negative turn. With the right thumb along '+nm(n)+', the fingers curl from '+nm(v)+' toward '+nm(ans)+'. It is the direction of n × v.'});
+  opts.push({t:'Toward '+nm(n)+', the axis itself',tag:'toward-axis',fb:'A turn never moves a point toward its axis. The point circles around the axis, staying at the same distance from it. It starts off along n × v, here '+nm(ans)+'.'});
+  opts.push({t:'It does not move',tag:'stays',fb:'Only points on the axis stay put. '+nm(v)+' is perpendicular to the axis, so it moves along the circle around the axis, starting toward '+nm(ans)+'.'});
+  var order=seededOrder(opts,item.id);
+  return {mode:'choice',space:'3d',options:order,
+    prompt:'A positive turn about the '+nm(n)+' axis: right thumb along '+nm(n)+', fingers show the sense. A point at '+nm(v)+' starts moving in which direction?',
+    note:item.level===1?'The first motion of a point at v under a turn about n is along n × v.':'',
+    scene:function(){return {axes:'xyz',state:v,hint:{axis:n,sense:item.level<3?1:0}};},
+    result:'The point at '+nm(v)+' starts off toward '+nm(ans)+', along n × v.',
+    reference:'A turn about n moves a point at v along the circle around n. The first motion is along n × v, here '+nm(n)+' × '+nm(v)+' = '+nm(ans)+'. This is the rule that Unit 1 uses for every gate: thumb along the axis, fingers give the sense.',
+    reveal:function(fig,done){fig.load({axes:'xyz',state:v,ghost:v,hint:{axis:n,sense:1}});fig.animate([{from:v,axis:n,angle:90*DEG}],function(){fig.state=ans;fig.draw();done();});}};
+}
+// F: fields of point charges
+function chargeMarks(ch){return ch.map(function(c,i){return {p:c.p,cls:c.q>0?'plus':'minus',label:(Math.abs(c.q)===1?'':Math.abs(c.q))+'q',dx:9,dy:-8};});}
+function specField(item){
+  var ch=item.charges,P=item.at,E=fieldAt(ch,P),ds=[],parts=ch.map(function(c){return fieldAt([c],P);});
+  ch.forEach(function(c,i){var flipped=ch.map(function(d,j){return j===i?{p:d.p,q:-d.q}:d;});pushP(ds,E,'sign-of-charge',fieldAt(flipped,P));});
+  pushP(ds,E,'sign-of-charge',v2scale(E,-1));
+  parts.forEach(function(p){pushP(ds,E,'only-one-charge',p);});
+  if(ch.length>1){pushP(ds,E,'average-for-sum',v2scale(E,1/ch.length));var mags=0;parts.forEach(function(p){mags+=v2len(p);});pushP(ds,E,'added-magnitudes',v2scale(v2unit(parts[0]),mags));pushP(ds,E,'added-magnitudes',v2scale(v2unit(parts[1]),mags));}
+  var E1=[0,0];ch.forEach(function(c){var d=v2sub(P,c.p),r=v2len(d);E1=v2add(E1,v2scale(d,FIELD_K*c.q/(r*r)));});pushP(ds,E,'inverse-not-square',E1);
+  var E0=[0,0];ch.forEach(function(c){var d=v2sub(P,c.p),r=v2len(d);E0=v2add(E0,v2scale(d,FIELD_K*c.q/(r*r*r*r)));});pushP(ds,E,'inverse-not-square',E0);
+  var text=ch.map(function(c){return 'a charge of '+(c.q>0?'+':'−')+(Math.abs(c.q)===1?'':Math.abs(c.q))+'q at '+vt(c.p);}).join(' and ');
+  return {mode:'point',answer:E,ds:ds,
+    prompt:'There is '+text+'. Place the electric field at the point P = '+vt(P)+'. In these units a charge q at distance r makes a field of size 4/r².',
+    note:ch.length>1?(item.level===1?'Shown: the field of each charge on its own, drawn from P. The field at P is their vector sum.':item.level===2?'Find the field of each charge at P, then add the two arrows tip to tail.':''):(item.level===1?'The field points along the line from the charge: away from a positive charge, toward a negative one. Its size is 4|q|/r\u00b2.':item.level===2?'Size 4|q|/r\u00b2, along the line from the charge.':''),
+    how:'Click or tap the grid where the tip of the field arrow belongs, drawn from P.'+(v2len(E)<1e-9?' If the field is zero, click P itself.':''),
+    scene:function(){var sc={plane:true,anchor:P,marks:chargeMarks(ch).concat([{p:P,cls:'pt',label:'P',dx:7,dy:12}])};if(item.level===1&&ch.length>1)sc.vectors=parts.map(function(p,i){return {tail:P,v:p,cls:'mb',label:'E'+(i+1)};});return sc;},
+    fb:function(c){
+      switch(c.tag){
+        case 'sign-of-charge':return 'A sign is wrong. The field of a positive charge points away from it, and the field of a negative charge points toward it.';
+        case 'only-one-charge':return 'That is the field of one charge alone. Every charge contributes, and the fields add as vectors.';
+        case 'average-for-sum':return 'That is the average of the two fields. Fields superpose: the total is the sum of the arrows, not their average.';
+        case 'added-magnitudes':return 'That adds the sizes of the two fields along one direction. Each field keeps its own direction, so add them as arrows, tip to tail.';
+        case 'inverse-not-square':return 'The size of each field falls off as 1/r², not as 1/r or 1/r³: a charge q at distance 2 makes a field of size 4/4 = 1.';
+        default:return 'Not there. Each charge makes a field of size 4|q|/r² along the line from the charge, away from a positive charge and toward a negative one. The sum is '+vt(E)+'.';
+      }
+    },
+    result:'E at P = '+vt(E)+'.',
+    reference:ch.map(function(c,i){var d=v2sub(P,c.p),r=v2len(d);return 'Charge '+(i+1)+': distance '+f2(r)+', size 4·'+Math.abs(c.q)+'/'+f2(r*r)+' = '+f2(FIELD_K*Math.abs(c.q)/(r*r))+', pointing '+(c.q>0?'away from':'toward')+' the charge: '+vt(parts[i])+'.';}).join(' ')+' Adding the arrows gives '+vt(E)+'.',
+    reveal:function(fig,done){
+      var pr=fig.pred;fig.load({plane:true,anchor:P,marks:chargeMarks(ch).concat([{p:P,cls:'pt',label:'P',dx:7,dy:12}]),vectors:[{tail:P,v:parts[0],cls:'mb',label:'E1'}]});fig.pred=pr;fig.draw();
+      if(parts.length<2){fig.state=E;fig.draw();done();return;}
+      fig.animateSlide([{v:parts[1],from:P,to:v2add(P,parts[0]),cls:'mb',label:'E2'}],function(){fig.vectors=[{tail:P,v:parts[0],cls:'mb',label:'E1'},{tail:v2add(P,parts[0]),v:parts[1],cls:'mb'}];fig.state=E;fig.stateLabel='E';fig.draw();done();});
+    }};
+}
+function specFieldRatio(item){
+  var r1=item.r1,r2=item.r2,ans=(r1*r1)/(r2*r2),ds=[];
+  pushNum(ds,ans,'inverse-not-square',r1/r2,0,20);pushNum(ds,ans,'wrong-way',(r2*r2)/(r1*r1),0,20);pushNum(ds,ans,'wrong-way',r2/r1,0,20);pushNum(ds,ans,'ignored-distance',1,0,20);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'ratio',numMin:0,numMax:20,tol:0.01,nofig:true,
+    prompt:'At distance '+nt(r1)+' from a point charge the field has some size E. At distance '+nt(r2)+' from the same charge, the field is how many times E?',
+    note:item.level===1?'The field of a point charge falls off as 1/r².':'',
+    scene:function(){return {plane:true};},
+    fb:function(c){
+      switch(c.tag){
+        case 'inverse-not-square':return 'That is a 1/r falloff. The field of a point charge falls off as 1/r²: doubling the distance divides the field by four.';
+        case 'wrong-way':return 'That is the ratio the wrong way round. Farther away the field is weaker, so from distance '+nt(r1)+' to '+nt(r2)+' the field is '+(ans<1?'divided':'multiplied')+' by '+nt(ans<1?1/ans:ans)+'.';
+        case 'ignored-distance':return 'The field of a point charge depends on the distance. It falls off as 1/r².';
+        default:return 'Not quite. E ∝ 1/r², so the ratio is ('+nt(r1)+'/'+nt(r2)+')² = '+nt(ans)+'.';
+      }
+    },
+    result:'The field is '+nt(ans)+' times E.',
+    reference:'E ∝ 1/r², so E(r₂)/E(r₁) = (r₁/r₂)² = ('+nt(r1)+'/'+nt(r2)+')² = '+nt(ans)+'.'};
+}
+// C: complex numbers
+var CAXES={x:'Re',y:'Im'};
+function specCPlace(item){
+  var z=item.z,ans,ds=[],prompt,note,reference,result,zt,scene,reveal;
+  var kind=item.kind;
+  if(kind==='rect'){
+    ans=z;zt=ct(z);prompt='Place '+zt+' on the complex plane.';
+    pushP(ds,ans,'conjugate',[z[0],-z[1]]);pushP(ds,ans,'parts-swapped',[z[1],z[0]]);pushP(ds,ans,'negated',[-z[0],-z[1]]);
+    note=item.level===1?'The real part goes along the horizontal axis and the imaginary part along the vertical axis.':'';
+    result=zt+' is the point '+vt(z)+'.';
+    reference='A complex number a + bi is the point (a, b): a along the real axis, b along the imaginary axis. Here '+zt+' sits at '+vt(z)+'.';
+  }else if(kind==='polar'){
+    var r=item.r,th=item.deg;ans=[r*Math.cos(th*DEG),r*Math.sin(th*DEG)];zt=polarT(r,th);
+    prompt='Place '+zt+' on the complex plane.';
+    pushP(ds,ans,'angle-sign',[r*Math.cos(th*DEG),-r*Math.sin(th*DEG)]);pushP(ds,ans,'magnitude-as-real',[r,0]);pushP(ds,ans,'magnitude-dropped',[Math.cos(th*DEG),Math.sin(th*DEG)]);
+    note=item.level===1?'r e^(iθ) is the arrow of length r at angle θ from the positive real axis, counterclockwise.':'';
+    result=zt+' = '+ct(ans)+'.';
+    reference='r e^(iθ) has length r and makes the angle θ with the positive real axis, measured counterclockwise. Its parts are r cos θ and r sin θ: '+zt+' = '+ct(ans)+'.';
+    scene=function(){return {plane:true,axes:CAXES,circle:true,arcs:item.level<3?[{a:0,b:th,r:0.7,label:'θ'}]:[]};};
+  }else if(kind==='mul'){
+    var w=item.w,prod=[z[0]*w[0]-z[1]*w[1],z[0]*w[1]+z[1]*w[0]];ans=prod;zt='('+ct(z)+')('+ct(w)+')';
+    prompt='z = '+ct(z)+' and w = '+ct(w)+'. Place the product z w.';
+    pushP(ds,ans,'added-not-multiplied',v2add(z,w));pushP(ds,ans,'componentwise-product',[z[0]*w[0],z[1]*w[1]]);
+    var rz=v2len(z),rw=v2len(w),dz=v2ang(z),dw=v2ang(w);
+    pushP(ds,ans,'phase-subtracted',[rz*rw*Math.cos((dz-dw)*DEG),rz*rw*Math.sin((dz-dw)*DEG)]);pushP(ds,ans,'phase-subtracted',[rz*rw*Math.cos((dw-dz)*DEG),rz*rw*Math.sin((dw-dz)*DEG)]);
+    pushP(ds,ans,'magnitudes-added',[(rz+rw)*Math.cos((dz+dw)*DEG),(rz+rw)*Math.sin((dz+dw)*DEG)]);pushP(ds,ans,'conjugate',[prod[0],-prod[1]]);
+    note=item.level===1?'Multiplying complex numbers multiplies the lengths and adds the angles. In parts: (a + bi)(c + di) = (ac − bd) + (ad + bc)i.':item.level===2?'Lengths multiply, angles add.':'';
+    result='z w = '+ct(prod)+'.';
+    reference='Lengths multiply: '+f2(rz)+' · '+f2(rw)+' = '+f2(rz*rw)+'. Angles add: '+f2(dz)+'° + '+f2(dw)+'° = '+f2(dz+dw)+'°. In parts, (ac − bd) + (ad + bc)i = '+ct(prod)+'. Multiplying by w turns z by the angle of w and stretches it by the length of w.';
+    scene=function(){return {plane:true,axes:CAXES,circle:true,vectors:[{v:z,cls:'ma',label:'z'},{v:w,cls:'mb',label:'w'}]};};
+    reveal=function(fig,done){
+      var pr=fig.pred;fig.load({plane:true,axes:CAXES,circle:true,vectors:[{v:z,cls:'ma',label:'z'},{v:w,cls:'mb',label:'w'}]});fig.pred=pr;
+      fig.animateFn(function(e){var s=1+(rw-1)*e,d=dw*e;return {state:v2scale(v2rot(z,d),s)};},reducedMotion()?0:900,function(){fig.state=prod;fig.stateLabel='zw';fig.draw();done();});
+    };
+  }else{ // conj
+    ans=[z[0],-z[1]];zt=ct(z);prompt='z = '+zt+'. Place its complex conjugate z*.';
+    pushP(ds,ans,'no-change',z);pushP(ds,ans,'negated',[-z[0],-z[1]]);pushP(ds,ans,'conjugate-real',[-z[0],z[1]]);pushP(ds,ans,'parts-swapped',[z[1],z[0]]);
+    note=item.level===1?'The conjugate flips the sign of the imaginary part: a + bi becomes a − bi.':'';
+    result='z* = '+ct(ans)+'.';
+    reference='The conjugate keeps the real part and flips the sign of the imaginary part, so the arrow is reflected in the real axis: z* = '+ct(ans)+'. Its angle is −θ, and z z* = |z|² = '+nt(z[0]*z[0]+z[1]*z[1])+'.';
+    scene=function(){return {plane:true,axes:CAXES,vectors:[{v:z,cls:'ma',label:'z'}]};};
+  }
+  return {mode:'point',answer:ans,ds:ds,prompt:prompt,note:note,
+    how:'Click or tap the grid at the point for this number.',
+    scene:scene||function(){return {plane:true,axes:CAXES,circle:kind==='polar'};},
+    fb:function(c){
+      switch(c.tag){
+        case 'conjugate':return 'That is the complex conjugate: the imaginary part has the wrong sign.';
+        case 'parts-swapped':return 'The real and imaginary parts are swapped. The real part goes along the horizontal axis.';
+        case 'negated':return 'That is the negative of the number, the arrow turned by 180°.';
+        case 'angle-sign':return 'The angle is measured the wrong way. Positive angles go counterclockwise from the positive real axis.';
+        case 'magnitude-dropped':return 'The angle is right but the length r was dropped. r e^(i\u03b8) has length r, not 1.';
+        case 'magnitude-as-real':return 'The length r is right but the number was placed as if its angle were zero. Turn the arrow by θ counterclockwise.';
+        case 'phase-as-magnitude':return 'The angle was used as a length. In r e^(iθ), r is the length and θ the angle.';
+        case 'added-not-multiplied':return 'That is z + w. A product multiplies the lengths and adds the angles.';
+        case 'componentwise-product':return 'That multiplies real with real and imaginary with imaginary. The cross terms matter: (a + bi)(c + di) = (ac − bd) + (ad + bc)i.';
+        case 'phase-subtracted':return 'The angles were subtracted. For a product the angles add. Subtracting the angle is what division does.';
+        case 'magnitudes-added':return 'The angle is right but the lengths were added. For a product the lengths multiply.';
+        case 'no-change':return 'That is z itself. The conjugate flips the sign of the imaginary part.';
+        case 'conjugate-real':return 'That flips the real part. The conjugate flips the imaginary part: a + bi becomes a − bi.';
+        default:return 'Not there. '+result+' '+(kind==='mul'?'Lengths multiply and angles add.':kind==='conj'?'The conjugate flips the sign of the imaginary part.':kind==='polar'?'r is the length and \u03b8 is the angle from the positive real axis.':'The real part goes along the horizontal axis and the imaginary part along the vertical axis.');
+      }
+    },
+    result:result,reference:reference,reveal:reveal||function(fig,done){fig.state=ans;fig.stateLabel=kind==='conj'?'z*':'';fig.draw();done();}};
+}
+function specCMag(item){
+  var z=item.z,ans=v2len(z),ds=[];
+  pushNum(ds,ans,'added-parts',Math.abs(z[0])+Math.abs(z[1]),0,30);pushNum(ds,ans,'no-sqrt',z[0]*z[0]+z[1]*z[1],0,30);pushNum(ds,ans,'real-part-only',Math.abs(z[0]),0,30);pushNum(ds,ans,'real-part-only',Math.abs(z[1]),0,30);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'|z|',numMin:0,numMax:30,tol:0.03,
+    prompt:'What is |z| for z = '+ct(z)+'?',
+    note:item.level===1?'|a + bi| = √(a² + b²), the length of the arrow.':'',
+    scene:function(){return {plane:true,axes:CAXES,vectors:[{v:z,cls:'ma',label:'z'}]};},
+    fb:function(c){
+      switch(c.tag){
+        case 'added-parts':return 'That adds the two parts. The modulus is the length of the arrow: √(a² + b²).';
+        case 'no-sqrt':return 'That is a² + b², which is |z|². Take the square root.';
+        case 'real-part-only':return 'That is one part alone. Both parts contribute to the length: √(a² + b²).';
+        default:return 'Not quite. |z| = √('+sq(z[0])+' + '+sq(z[1])+') = '+f2(ans)+'.';
+      }
+    },
+    result:'|z| = √('+nt(z[0]*z[0])+' + '+nt(z[1]*z[1])+') = '+f2(ans)+'.',
+    reference:'The modulus is the length of the arrow from 0 to z, by Pythagoras: √(a² + b²) = '+f2(ans)+'. It is also √(z z*).',
+    reveal:function(fig,done){fig.lines=[{a:z,b:[z[0],0]},{a:[0,0],b:[z[0],0]}];fig.draw();done();}};
+}
+function specCArg(item){
+  var z=item.z,ans=argDeg(z),ds=[],naive=Math.atan2(z[1],Math.abs(z[0]))/DEG;
+  pushNum(ds,ans,'quadrant',Math.atan(z[1]/(z[0]||1e-9))/DEG,-180,180);pushNum(ds,ans,'quadrant',naive,-180,180);pushNum(ds,ans,'angle-sign',-ans,-180,180);pushNum(ds,ans,'magnitude-for-phase',v2len(z),-180,180);
+  return {mode:'number',answer:ans,ds:ds,numLabel:'arg z',numMin:-180,numMax:180,unit:'°',tol:1,
+    prompt:'What is the angle of z = '+ct(z)+', in degrees, measured counterclockwise from the positive real axis? Give it between −180° and 180°.',
+    note:item.level===1?'Look at which quadrant the arrow is in before using the arctangent.':'',
+    scene:function(){return {plane:true,axes:CAXES,vectors:[{v:z,cls:'ma',label:'z'}]};},
+    fb:function(c){
+      switch(c.tag){
+        case 'quadrant':return 'That is the arctangent without the quadrant. The arrow '+ct(z)+' has real part '+(z[0]<0?'negative':'positive')+' and imaginary part '+(z[1]<0?'negative':'positive')+', so it lies in the '+(z[0]>=0?(z[1]>=0?'first':'fourth'):(z[1]>=0?'second':'third'))+' quadrant.';
+        case 'angle-sign':return 'The sign is wrong. Angles are counterclockwise from the positive real axis, so an arrow '+(z[1]>0?'above':'below')+' the axis has a '+(z[1]>0?'positive':'negative')+' angle.';
+        case 'magnitude-for-phase':return 'That is the length of the arrow. The question asks for its angle.';
+        default:return 'Not quite. The arrow to '+ct(z)+' makes '+f2(ans)+'° with the positive real axis.';
+      }
+    },
+    result:'arg z = '+f2(ans)+'°.',
+    reference:'Draw the arrow to '+vt(z)+'. It lies in the '+(z[0]>=0?(z[1]>=0?'first':'fourth'):(z[1]>=0?'second':'third'))+' quadrant. The angle from the positive real axis, counterclockwise, is '+f2(ans)+'°. The arctangent of b/a alone gives '+f2(Math.atan(z[1]/(z[0]||1e-9))/DEG)+'°, which is only right in the first and fourth quadrants.',
+    reveal:function(fig,done){fig.arcs=[{a:0,b:ans,r:0.7,label:f2(ans)+'°'}];fig.draw();done();}};
+}
+function specCChoice(item){
+  return {mode:'choice',options:item.options,prompt:item.prompt,note:item.note||'',nofig:!item.scene,
+    scene:item.scene||function(){return {plane:true,axes:CAXES};},result:item.result,reference:item.reference,reveal:item.reveal};
+}
+
+var SPEC0={add:specAdd,comp:specComp,len:specLen,dot:specDot,ang:specAng,proj:specProj,cross:specCross,crossmag:specCrossMag,sense:specSense,field:specField,fratio:specFieldRatio,cplace:specCPlace,cmag:specCMag,carg:specCArg,cchoice:specCChoice};
+Object.keys(SPEC0).forEach(function(k){EXTRA_BUILDERS[k]=function(item){return planeItem(item,SPEC0[k](item));};});
+
+var STARTER_V=[
+  {id:'v01',concept:'V1',level:1,type:'len',v:[3,4]},
+  {id:'v02',concept:'V1',level:1,type:'comp',len:4,deg:30,which:'x'},
+  {id:'v03',concept:'V1',level:2,type:'comp',len:2,deg:120,which:'x'},
+  {id:'v04',concept:'V1',level:3,type:'comp',len:3,deg:-50,which:'y'},
+  {id:'v05',concept:'V1',level:3,type:'len',v:[-2,3]},
+  {id:'v06',concept:'V2',level:1,type:'add',a:[2,1],b:[1,2]},
+  {id:'v07',concept:'V2',level:2,type:'add',a:[3,1],b:[-1,2]},
+  {id:'v08',concept:'V2',level:2,type:'add',a:[2,3],b:[1,-1],c2:-1},
+  {id:'v09',concept:'V2',level:3,type:'add',a:[1,1],b:[2,-1],c1:2,c2:-1},
+  {id:'v10',concept:'V2',level:3,type:'add',a:[-1,2],b:[1,-2]}
+];
+var STARTER_P=[
+  {id:'p01',concept:'P1',level:1,type:'dot',a:[2,1],b:[1,3]},
+  {id:'p02',concept:'P1',level:2,type:'dot',a:[3,0],b:[-2,2]},
+  {id:'p03',concept:'P1',level:2,type:'ang',a:[2,0],b:[-1,1]},
+  {id:'p04',concept:'P1',level:3,type:'ang',a:[3,1],b:[1,3]},
+  {id:'p05',concept:'P1',level:3,type:'dot',a:[1,2],b:[2,-1]},
+  {id:'p06',concept:'P2',level:1,type:'proj',a:[3,1],b:[1,1]},
+  {id:'p07',concept:'P2',level:2,type:'proj',a:[1,3],b:[2,0]},
+  {id:'p08',concept:'P2',level:2,type:'proj',a:[-1,3],b:[1,1]},
+  {id:'p09',concept:'P2',level:3,type:'proj',a:[3,1],b:[2,-1]}
+];
+var STARTER_X=[
+  {id:'x01',concept:'X1',level:1,type:'cross',a:[1,0,0],b:[0,1,0]},
+  {id:'x02',concept:'X1',level:2,type:'cross',a:[0,1,0],b:[1,0,0]},
+  {id:'x03',concept:'X1',level:2,type:'cross',a:[0,0,1],b:[1,0,0]},
+  {id:'x04',concept:'X1',level:3,type:'cross',a:[1,1,0],b:[0,0,1]},
+  {id:'x05',concept:'X1',level:2,type:'crossmag',a:[2,0],b:[1,3]},
+  {id:'x06',concept:'X1',level:3,type:'crossmag',a:[2,2],b:[3,3]},
+  {id:'x07',concept:'X2',level:1,type:'sense',axis:[0,0,1],from:[1,0,0]},
+  {id:'x08',concept:'X2',level:2,type:'sense',axis:[1,0,0],from:[0,1,0]},
+  {id:'x09',concept:'X2',level:3,type:'sense',axis:[0,1,0],from:[1,0,0]}
+];
+var STARTER_F=[
+  {id:'f01',concept:'F1',level:1,type:'field',charges:[{p:[0,0],q:1}],at:[2,0]},
+  {id:'f02',concept:'F1',level:2,type:'field',charges:[{p:[0,0],q:-1}],at:[0,-1]},
+  {id:'f03',concept:'F1',level:2,type:'fratio',r1:1,r2:2},
+  {id:'f04',concept:'F1',level:3,type:'fratio',r1:3,r2:1},
+  {id:'f05',concept:'F2',level:1,type:'field',charges:[{p:[-2,0],q:1},{p:[2,0],q:-1}],at:[0,0]},
+  {id:'f06',concept:'F2',level:2,type:'field',charges:[{p:[-2,0],q:1},{p:[2,0],q:1}],at:[0,0]},
+  {id:'f07',concept:'F2',level:2,type:'field',charges:[{p:[-2,0],q:1},{p:[0,2],q:2}],at:[0,0]},
+  {id:'f08',concept:'F2',level:3,type:'field',charges:[{p:[2,0],q:1},{p:[0,2],q:1}],at:[2,2]},
+  {id:'f09',concept:'F2',level:3,type:'field',charges:[{p:[-1,0],q:-1},{p:[0,2],q:1}],at:[0,0]}
+];
+var STARTER_C=[
+  {id:'c01',concept:'C1',level:1,type:'cplace',kind:'rect',z:[2,-1]},
+  {id:'c02',concept:'C1',level:1,type:'cmag',z:[3,4]},
+  {id:'c03',concept:'C1',level:2,type:'cplace',kind:'polar',r:2,deg:90},
+  {id:'c04',concept:'C1',level:2,type:'carg',z:[-1,1]},
+  {id:'c05',concept:'C1',level:2,type:'cplace',kind:'polar',r:Math.SQRT2,deg:-45},
+  {id:'c06',concept:'C1',level:3,type:'carg',z:[-2,-2]},
+  {id:'c07',concept:'C1',level:3,type:'cplace',kind:'conj',z:[1,2]},
+  {id:'c08',concept:'C2',level:1,type:'cplace',kind:'mul',z:[2,1],w:[0,1]},
+  {id:'c09',concept:'C2',level:2,type:'cplace',kind:'mul',z:[1,1],w:[1,1]},
+  {id:'c10',concept:'C2',level:2,type:'cchoice',prompt:'z is any complex number and φ is an angle. What does multiplying z by e^(iφ) do to its arrow?',
+    options:[{t:'Turns it by φ counterclockwise, keeping its length',ok:true},{t:'Makes it φ times longer, keeping its direction',tag:'phase-as-magnitude',fb:'e^(iφ) has length 1, so it cannot change the length of z. It changes the angle: the product has angle arg z + φ.'},{t:'Turns it by φ clockwise',tag:'rotated-clockwise',fb:'Angles add, and φ is counted counterclockwise from the positive real axis. Multiplying by e^(iφ) turns the arrow counterclockwise by φ.'},{t:'Adds φ to its real part',tag:'added-not-multiplied',fb:'That would be adding a number. Multiplying by e^(iφ) multiplies the lengths, 1 times |z|, and adds the angles.'}],
+    result:'Multiplying by e^(iφ) turns the arrow by φ counterclockwise.',reference:'e^(iφ) has length 1 and angle φ. In a product the lengths multiply and the angles add, so z e^(iφ) has the same length as z and an angle larger by φ. This is the picture behind every phase in Unit 1.'},
+  {id:'c11',concept:'C2',level:3,type:'cplace',kind:'mul',z:[2,1],w:[1,1]},
+  {id:'c12',concept:'C2',level:3,type:'cchoice',prompt:'z₁ = 2e^(i·30°) and z₂ = 3e^(i·60°). What are the length and the angle of z₁ z₂?',
+    options:[{t:'Length 6, angle 90°',ok:true},{t:'Length 5, angle 90°',tag:'magnitudes-added',fb:'The angles add but the lengths multiply: 2 · 3 = 6.'},{t:'Length 6, angle 30°',tag:'phase-subtracted',fb:'The angles add: 30° + 60° = 90°. Subtracting angles is what division does.'},{t:'Length 6, angle 1800°',tag:'phase-as-magnitude',fb:'The angles add, they do not multiply: 30° + 60° = 90°.'}],
+    result:'z₁ z₂ = 6e^(i·90°) = 6i.',reference:'In polar form the product is easy: lengths multiply, 2 · 3 = 6, and angles add, 30° + 60° = 90°. So z₁ z₂ = 6e^(i·90°) = 6i.'}
+];
+function genV(n,seed){
+  var rnd=mulberry32((seed|0)+n*7919+101),k=rnd();
+  function gi(lo,hi){return lo+Math.floor(rnd()*(hi-lo+1));}
+  if(k<0.4){var a=[gi(-2,3),gi(-2,3)],b=[gi(-2,3),gi(-2,3)],c=pick(rnd,[[1,1],[1,1],[1,-1],[2,1],[1,2],[2,-1]]);
+    var s=v2add(v2scale(a,c[0]),v2scale(b,c[1]));if(Math.abs(s[0])>4||Math.abs(s[1])>4||(a[0]===0&&a[1]===0)||(b[0]===0&&b[1]===0))return genV(n+1000,seed);
+    return {id:'gv'+n,concept:'V2',level:3,type:'add',a:a,b:b,c1:c[0],c2:c[1],generated:true};}
+  if(k<0.7)return {id:'gv'+n,concept:'V1',level:3,type:'comp',len:pick(rnd,[2,3,4]),deg:pick(rnd,[30,45,60,120,135,150,-30,-60,-135]),which:pick(rnd,['x','y']),generated:true};
+  var v=[gi(-4,4),gi(-4,4)];if(!v[0]&&!v[1])v=[3,-4];
+  return {id:'gv'+n,concept:'V1',level:3,type:'len',v:v,generated:true};
+}
+function genP(n,seed){
+  var rnd=mulberry32((seed|0)+n*6007+211),k=rnd();
+  function gi(lo,hi){return lo+Math.floor(rnd()*(hi-lo+1));}
+  var a=[gi(-3,3),gi(-3,3)],b=[gi(-3,3),gi(-3,3)];
+  if((!a[0]&&!a[1])||(!b[0]&&!b[1]))return genP(n+1000,seed);
+  if(k<0.35)return {id:'gp'+n,concept:'P1',level:3,type:'dot',a:a,b:b,generated:true};
+  if(k<0.6)return {id:'gp'+n,concept:'P1',level:3,type:'ang',a:a,b:b,generated:true};
+  var bb=pick(rnd,[[1,1],[1,-1],[2,0],[0,2],[1,0],[0,1],[-1,1],[2,-1],[1,2],[2,1]]),pr=v2proj(a,bb);
+  if(Math.abs(pr[0]*4-Math.round(pr[0]*4))>1e-9||Math.abs(pr[1]*4-Math.round(pr[1]*4))>1e-9||Math.abs(pr[0])>4||Math.abs(pr[1])>4)return genP(n+1000,seed);
+  return {id:'gp'+n,concept:'P2',level:3,type:'proj',a:a,b:bb,generated:true};
+}
+function genX(n,seed){
+  var rnd=mulberry32((seed|0)+n*4001+307),k=rnd(),AXS=[[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  if(k<0.45){var a=pick(rnd,AXS.concat([[1,1,0],[1,0,1],[0,1,1],[1,-1,0]])),b=pick(rnd,AXS);if(vlen(cross(a,b))<1e-6)return genX(n+1000,seed);return {id:'gx'+n,concept:'X1',level:3,type:'cross',a:a,b:b,generated:true};}
+  if(k<0.7){function gi(lo,hi){return lo+Math.floor(rnd()*(hi-lo+1));}var p=[gi(-3,3),gi(-3,3)],q=[gi(-3,3),gi(-3,3)];if((!p[0]&&!p[1])||(!q[0]&&!q[1]))return genX(n+1000,seed);return {id:'gx'+n,concept:'X1',level:3,type:'crossmag',a:p,b:q,generated:true};}
+  var ax=pick(rnd,AXS),fr=pick(rnd,AXS);if(Math.abs(dot(ax,fr))>0.5)return genX(n+1000,seed);
+  return {id:'gx'+n,concept:'X2',level:3,type:'sense',axis:ax,from:fr,generated:true};
+}
+function genF(n,seed){
+  var rnd=mulberry32((seed|0)+n*9973+401),k=rnd();
+  if(k<0.25)return {id:'gf'+n,concept:'F1',level:3,type:'fratio',r1:pick(rnd,[1,2,3]),r2:pick(rnd,[1,2,3,4]),generated:true};
+  var sets=[
+    [[{p:[-2,0],q:1},{p:[2,0],q:-1}],[0,0]],[[{p:[-2,0],q:1},{p:[2,0],q:1}],[0,0]],[[{p:[-2,0],q:-1},{p:[2,0],q:-1}],[0,0]],
+    [[{p:[-2,0],q:1},{p:[0,2],q:2}],[0,0]],[[{p:[-2,0],q:-1},{p:[0,2],q:1}],[0,0]],[[{p:[0,-2],q:1},{p:[2,0],q:-2}],[0,0]],
+    [[{p:[2,0],q:1},{p:[0,2],q:1}],[2,2]],[[{p:[2,0],q:-1},{p:[0,2],q:1}],[2,2]],[[{p:[-1,0],q:-1},{p:[0,2],q:1}],[0,0]],
+    [[{p:[0,2],q:1},{p:[0,-2],q:1}],[0,0]],[[{p:[0,2],q:1},{p:[0,-2],q:-1}],[0,0]],[[{p:[-2,0],q:1},{p:[0,-2],q:1}],[0,0]],
+    [[{p:[0,0],q:1}],[-2,0]],[[{p:[0,0],q:-1}],[0,2]],[[{p:[0,0],q:2}],[2,0]],[[{p:[1,0],q:-1}],[-1,0]]
+  ],s=pick(rnd,sets);
+  return {id:'gf'+n,concept:s[0].length>1?'F2':'F1',level:3,type:'field',charges:s[0],at:s[1],generated:true};
+}
+function genC(n,seed){
+  var rnd=mulberry32((seed|0)+n*3571+503),k=rnd();
+  function gi(lo,hi){return lo+Math.floor(rnd()*(hi-lo+1));}
+  var z=[gi(-3,3),gi(-3,3)];if(!z[0]&&!z[1])z=[1,2];
+  if(k<0.2)return {id:'gc'+n,concept:'C1',level:3,type:'cplace',kind:'rect',z:z,generated:true};
+  if(k<0.35)return {id:'gc'+n,concept:'C1',level:3,type:'cmag',z:z,generated:true};
+  if(k<0.5){if(!z[0]||!z[1])z=[-2,1];return {id:'gc'+n,concept:'C1',level:3,type:'carg',z:z,generated:true};}
+  if(k<0.62){var pr=pick(rnd,[[2,90],[2,180],[1,90],[Math.SQRT2,45],[Math.SQRT2,135],[2,-90],[Math.SQRT2,-135],[2*Math.SQRT2,45],[3,180],[2*Math.SQRT2,-45]]);return {id:'gc'+n,concept:'C1',level:3,type:'cplace',kind:'polar',r:pr[0],deg:pr[1],generated:true};}
+  if(k<0.72)return {id:'gc'+n,concept:'C1',level:3,type:'cplace',kind:'conj',z:z,generated:true};
+  var zz=[gi(-2,2),gi(-2,2)],w=pick(rnd,[[0,1],[0,-1],[1,1],[1,-1],[-1,0],[0,1],[2,0]]),p=[zz[0]*w[0]-zz[1]*w[1],zz[0]*w[1]+zz[1]*w[0]];
+  if((!zz[0]&&!zz[1])||Math.abs(p[0])>4||Math.abs(p[1])>4)return genC(n+1000,seed);
+  return {id:'gc'+n,concept:'C2',level:3,type:'cplace',kind:'mul',z:zz,w:w,generated:true};
+}
+GROUPS.V={name:'Vectors',concepts:['V1','V2'],starter:STARTER_V,gen:genV};
+GROUPS.P={name:'Projection',concepts:['P1','P2'],starter:STARTER_P,gen:genP};
+GROUPS.X={name:'Cross product',concepts:['X1','X2'],starter:STARTER_X,gen:genX};
+GROUPS.F={name:'Fields',concepts:['F1','F2'],starter:STARTER_F,gen:genF};
+GROUPS.C={name:'Complex numbers',concepts:['C1','C2'],starter:STARTER_C,gen:genC};
+GROUP_ORDER=['V','P','X','F','C'].concat(GROUP_ORDER);
+
+function selfChecks0(){
+  var out=[];function chk(name,ok){out.push({name:name,ok:!!ok});}
+  var a=[3,1],b=[1,2];
+  chk('Cross product in the plane matches the 3D cross product',Math.abs(v2cross(a,b)-cross([3,1,0],[1,2,0])[2])<1e-12);
+  chk('Projection leaves a perpendicular remainder',Math.abs(v2dot(v2sub(a,v2proj(a,b)),b))<1e-12);
+  chk('Dot product equals |a| |b| cos θ',Math.abs(v2dot(a,b)-v2len(a)*v2len(b)*Math.cos(v2between(a,b)*DEG))<1e-9);
+  chk('A turn by 90° takes (x, y) to (−y, x)',v2dist(v2rot([2,1],90),[-1,2])<1e-12);
+  var z=[1,1],w=[1,1],p=[z[0]*w[0]-z[1]*w[1],z[0]*w[1]+z[1]*w[0]];
+  chk('(1 + i)² = 2i, lengths multiply and angles add',v2dist(p,[0,2])<1e-12&&Math.abs(v2len(p)-v2len(z)*v2len(w))<1e-12&&Math.abs(argDeg(p)-argDeg(z)-argDeg(w))<1e-9);
+  var E=fieldAt([{p:[-2,0],q:1},{p:[2,0],q:-1}],[0,0]);
+  chk('Fields of a dipole add at the midpoint',v2dist(E,[2,0])<1e-12);
+  chk('Field of one charge falls off as 1/r²',Math.abs(v2len(fieldAt([{p:[0,0],q:1}],[1,0]))/v2len(fieldAt([{p:[0,0],q:1}],[2,0]))-4)<1e-12);
+  chk('n × v gives the first motion of a positive turn',vdist(unit(cross([0,0,1],[1,0,0])),unit(rot([0,0,1],1e-3,[1,0,0]).map(function(x,i){return x-[1,0,0][i];})))<1e-3);
+  return out;
+}
 // Course map, goals, Start here and Discuss
 var COURSE={
   title:'Quantum Information and Programming 101',
@@ -2373,6 +3180,328 @@ var DISCUSS=[
     ],
     more:'How many shots would you need before a real offset of 0.02 in ⟨Z⟩ stands out from the scatter?'}
 ];
+// Unit 0: goals, Start here and Discuss, and the list of units
+CONCEPTS.V1='Components and length';CONCEPTS.V2='Adding vectors';
+CONCEPTS.P1='Dot product and angle';CONCEPTS.P2='Projection onto a direction';
+CONCEPTS.X1='Cross product';CONCEPTS.X2='Axis and sense of a turn';
+CONCEPTS.F1='Field of a point charge';CONCEPTS.F2='Superposition of fields';
+CONCEPTS.C1='Complex numbers as arrows';CONCEPTS.C2='Multiplying rotates';
+
+var GOALS0=[
+  {id:'g01',group:'V',concepts:['V1','V2'],short:'Work with vectors as arrows',
+    text:'Go between the components of a vector and its length and direction, and add or subtract vectors by components and by the tip-to-tail picture.'},
+  {id:'g02',group:'P',concepts:['P1','P2'],short:'Project one vector onto another',
+    text:'Compute a dot product, read the angle between two vectors from it, and find the projection of one vector onto the direction of another.'},
+  {id:'g03',group:'X',concepts:['X1','X2'],short:'Use the cross product and the right-hand rule',
+    text:'Find the direction and size of a cross product, and use the right-hand rule to say which way a turn about an axis moves a point.'},
+  {id:'g04',group:'F',concepts:['F1','F2'],short:'Add fields',
+    text:'Draw the field of a point charge, and find the field of several charges at a point by adding their fields as vectors.'},
+  {id:'g05',group:'C',concepts:['C1','C2'],short:'Treat a complex number as an arrow',
+    text:'Go between a + bi and r e^(iθ), and predict where multiplication by another complex number sends the arrow.'}
+];
+
+var CAX={x:'Re',y:'Im'};
+var INTRO0=[
+  {id:'why0',title:'What this unit is for',
+    html:[
+      '<p class="txt">In Unit 1 the state of a qubit is an arrow. A gate turns the arrow, a measurement projects it onto an axis, and a phase is an angle. This unit is about the arrows themselves.</p>',
+      '<ul class="plain"><li>Adding vectors, and splitting one into components.</li><li>The dot product, which measures how much of one vector lies along another.</li><li>The cross product, which gives the axis of a turn and the right-hand rule for its sense.</li><li>Fields of point charges, which add as vectors.</li><li>Complex numbers as arrows in a plane, where multiplying means turning.</li></ul>',
+      '<p class="txt">The same tools run introductory mechanics and electromagnetism, so some of the examples come from there. Everything happens on a grid you can click, and the practice asks you to predict before the answer is shown.</p>'
+    ].join(''),
+    fig:{plane:true,scene:function(){return {plane:true,vectors:[{v:[2,1],cls:'ma',label:'a'},{v:[1,2],cls:'mb',label:'b'},{tail:[2,1],v:[1,2],cls:'mb'}],state:[3,3],stateLabel:'a + b'};},cap:'Two arrows and their sum. The grid is the plane this unit works in.'}},
+  {id:'vectors',title:'Vectors: components, length and sum',
+    html:[
+      '<p class="txt">A vector is an arrow: a length and a direction. Its components say how far it reaches along each axis. The vector (3, 1) goes 3 to the right and 1 up. Where the arrow starts does not matter. Two arrows with the same components are the same vector.</p>',
+      '<p class="txt">The components and the arrow form a right triangle, so the length comes from Pythagoras, and the angle θ from the +x axis gives the components back.</p>',
+      '<p class="eq">length = √(x² + y²), x = length · cos θ, y = length · sin θ</p>',
+      '<p class="txt">To add two vectors, add the components: (2, 1) + (1, 2) = (3, 3). On the figure, slide b so that its tail sits on the tip of a. The sum runs from the start of a to the tip of b. To subtract, add the reversed arrow: a − b = a + (−b). Multiplying by a number stretches the arrow, and a negative number also reverses it.</p>'
+    ].join(''),
+    fig:{plane:true,scene:function(){var v=[3,2];return {plane:true,vectors:[{v:v,cls:'ma'}],lines:[{a:v,b:[3,0]},{a:v,b:[0,2]}],arcs:[{a:0,b:v2ang(v),r:1,label:'θ'}],marks:[{p:[3,0],cls:'foot',label:'x',dy:14,dx:-3},{p:[0,2],cls:'foot',label:'y',dx:-14,dy:-4}]};},cap:'The vector (3, 2), its two components and its angle from the +x axis.'}},
+  {id:'ex-add',kind:'Worked example',title:'Add two vectors',
+    task:'a = (2, 1) and b = (−1, 2). Find a + b.',
+    steps:[
+      'Add the x components: 2 + (−1) = 1. Add the y components: 1 + 2 = 3. So a + b = (1, 3).',
+      'On the figure: slide b so that its tail sits on the tip of a. Its tip lands at (1, 3).',
+      'Check the answer. b leans left, so the sum should end to the left of a’s tip. It does, and it is higher, because both vectors point up.'
+    ],
+    fig:{plane:true,scene:function(){return {plane:true,vectors:[{v:[2,1],cls:'ma',label:'a'},{v:[-1,2],cls:'mb',label:'b'}]};},cap:'Press Play to slide b to the tip of a.',
+      play:function(fig,done){fig.animateSlide([{v:[-1,2],from:[0,0],to:[2,1],cls:'mb',label:'b'}],function(){fig.vectors=[{v:[2,1],cls:'ma',label:'a'},{v:[-1,2],cls:'mb',label:'b'},{tail:[2,1],v:[-1,2],cls:'mb'}];fig.state=[1,3];fig.stateLabel='a + b';fig.draw();done();});}}},
+  {id:'dot',title:'Dot product and projection',
+    html:[
+      '<p class="txt">The dot product of two vectors is a number.</p>',
+      '<p class="eq">a · b = aₓ bₓ + aᵧ bᵧ = |a| |b| cos θ</p>',
+      '<p class="txt">θ is the angle between the vectors. The dot product is positive when they lean the same way, zero when they are perpendicular, and negative when the angle is more than 90°. It gives the angle from the components: cos θ = a · b / (|a| |b|).</p>',
+      '<p class="txt">The projection of a onto the direction of b is the shadow of a on the line through b. Drop a perpendicular from the tip of a to that line. The foot is the projection.</p>',
+      '<p class="eq">projection of a onto b = (a · b / |b|²) b, component of a along b = a · b / |b|</p>',
+      '<p class="txt">The component of a along b is the length of the projection, with a minus sign when the projection points against b. When b is a unit vector, it is simply a · b. In Unit 1 the probability of a measurement outcome comes from a projection of exactly this kind.</p>'
+    ].join(''),
+    fig:{plane:true,scene:function(){var a=[1,3],b=[3,1],p=v2proj(a,b);return {plane:true,vectors:[{v:a,cls:'ma',label:'a'},{v:b,cls:'mb',label:'b'}],lines:[{a:v2scale(v2unit(b),-1),b:v2scale(v2unit(b),4.3),cls:'thin'},{a:a,b:p}],marks:[{p:p,cls:'foot'}],arcs:[arcAB(b,a,0.9,'θ')]};},cap:'The projection of a onto b is the foot of the perpendicular from the tip of a to the line through b.'}},
+  {id:'ex-proj',kind:'Worked example',title:'Project one vector onto another',
+    task:'a = (3, 1) and b = (1, 1). Find the projection of a onto the direction of b.',
+    steps:[
+      'a · b = 3·1 + 1·1 = 4. |b|² = 1 + 1 = 2.',
+      'The projection is (a · b / |b|²) b = (4/2)(1, 1) = (2, 2).',
+      'Its length is a · b / |b| = 4/√2 = 2.83. That is the component of a along b.',
+      'Check the answer. a − (2, 2) = (1, −1), and (1, −1) · (1, 1) = 0. What is left over is perpendicular to b, as it must be.'
+    ],
+    fig:{plane:true,scene:function(){return {plane:true,vectors:[{v:[3,1],cls:'ma',label:'a'},{v:[1,1],cls:'mb',label:'b'}],lines:[{a:[-1,-1],b:[4,4],cls:'thin'},{a:[3,1],b:[2,2]}],marks:[{p:[2,2],cls:'foot'}],state:[2,2]};},cap:'The projection (2, 2) and the perpendicular dropped from the tip of a.'}},
+  {id:'cross',title:'Cross product and the right-hand rule',
+    html:[
+      '<p class="txt">The cross product of two vectors is a vector, perpendicular to both. Its size is the area of the parallelogram they span.</p>',
+      '<p class="eq">|a × b| = |a| |b| sin θ</p>',
+      '<p class="txt">Two directions are perpendicular to the plane of a and b. The right hand picks one: point the fingers along a, curl them toward b, and the thumb points along a × b. Swapping the order flips the result: b × a = −a × b. In components,</p>',
+      '<p class="eq">a × b = (a<sub>y</sub>b<sub>z</sub> − a<sub>z</sub>b<sub>y</sub>, a<sub>z</sub>b<sub>x</sub> − a<sub>x</sub>b<sub>z</sub>, a<sub>x</sub>b<sub>y</sub> − a<sub>y</sub>b<sub>x</sub>)</p>',
+      '<p class="txt">For two vectors in the xy plane only the last component survives, so a × b points along +z or −z.</p>',
+      '<p class="txt">The cross product also describes turning. A turn about an axis n moves a point at v along a circle around the axis. The first motion of the point is along n × v. So the rule for the sense of a turn is the same right hand: thumb along the axis, fingers show the way points move. Unit 1 uses this rule for every gate.</p>'
+    ].join(''),
+    fig:{scene:function(){return {axes:'xyz',marks:[{v:[1,0,0],cls:'ma',vec:true,label:'a'},{v:[0,1,0],cls:'mb',vec:true,label:'b'}],guides:[{n:[0,0,1],h:0}],state:[0,0,1]};},cap:'a along +x, b along +y. a × b points along +z, out of their plane. Drag the figure to turn it.'}},
+  {id:'ex-cross',kind:'Worked example',title:'Find a cross product',
+    task:'a points along +y and b points along +x. Which way does a × b point?',
+    steps:[
+      'a × b is perpendicular to both a and b, so it lies along the z axis. Up or down?',
+      'Right hand: fingers along +y, curl them toward +x. The thumb points down. So a × b points along −z.',
+      'Check with the components. a = (0, 1, 0), b = (1, 0, 0). The z component is aₓ bᵧ − aᵧ bₓ = 0·0 − 1·1 = −1.',
+      'The order matters: b × a, with fingers along +x curling toward +y, points along +z.'
+    ],
+    fig:{scene:function(){return {axes:'xyz',marks:[{v:[0,1,0],cls:'ma',vec:true,label:'a'},{v:[1,0,0],cls:'mb',vec:true,label:'b'}],guides:[{n:[0,0,1],h:0}],state:[0,0,-1]};},cap:'a along +y, b along +x. The result points down.'}},
+  {id:'fields',title:'Fields add as vectors',
+    html:[
+      '<p class="txt">A point charge q makes an electric field at every point in space. The field is a vector: it points along the line from the charge, away from a positive charge and toward a negative one, and its size falls off as the inverse square of the distance.</p>',
+      '<p class="eq">|E| = k |q| / r²</p>',
+      '<p class="txt">With several charges, the field at a point is the vector sum of the fields each charge would make on its own. This is superposition. Find each field at the point, then add the arrows tip to tail. Two equal positive charges make no field at their midpoint, because the two arrows cancel.</p>',
+      '<p class="txt">In the figures of this unit, k = 4 in the units of the grid, so a charge q at distance 2 makes a field of size 1.</p>'
+    ].join(''),
+    fig:{plane:true,scene:function(){var ch=[{p:[-1,0],q:1},{p:[1,0],q:-1}],P=[0,1],e1=fieldAt([ch[0]],P),e2=fieldAt([ch[1]],P);return {plane:true,anchor:P,marks:chargeMarks(ch).concat([{p:P,cls:'pt',label:'P',dx:7,dy:12}]),vectors:[{tail:P,v:e1,cls:'mb',label:'E1'},{tail:P,v:e2,cls:'mb',label:'E2'},{tail:v2add(P,e1),v:e2,cls:'mb'}],state:fieldAt(ch,P),stateLabel:'E'};},cap:'The fields of a positive and a negative charge at the point P, and their sum.'}},
+  {id:'ex-field',kind:'Worked example',title:'Add the fields of two charges',
+    task:'A charge +q sits at (−2, 0) and a charge +2q at (0, 2). Find the field at the origin, with k = 4.',
+    steps:[
+      'The charge +q is at distance 2. Its field has size 4·1/2² = 1 and points away from the charge, toward +x: E₁ = (1, 0).',
+      'The charge +2q is also at distance 2. Its field has size 4·2/2² = 2 and points away from it, toward −y: E₂ = (0, −2).',
+      'Add the arrows: E = (1, 0) + (0, −2) = (1, −2).',
+      'Check the answer. The field should point away from both charges, so right and down. It does, and more down than right, because the charge above is twice as large.'
+    ],
+    fig:{plane:true,scene:function(){var ch=[{p:[-2,0],q:1},{p:[0,2],q:2}];return {plane:true,marks:chargeMarks(ch).concat([{p:[0,0],cls:'pt',label:'P',dx:7,dy:12}]),vectors:[{v:[1,0],cls:'mb',label:'E1'},{v:[0,-2],cls:'mb',label:'E2'}]};},cap:'Press Play to add the two fields.',
+      play:function(fig,done){fig.animateSlide([{v:[0,-2],from:[0,0],to:[1,0],cls:'mb',label:'E2'}],function(){var ch=[{p:[-2,0],q:1},{p:[0,2],q:2}];fig.vectors=[{v:[1,0],cls:'mb',label:'E1'},{v:[0,-2],cls:'mb',label:'E2'},{tail:[1,0],v:[0,-2],cls:'mb'}];fig.state=[1,-2];fig.stateLabel='E';fig.draw();done();});}}},
+  {id:'complex',title:'Complex numbers as arrows',
+    html:[
+      '<p class="txt">A complex number z = a + bi is a point in a plane: a along the real axis, b along the imaginary axis. So it is also an arrow from 0, with a length and an angle.</p>',
+      '<p class="eq">|z| = √(a² + b²), z = r e<sup>iθ</sup> = r (cos θ + i sin θ)</p>',
+      '<p class="txt">r is the length and θ the angle from the positive real axis, counterclockwise. The number e<sup>iθ</sup> alone has length 1: it is the point on the unit circle at angle θ. So e<sup>i·90°</sup> = i and e<sup>i·180°</sup> = −1.</p>',
+      '<p class="txt">Multiplication is simple in this picture: lengths multiply and angles add. Multiplying by e<sup>iφ</sup> turns an arrow by φ without changing its length. Multiplying by i is a quarter turn, and i · i = −1 is a half turn. The conjugate z* = a − bi is the reflection of z in the real axis, and z z* = |z|².</p>',
+      '<p class="txt">In Unit 1 the two amplitudes of a qubit are complex numbers. Their angles are the phases, and a phase gate multiplies an amplitude by e<sup>iφ</sup>.</p>'
+    ].join(''),
+    fig:{plane:true,scene:function(){var z=[2,1],iz=[-1,2];return {plane:true,axes:CAX,circle:true,vectors:[{v:z,cls:'ma',label:'z'},{v:iz,cls:'mb',label:'iz'}],arcs:[{a:0,b:v2ang(z),r:0.8,label:'θ'}]};},cap:'z = 2 + i and iz = −1 + 2i. Multiplying by i turns the arrow by 90°.'}},
+  {id:'ex-complex',kind:'Worked example',title:'Multiply two complex numbers',
+    task:'z = 1 + i. Find |z|, its angle, and z².',
+    steps:[
+      '|z| = √(1 + 1) = √2 = 1.41. The arrow points along the diagonal, so its angle is 45°: z = √2 e<sup>i·45°</sup>.',
+      'For z², lengths multiply and angles add: length √2 · √2 = 2, angle 45° + 45° = 90°. So z² = 2e<sup>i·90°</sup> = 2i.',
+      'Check in parts: (1 + i)(1 + i) = 1 + i + i + i² = 1 + 2i − 1 = 2i.'
+    ],
+    fig:{plane:true,scene:function(){return {plane:true,axes:CAX,circle:true,vectors:[{v:[1,1],cls:'ma',label:'z'}]};},cap:'Press Play to turn and stretch z into z².',
+      play:function(fig,done){fig.animateFn(function(e){return {state:v2scale(v2rot([1,1],45*e),1+(Math.SQRT2-1)*e)};},reducedMotion()?0:900,function(){fig.state=[0,2];fig.stateLabel='z²';fig.draw();done();});}}},
+  {id:'ahead',title:'What carries into Unit 1',wide:true,
+    html:[
+      '<ul class="plain">',
+      '<li>The state of a qubit is a pair of complex amplitudes. Their angles are phases, and a phase gate turns an amplitude the way multiplying by e<sup>iφ</sup> turns an arrow.</li>',
+      '<li>The state is drawn as an arrow on a sphere. The probability of a measurement outcome comes from the projection of that arrow onto the measurement axis.</li>',
+      '<li>Every gate is a turn about an axis. The cross product and the right-hand rule say which way the state moves.</li>',
+      '<li>A superposition of states adds amplitudes the way fields add: as vectors, component by component.</li>',
+      '</ul>'
+    ].join('')}
+];
+
+var DISCUSS0=[
+  {id:'dV1',concept:'V1',title:'Two descriptions of one vector',src:'',
+    stem:'One student describes a displacement as “length 5, at 53° above the +x axis”. Another describes it as “(3, 4)”. Are they describing the same vector?',
+    scene:function(){return {plane:true,vectors:[{v:[3,4],cls:'ma'}],arcs:[{a:0,b:53.13,r:1,label:'53°'}],lines:[{a:[3,4],b:[3,0]},{a:[3,4],b:[0,4]}]};},
+    options:[
+      {t:'No: one description has a 5 in it and the other does not',
+        from:'The numbers in the two descriptions are different, so the vectors must be different.',
+        limit:'The numbers describe the same arrow in two ways. Length and angle are one pair of numbers, the components another. Pythagoras and the cosine and sine connect them.'},
+      {t:'Only if the arrow starts at the origin',
+        from:'A vector is often drawn from the origin, so its position seems to be part of it.',
+        limit:'A vector has a length and a direction, and nothing else. Where it is drawn does not matter. (3, 4) drawn from (1, 1) is the same vector as (3, 4) drawn from the origin.'},
+      {t:'Yes: 5 cos 53° = 3 and 5 sin 53° = 4, so both give the same arrow',ok:true,
+        why:'A vector is fixed by its length and direction, or equally by its components. The two descriptions translate into each other: the components of a length-5 arrow at 53° are (5 cos 53°, 5 sin 53°) = (3, 4), and √(3² + 4²) = 5.'},
+      {t:'No: (3, 4) has length 3 + 4 = 7',
+        from:'The length seems to be the total of the components.',
+        limit:'The components are the legs of a right triangle and the arrow is the hypotenuse. Its length is √(3² + 4²) = 5, not 7.'}
+    ],
+    more:'Write (−3, 4) as a length and an angle. Then check: is the angle 53°, −53° or 127°? Compare with a neighbour.'},
+  {id:'dV2',concept:'V2',title:'How long is a sum?',src:'',
+    stem:'a has length 3 and b has length 1. Nothing else is known. What can the length of a + b be?',
+    scene:function(){return {plane:true,vectors:[{v:[3,0],cls:'ma',label:'a'},{tail:[3,0],v:[0.5,0.87],cls:'mb',label:'b'}],circle:false,arcs:[{c:[3,0],a:0,b:360,r:1}]};},
+    options:[
+      {t:'Exactly 4',
+        from:'Adding two things of size 3 and 1 gives 4.',
+        limit:'Lengths add only when the vectors point the same way. For any other angle b does not point along a, and the sum is shorter than 4.'},
+      {t:'Anything from 2 to 4, depending on the angle between them',ok:true,
+        why:'Put the tail of b on the tip of a. The tip of b can be anywhere on a circle of radius 1 around that point. The sum is longest, 4, when b points along a, and shortest, 2, when b points against it. Every length in between is possible.'},
+      {t:'Anything from 0 to 4',
+        from:'Two vectors can cancel, so the sum can be as small as zero.',
+        limit:'Two vectors cancel only when they have the same length and point opposite ways. Here b is too short to cancel a. The shortest sum is 3 − 1 = 2.'},
+      {t:'Exactly √10',
+        from:'With Pythagoras, √(3² + 1²) = √10.',
+        limit:'Pythagoras applies only when the two vectors are perpendicular, and the angle is not given. √10 is one of the possible lengths, not the only one.'}
+    ],
+    more:'For which angle between a and b is |a + b| = 3, the same as |a|? Sketch it, then work it out with the dot product.'},
+  {id:'dP1',concept:'P1',title:'A negative dot product',src:'Barniol and Zavala 2014',
+    stem:'For two vectors a and b, a · b is negative. What does that tell you?',
+    scene:function(){return {plane:true,vectors:[{v:[3,1],cls:'ma',label:'a'},{v:[-2,2],cls:'mb',label:'b'}],arcs:[arcAB([3,1],[-2,2],0.9,'θ')]};},
+    options:[
+      {t:'The angle between them is more than 90°',ok:true,
+        why:'a · b = |a| |b| cos θ. The lengths are positive, so the sign of the dot product is the sign of cos θ, which is negative exactly when θ is between 90° and 180°. The vectors lean away from each other.'},
+      {t:'a · b is a vector, and it points opposite to b',
+        from:'A product of two vectors should be a vector, and a minus sign means it points backwards.',
+        limit:'The dot product is a number, not a vector. It has a sign but no direction. Its sign says whether the angle between a and b is below or above 90°.'},
+      {t:'That is impossible: a product of two lengths is positive',
+        from:'The dot product is a product, and lengths are never negative.',
+        limit:'The dot product is a product of two lengths and a cosine. The cosine can be negative, so the dot product can be too.'},
+      {t:'They point in exactly opposite directions',
+        from:'Opposite vectors give a negative dot product.',
+        limit:'They do, and then cos θ = −1. But any angle above 90° gives a negative value. Opposite directions are one case, not the only one.'}
+    ],
+    more:'Find two vectors with a · b = 0 that both have only positive components. Is that possible? Why or why not?'},
+  {id:'dP2',concept:'P2',title:'Projecting a onto b, or b onto a',src:'',
+    stem:'a and b are two vectors with a · b ≠ 0. Compare the projection of a onto b with the projection of b onto a. When do they have the same length?',
+    scene:function(){var a=[3,1],b=[1,2];return {plane:true,vectors:[{v:a,cls:'ma',label:'a'},{v:b,cls:'mb',label:'b'}],lines:[{a:a,b:v2proj(a,b)},{a:b,b:v2proj(b,a)}],marks:[{p:v2proj(a,b),cls:'foot'},{p:v2proj(b,a),cls:'foot'}]};},
+    options:[
+      {t:'Always: the dot product is symmetric, a · b = b · a',
+        from:'The dot product does not care about the order, so neither should the projection.',
+        limit:'The dot product is symmetric, but the projection divides it by the length of the vector projected onto. a · b / |b| and a · b / |a| differ unless |a| = |b|.'},
+      {t:'Never',
+        from:'Projecting in the other direction is a different operation, so the results must differ.',
+        limit:'The two lengths are a · b / |b| and a · b / |a|. If the two vectors have the same length, these are equal.'},
+      {t:'Only when a and b are perpendicular',
+        from:'Perpendicular vectors are the symmetric case.',
+        limit:'When a and b are perpendicular both projections are zero, which is excluded here by a · b ≠ 0. For every other pair the lengths agree exactly when |a| = |b|.'},
+      {t:'Only when a and b have the same length',ok:true,
+        why:'The projection of a onto b has length a · b / |b|, and the projection of b onto a has length a · b / |a|. The numerators are the same, so the lengths agree exactly when |a| = |b|. In general the longer vector casts the longer shadow.'}
+    ],
+    more:'In the figure a = (3, 1) and b = (1, 2). Compute both projection lengths and check which is longer before you look at the feet of the perpendiculars.'},
+  {id:'dX1',concept:'X1',title:'Swapping the order',src:'',
+    stem:'How is b × a related to a × b?',
+    scene:function(){return {axes:'xyz',marks:[{v:[1,0,0],cls:'ma',vec:true,label:'a'},{v:[0,1,0],cls:'mb',vec:true,label:'b'}],guides:[{n:[0,0,1],h:0}],state:[0,0,1]};},
+    options:[
+      {t:'They are the same vector',
+        from:'Multiplication does not depend on the order, as with numbers and with the dot product.',
+        limit:'The cross product does depend on the order. Curling the fingers from b toward a is the opposite turn, so the thumb points the other way. The component formula shows it too: every term changes sign.'},
+      {t:'Same size, opposite direction',ok:true,
+        why:'Both are perpendicular to the plane of a and b and both have size |a| |b| sin θ. The right hand decides the side: fingers along a curling toward b give one thumb direction, fingers along b curling toward a give the opposite one. So b × a = −a × b.'},
+      {t:'They are perpendicular to each other',
+        from:'Swapping the order gives a different vector, and different cross products seem to point in different directions.',
+        limit:'Both lie on the one line perpendicular to the plane of a and b. There is no room for them to be perpendicular to each other. They are opposite.'},
+      {t:'b × a is zero',
+        from:'Reversing the order undoes the product.',
+        limit:'A cross product is zero only when the two vectors are parallel. Reversing the order reverses the direction and keeps the size.'}
+    ],
+    more:'In Unit 1, Rx(90°) and Rx(−90°) carry a state in opposite senses about the same axis. Explain this with b × a = −a × b.'},
+  {id:'dX2',concept:'X2',title:'Which way does it turn?',src:'',
+    stem:'A positive turn about the +z axis: right thumb along +z, fingers give the sense. A point sits on the +y axis. In which direction does it start to move?',
+    scene:function(){return {axes:'xyz',state:[0,1,0],hint:{axis:[0,0,1],sense:1}};},
+    reveal:function(fig,done){fig.load({axes:'xyz',state:[0,1,0],ghost:[0,1,0],hint:{axis:[0,0,1],sense:1}});fig.animate([{from:[0,1,0],axis:[0,0,1],angle:90*DEG}],function(){fig.state=[-1,0,0];fig.draw();done();});},
+    options:[
+      {t:'Toward +x',
+        from:'A turn about z moves points between the x and y axes, and +x is the axis next door.',
+        limit:'The point does move between the x and y axes, but the sense matters. With the right thumb along +z the fingers curl from +y toward −x. Toward +x is the sense of a negative turn.'},
+      {t:'Toward +z, the axis',
+        from:'The turn is named after z, so it seems to push points toward z.',
+        limit:'A turn never changes the distance of a point from its axis. The point moves on a circle around the z axis, staying in the xy plane.'},
+      {t:'It does not move: it sits on an axis',
+        from:'Points on an axis stay still under a turn.',
+        limit:'Only points on the rotation axis stay still. The point is on the y axis, which is perpendicular to the z axis, so it moves on the full circle.'},
+      {t:'Toward −x',ok:true,
+        why:'The first motion of a point at v under a turn about n is along n × v. Here z × y = −x. With the thumb along +z, the fingers curl from +x to +y, then on to −x: a point at +y moves toward −x.'}
+    ],
+    more:'In Unit 1 the gate S is a quarter turn about +z. Use this rule to predict where S sends the state |+⟩, which sits on the +x axis, then check it in Unit 1.'},
+  {id:'dF1',concept:'F1',title:'Two sides of one charge',src:'',
+    stem:'Two points A and B sit at the same distance from a single positive charge, on opposite sides of it. How do the fields at A and B compare?',
+    scene:function(){return {plane:true,marks:[{p:[0,0],cls:'plus',label:'q',dx:9,dy:-8},{p:[-2,0],cls:'pt',label:'A',dx:-14,dy:12},{p:[2,0],cls:'pt',label:'B',dx:7,dy:12}]};},
+    options:[
+      {t:'Same size, opposite directions',ok:true,
+        why:'The field of a point charge has size k|q|/r², the same at the same distance, and points away from a positive charge along the line through it. At A that is one way along the line and at B the other way.'},
+      {t:'Same size, same direction',
+        from:'A field is pictured as a single direction, like a wind or a uniform field between plates.',
+        limit:'The field of a point charge points away from the charge at every point, so its direction changes from place to place. On opposite sides of the charge it points opposite ways.'},
+      {t:'Different sizes',
+        from:'The two points are in different places, so the fields should differ.',
+        limit:'The size depends only on the distance, and the distances are equal. Only the direction differs.'},
+      {t:'Zero at both: the two fields cancel',
+        from:'Two equal and opposite fields add to zero.',
+        limit:'The fields at A and at B are at different points. Fields add only at one point. Each point has its own field, and neither is zero.'}
+    ],
+    more:'Replace the positive charge by a negative one. What changes at A and B, and what stays the same?'},
+  {id:'dF2',concept:'F2',title:'Between two equal charges',src:'',
+    stem:'Two equal positive charges sit at (−2, 0) and (2, 0). What is the field at the midpoint, the origin?',
+    scene:function(){var ch=[{p:[-2,0],q:1},{p:[2,0],q:1}];return {plane:true,marks:chargeMarks(ch).concat([{p:[0,0],cls:'pt',label:'P',dx:7,dy:12}])};},
+    options:[
+      {t:'Twice the field of one charge, pointing to the right',
+        from:'Two charges make twice the field of one.',
+        limit:'Fields add as arrows, not as sizes. The left charge pushes to the right and the right charge pushes to the left. The two arrows cancel.'},
+      {t:'Twice the field of one charge, pointing up',
+        from:'The two fields along the line cancel, and what is left must go somewhere.',
+        limit:'Nothing is left. Each field lies along the line through the charges, so neither has a component perpendicular to it. The sum is the zero vector, not an arrow in a new direction.'},
+      {t:'Zero',ok:true,
+        why:'Each charge makes a field of the same size at the midpoint, directed away from itself. The two arrows point in opposite directions and add to zero. A test charge placed there feels no net force.'},
+      {t:'The same as the field of one charge',
+        from:'The two fields are equal, so the total is just that field.',
+        limit:'The two fields are equal in size but opposite in direction. Equal and opposite arrows add to zero.'}
+    ],
+    more:'Now make the right charge negative. Which way does the field at the midpoint point, and how large is it compared with the field of one charge alone?'},
+  {id:'dC1',concept:'C1',title:'The length of e^(iφ)',src:'',
+    stem:'φ is any real angle. What is |e^(iφ)|?',
+    scene:function(){return {plane:true,axes:CAX,circle:true,vectors:[{v:[Math.cos(50*DEG),Math.sin(50*DEG)],cls:'ma',label:'e^(iφ)'}],arcs:[{a:0,b:50,r:0.6,label:'φ'}]};},
+    options:[
+      {t:'φ',
+        from:'The angle is the only number in the expression, so the size must be φ.',
+        limit:'φ is the angle of the arrow, not its length. e^(i·90°) = i has length 1, not 90.'},
+      {t:'1, for every φ',ok:true,
+        why:'e^(iφ) = cos φ + i sin φ, so |e^(iφ)|² = cos²φ + sin²φ = 1. The number sits on the unit circle at angle φ. Changing φ moves it around the circle and never changes its length. This is why a phase factor never changes a probability in Unit 1.'},
+      {t:'cos φ',
+        from:'The real part of e^(iφ) is cos φ.',
+        limit:'cos φ is the real part, the shadow of the arrow on the real axis. The length of the arrow includes the imaginary part: √(cos²φ + sin²φ) = 1.'},
+      {t:'It depends on φ: larger angles give larger numbers',
+        from:'Exponentials grow with their argument.',
+        limit:'A real exponential eˣ grows. An imaginary exponent does not change the length, only the angle. e^(iφ) stays on the unit circle for every φ.'}
+    ],
+    more:'What is |2e^(iφ)|? And |e^(iφ) + e^(iφ)|? Sketch both.'},
+  {id:'dC2',concept:'C2',title:'Multiplying by i twice',src:'',
+    stem:'Take a complex number z and multiply it by i, then by i again. Where is the arrow now?',
+    scene:function(){return {plane:true,axes:CAX,vectors:[{v:[2,1],cls:'ma',label:'z'},{v:[-1,2],cls:'mb',label:'iz'}]};},
+    reveal:function(fig,done){fig.load({plane:true,axes:CAX,vectors:[{v:[2,1],cls:'ma',label:'z'},{v:[-1,2],cls:'mb',label:'iz'}]});fig.animateFn(function(e){return {state:v2rot([2,1],180*e)};},reducedMotion()?0:900,function(){fig.state=[-2,-1];fig.stateLabel='i²z';fig.draw();done();});},
+    options:[
+      {t:'Back where it started',
+        from:'Doing something twice undoes it, like two reflections.',
+        limit:'A reflection undoes itself, a turn does not. Two quarter turns make a half turn. It takes four multiplications by i to come back: i⁴ = 1.'},
+      {t:'Turned by 90°',
+        from:'Multiplying by i turns the arrow by 90°, and i · i = i.',
+        limit:'Each multiplication by i adds 90° to the angle. Two of them add 180°. And i · i is −1, not i.'},
+      {t:'Twice as long, same direction',
+        from:'Multiplying twice doubles the number.',
+        limit:'Multiplying by i does not change the length: |i| = 1. It changes the angle, by 90° each time.'},
+      {t:'Turned by 180°: it is now −z',ok:true,
+        why:'Multiplying by i turns the arrow by 90° counterclockwise. Doing it twice turns it by 180°, which is the arrow reversed. In symbols, i · i = i² = −1, and −1 times z is −z.'}
+    ],
+    more:'What does multiplying by (1 + i) do to an arrow? Give the turn and the stretch, then check with z = 1.'}
+];
+
+var UNITS={
+  u0:{id:'u0',n:'0',title:'Vectors, rotations and phase',groups:['V','P','X','F','C'],goals:GOALS0,intro:INTRO0,discuss:DISCUSS0,explore:'explore0',code:'code0',
+    goalsLead:'Unit 0 has five goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.',
+    prereq:'Sines, cosines and square roots. Everything else is introduced on the Start here page. If you already work with vectors and complex numbers, go straight to the practice: it will tell you quickly whether anything needs a second look.',
+    startLead:'Read this once before the practice. It gives the pictures and formulas for each topic and one worked example for each. The practice then asks for the same steps with less and less help.',
+    practiceIntro:'explains the pictures and formulas this unit uses and how the practice works.',
+    figLabel:'A plane with a grid. Click to place your prediction.'},
+  u1:{id:'u1',n:'1',title:'One qubit',groups:['S','G','M','O','N'],goals:GOALS,intro:INTRO,discuss:DISCUSS,explore:'explore',code:'code',
+    goalsLead:'Unit 1 has eight goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.',
+    prereq:'Sines and cosines, vectors with three components, and complex numbers in the form e^(iφ). Unit 0 covers these. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.',
+    startLead:'Read this once before the practice. It gives the conventions for the sphere and one worked example for each topic. The practice then asks for the same steps with less and less help.',
+    practiceIntro:'explains how to read the sphere and how the practice works.',
+    figLabel:'Bloch sphere. Click to place your prediction. Drag to turn the view.'}
+};
+var UNIT_ORDER=['u0','u1'];
+COURSE.units[0].open=true;COURSE.units[0].go='u0-goals';delete COURSE.units[0].plan;
 // Qiskit script and OpenQASM for a one-qubit circuit
 // op: {t:'gate',name}, {t:'relax',tt,q,a,b,label} or {t:'depol',p,label}
 var CG_PREP={zero:[],one:['x'],plus:['h'],minus:['x','h'],plusi:['h','s'],minusi:['h','sdg']};
@@ -2633,6 +3762,58 @@ function genQasm(spec){
   L.push('c[0] = measure q[0];');
   return {text:L.join('\n')+'\n',skipped:skipped};
 }
+
+// NumPy script for Unit 0
+function pyf(x){var r=Math.round(x*1e4)/1e4;if(r===0)r=0;return Number.isInteger(r)?r.toFixed(1):String(r);}
+function pyv(v){return '['+v.map(pyf).join(', ')+']';}
+function genNumpy(a,b){
+  var L=[],la=v2len(a),lb=v2len(b),d=v2dot(a,b),ok=la>1e-9&&lb>1e-9,pr=lb>1e-9?v2proj(a,b):[0,0],r90=v2rot(a,90),prod=[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+  function push(t){L.push(t);}
+  push('# Quantum Information and Programming 101');
+  push('# Unit 0, vectors and complex numbers');
+  push('# a = '+vt(a).replace(/−/g,'-')+', b = '+vt(b).replace(/−/g,'-'));
+  push('import numpy as np');
+  push('');
+  push('a = np.array(['+pyf(a[0])+', '+pyf(a[1])+'])');
+  push('b = np.array(['+pyf(b[0])+', '+pyf(b[1])+'])');
+  push('');
+  push('# 1. Length and sum. Adding 0.0 turns a -0.0 into 0.0 in the output.');
+  push('print("|a| =", round(float(np.linalg.norm(a)), 4))');
+  push('print("a + b =", (np.round(a + b, 4) + 0.0).tolist())');
+  push('print("a - b =", (np.round(a - b, 4) + 0.0).tolist())');
+  push('');
+  push('# 2. Dot product, angle and projection');
+  push('d = float(np.dot(a, b))');
+  push('print("a . b =", round(d, 4) + 0.0)');
+  if(ok){push('cos_theta = d / (np.linalg.norm(a) * np.linalg.norm(b))');push('angle = np.degrees(np.arccos(np.clip(cos_theta, -1, 1)))');push('print("angle =", round(float(angle), 2), "degrees")');}
+  if(lb>1e-9){push('proj = d / float(np.dot(b, b)) * b');push('print("projection of a onto b =", (np.round(proj, 4) + 0.0).tolist())');}
+  push('');
+  push('# 3. Cross product. The vectors get a z component of 0 first.');
+  push('a3 = np.append(a, 0.0)');
+  push('b3 = np.append(b, 0.0)');
+  push('print("a x b =", (np.round(np.cross(a3, b3), 4) + 0.0).tolist())');
+  push('');
+  push('# 4. A turn by 90 degrees is a matrix');
+  push('t = np.radians(90)');
+  push('R = np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]])');
+  push('print("a turned by 90 degrees =", (np.round(R @ a, 4) + 0.0).tolist())');
+  push('');
+  push('# 5. The same vectors as complex numbers: x + iy');
+  push('za = complex(a[0], a[1])');
+  push('zb = complex(b[0], b[1])');
+  push('angle_a = np.degrees(np.angle(za))');
+  push('print("|za| =", round(abs(za), 4), " angle of za =", round(float(angle_a), 2), "degrees")');
+  push('zab = za * zb');
+  push('print("za * zb =", round(zab.real, 4) + 0.0, "+", round(zab.imag, 4) + 0.0, "i")');
+  var out=['|a| = '+pyf(la),'a + b = '+pyv(v2add(a,b)),'a - b = '+pyv(v2sub(a,b)),'a . b = '+pyf(d)];
+  if(ok)out.push('angle = '+pyf2(v2between(a,b))+' degrees');
+  if(lb>1e-9)out.push('projection of a onto b = '+pyv(pr));
+  out.push('a x b = '+pyv([0,0,v2cross(a,b)]),'a turned by 90 degrees = '+pyv(r90));
+  out.push('|za| = '+pyf(la)+'  angle of za = '+pyf2(la>1e-9?argDeg(a):0)+' degrees');
+  out.push('za * zb = '+pyf(prod[0])+' + '+pyf(prod[1])+' i');
+  return {text:L.join('\n')+'\n',out:out.join('\n')+'\n'};
+}
+function pyf2(x){var r=Math.round(x*100)/100;if(r===0)r=0;return Number.isInteger(r)?r.toFixed(1):String(r);}
 (function(){
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -2648,13 +3829,18 @@ function toTop(el){try{el.scrollIntoView({block:'start'});}catch(_){}}
 
 function has(o,k){return o!=null&&Object.prototype.hasOwnProperty.call(o,k);}
 function isInt(x,lo,hi){return typeof x==='number'&&x===Math.floor(x)&&x>=lo&&x<=hi;}
-var ITEM=Object.create(null),ITEM_GROUP=Object.create(null),CONCEPT_ITEMS=Object.create(null),N_ITEMS=0;
-GROUP_ORDER.forEach(function(k){GROUPS[k].starter.forEach(function(it){
-  ITEM[it.id]=it;ITEM_GROUP[it.id]=k;(CONCEPT_ITEMS[it.concept]||(CONCEPT_ITEMS[it.concept]=[])).push(it.id);N_ITEMS++;
-});});
-var ROUTES=['home','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about'];
-var VIEW={'home':'home','u1-goals':'goals','u1-start':'start','u1-practice':'practice','u1-discuss':'discuss','u1-explore':'explore','u1-code':'code','research':'research','about':'about'};
-var PART_ROUTE=['u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code'];
+var ITEM=Object.create(null),ITEM_GROUP=Object.create(null),ITEM_UNIT=Object.create(null),CONCEPT_ITEMS=Object.create(null),UNIT_N={};
+UNIT_ORDER.forEach(function(u){UNIT_N[u]=0;UNITS[u].groups.forEach(function(k){GROUPS[k].starter.forEach(function(it){
+  ITEM[it.id]=it;ITEM_GROUP[it.id]=k;ITEM_UNIT[it.id]=u;(CONCEPT_ITEMS[it.concept]||(CONCEPT_ITEMS[it.concept]=[])).push(it.id);UNIT_N[u]++;
+});});});
+var PARTS=['goals','start','practice','discuss','explore','code'];
+var ROUTES=['home','units','research','about'],VIEW={home:'home',units:'units',research:'research',about:'about'};
+UNIT_ORDER.forEach(function(u){PARTS.forEach(function(p){var r=u+'-'+p;ROUTES.push(r);VIEW[r]=(p==='explore'||p==='code')?UNITS[u][p]:p;});});
+function partRoutes(u){return PARTS.map(function(p){return u+'-'+p;});}
+var VIEWS=[];ROUTES.forEach(function(x){if(VIEWS.indexOf(VIEW[x])<0)VIEWS.push(VIEW[x]);});
+var UID='u1';
+function U(){return UNITS[UID];}
+function US(){return S.units[UID];}
 var LET='ABCD';
 var KETS={zero:'|0⟩',one:'|1⟩',plus:'|+⟩',minus:'|−⟩',plusi:'|+i⟩',minusi:'|−i⟩'};
 
@@ -2733,6 +3919,62 @@ var TAGINFO={
   'string-order':['Qubits swapped in a string','The value with the two qubits exchanged',''],
   'string-average':['Average in place of product','(⟨P⟩₁ + ⟨Q⟩₂)/2 in place of the product',''],
   'one-factor':['One qubit only','The value for one of the two qubits',''],
+  'sub-for-add':['Difference for a sum','a − b or b − a in place of a + b, the tip-to-tip error','Nguyen and Meltzer 2003; Barniol and Zavala 2014'],
+  'add-for-sub':['Sum for a difference','a + b in place of a − b',''],
+  'rev-sub':['Difference reversed','b − a in place of a − b',''],
+  'average-for-sum':['Average for a sum','Half the sum, the midpoint between the tips','Nguyen and Meltzer 2003; Barniol and Zavala 2014'],
+  'only-one-vector':['One vector alone','One of the two vectors, unchanged',''],
+  'only-one-charge':['One charge alone','The field of one charge, the other left out',''],
+  'component-sign':['Component sign','One component with the wrong sign',''],
+  'scaled-wrong':['Coefficient dropped','A sum with a coefficient left out',''],
+  'sin-cos-swapped':['Sine and cosine swapped','The other component','Barniol and Zavala 2014'],
+  'length-for-component':['Length for a component','The whole length in place of a component',''],
+  'added-components':['Components added','The components added instead of combined by Pythagoras or paired in a product',''],
+  'no-sqrt':['Square root missing','The sum of squares, without the root',''],
+  'one-component':['One component for the length','The larger component in place of the length',''],
+  'dot-product-of-lengths':['Dot product without the cosine','|a| |b| in place of a · b','Barniol and Zavala 2014'],
+  'dot-sign':['Dot product sign','−a · b in place of a · b',''],
+  'cross-for-dot':['Cross product for the dot product','|a| |b| sin θ in place of a · b','Barniol and Zavala 2014'],
+  'supplement':['Supplementary angle','180° minus the angle between the vectors',''],
+  'one-vector-angle':['Angle from the x axis','The angle of one vector with the x axis, not between the two',''],
+  'assumed-perpendicular':['Assumed perpendicular','90° for vectors that are not perpendicular',''],
+  'proj-swapped':['Projection the other way','The projection of b onto a',''],
+  'unit-vector':['Unit vector for the projection','The unit vector along b',''],
+  'no-projection':['Vector not projected','a itself in place of its projection',''],
+  'perp-component':['Perpendicular part','The part of a perpendicular to b',''],
+  'unnormalized':['Projection not normalised','(a · b) b without the division by |b|²',''],
+  'proj-sign':['Projection reversed','The projection pointing the wrong way',''],
+  'off-the-line':['Projection off the line','A point not on the line of b',''],
+  'left-hand':['Left-hand rule','The opposite direction: b × a, or the sense of a negative turn','Barniol and Zavala 2014'],
+  'in-plane':['Cross product in the plane','One of the two vectors in place of their cross product',''],
+  'sum-for-cross':['Sum for the cross product','The sum or difference of the vectors',''],
+  'cos-for-sin':['Cosine for sine','|a| |b| cos θ in place of |a| |b| sin θ','Barniol and Zavala 2014'],
+  'ignored-angle':['Angle ignored','|a| |b| without the sine',''],
+  'toward-axis':['Motion toward the axis','A point moved toward the rotation axis',''],
+  'stays':['Point taken as fixed','No motion for a point off the axis',''],
+  'sign-of-charge':['Sign of a charge','The field with a charge’s sign reversed',''],
+  'added-magnitudes':['Sizes added','The sizes added along one direction, or lengths added in a product',''],
+  'inverse-not-square':['1/r in place of 1/r²','A field falling off as 1/r, or as 1/r³',''],
+  'wrong-way':['Ratio inverted','The ratio of fields the wrong way round',''],
+  'ignored-distance':['Distance ignored','The same field at every distance',''],
+  'conjugate':['Complex conjugate','The imaginary part with the wrong sign',''],
+  'parts-swapped':['Real and imaginary swapped','(b, a) in place of (a, b)',''],
+  'negated':['Negative of the number','−z in place of z',''],
+  'angle-sign':['Angle sign','The angle measured clockwise',''],
+  'magnitude-dropped':['Length r dropped','e^(i\u03b8) in place of r e^(i\u03b8)',''],
+  'cross-sign':['Cross terms added','a\u2093b\u1d67 + a\u1d67b\u2093 in place of a\u2093b\u1d67 \u2212 a\u1d67b\u2093',''],
+  'magnitude-as-real':['Angle dropped','r e^(iθ) placed at angle 0',''],
+  'phase-as-magnitude':['Angle used as a length','The angle taken for the modulus, or angles multiplied',''],
+  'added-not-multiplied':['Sum for a product','z + w in place of z w',''],
+  'componentwise-product':['Parts multiplied separately','(ac, bd) in place of (ac − bd, ad + bc)',''],
+  'phase-subtracted':['Angles subtracted','The angle of a quotient in place of a product',''],
+  'magnitudes-added':['Lengths added in a product','|z| + |w| in place of |z| |w|',''],
+  'conjugate-real':['Real part flipped','−a + bi in place of a − bi',''],
+  'added-parts':['Parts added for the modulus','|a| + |b| in place of √(a² + b²)',''],
+  'real-part-only':['One part for the modulus','|a| or |b| in place of the modulus',''],
+  'quadrant':['Quadrant missed','The arctangent without the quadrant',''],
+  'magnitude-for-phase':['Modulus for the angle','|z| in place of arg z',''],
+  'rotated-clockwise':['Turned the wrong way','A turn by −φ in place of φ',''],
   'unclassified':['Unclassified','No tagged answer nearby','']
 };
 TAGINFO['axis-y']=TAGINFO['axis-z']=TAGINFO['axis-x'];TAGINFO['last-only']=TAGINFO['first-only'];
@@ -2761,11 +4003,14 @@ function mark(items,id,ok,retry,day){
   return r;
 }
 function freshGroup(k){return {mode:'starter',queue:GROUPS[k].starter.map(function(i){return {id:i.id};}),pos:0,freeN:0};}
-function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGroup(k);});return {group:'S',groups:g,items:{},free:{},tags:{},review:{day:-1,queue:[],pos:0}};}
+function freshUnit(u){return {group:UNITS[u].groups[0],dq:0,tab:u+'-goals',review:{day:-1,queue:[],pos:0}};}
+function freshUnits(){var o={};UNIT_ORDER.forEach(function(u){o[u]=freshUnit(u);});return o;}
+function freshPractice(){var g={};GROUP_ORDER.forEach(function(k){g[k]=freshGroup(k);});return {groups:g,items:{},free:{},tags:{}};}
 function fresh(){
   var p=freshPractice();
-  return {v:3,seed:20261006,group:p.group,groups:p.groups,items:p.items,free:p.free,tags:p.tags,review:p.review,log:[],
-    discuss:{},dq:0,explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},unitTab:'u1-goals',seenStart:false};
+  return {v:3,seed:20261006,units:freshUnits(),groups:p.groups,items:p.items,free:p.free,tags:p.tags,log:[],
+    discuss:{},explore:{start:'zero',ops:[]},code:{axis:'y',shots:1000,target:'simulator',mode:'counts'},
+    explore0:{a:[2,1],b:[1,2],show:{sum:true,diff:false,proj:false}},lastUnit:'u0',seenStart:{}};
 }
 function opValid(op){
   if(!op||typeof op!=='object')return false;
@@ -2789,9 +4034,12 @@ function cleanEntry(q){var e={id:q.id};if(q.retry){e.retry=true;if(typeof q.day=
 function repair(s){
   var f=fresh(),out={},k,r;
   if(!s||typeof s!=='object'||s.v!==3)return f;
+  if(!s.units||typeof s.units!=='object'){s.units={u1:{group:s.group,dq:s.dq,tab:s.unitTab,review:s.review}};if(s.seenStart===true)s.seenStart={u1:true};if(UNIT_ORDER.indexOf(s.lastUnit)<0)s.lastUnit='u1';}
   for(k in f)out[k]=(s[k]==null||typeof s[k]!==typeof f[k]||Array.isArray(s[k])!==Array.isArray(f[k]))?f[k]:s[k];
   if(!isFinite(out.seed))out.seed=f.seed;
-  out.seed|=0;out.seenStart=!!out.seenStart;
+  out.seed|=0;
+  var seen={};UNIT_ORDER.forEach(function(u){if(has(out.seenStart,u)&&out.seenStart[u])seen[u]=true;});out.seenStart=seen;
+  if(UNIT_ORDER.indexOf(out.lastUnit)<0)out.lastUnit='u0';
   var items={};
   for(k in out.items){
     r=out.items[k];
@@ -2811,20 +4059,26 @@ function repair(s){
     groups[g]={mode:x.mode==='free'?'free':'starter',queue:x.queue.map(cleanEntry),pos:isInt(x.pos,0,x.queue.length)?x.pos:0,freeN:isInt(x.freeN,0,1e7)?x.freeN:0};
   });
   out.groups=groups;
-  if(GROUP_ORDER.indexOf(out.group)<0&&out.group!=='R')out.group='S';
-  var rv=out.review;
-  if(!Array.isArray(rv.queue)||!isInt(rv.day,-1e7,1e7))out.review={day:-1,queue:[],pos:0};
-  else{
-    var rq=rv.queue.filter(function(q){return q&&typeof q==='object'&&typeof q.id==='string'&&ITEM[q.id]&&items[q.id];}).slice(0,60).map(cleanEntry);
-    out.review={day:rv.day,queue:rq,pos:isInt(rv.pos,0,rq.length)?rv.pos:rq.length};
-  }
-  var dis={};
-  DISCUSS.forEach(function(q){
+  var units={};
+  UNIT_ORDER.forEach(function(u){
+    var x=has(out.units,u)?out.units[u]:null,fu=freshUnit(u),def=UNITS[u];
+    if(!x||typeof x!=='object'){units[u]=fu;return;}
+    var rv=x.review,rvo;
+    if(!rv||typeof rv!=='object'||!Array.isArray(rv.queue)||!isInt(rv.day,-1e7,1e7))rvo=fu.review;
+    else{
+      var rq=rv.queue.filter(function(q){return q&&typeof q==='object'&&typeof q.id==='string'&&ITEM[q.id]&&ITEM_UNIT[q.id]===u&&items[q.id];}).slice(0,60).map(cleanEntry);
+      rvo={day:rv.day,queue:rq,pos:isInt(rv.pos,0,rq.length)?rv.pos:rq.length};
+    }
+    units[u]={group:(def.groups.indexOf(x.group)>=0||x.group==='R')?x.group:def.groups[0],dq:isInt(x.dq,0,def.discuss.length-1)?x.dq:0,tab:partRoutes(u).indexOf(x.tab)>=0?x.tab:u+'-goals',review:rvo};
+  });
+  out.units=units;
+  var dis={},allQ=[];
+  UNIT_ORDER.forEach(function(u){allQ=allQ.concat(UNITS[u].discuss);});
+  allQ.forEach(function(q){
     var d=has(out.discuss,q.id)?out.discuss[q.id]:null,n=q.options.length-1;
     if(d&&typeof d==='object'&&isInt(d.first,0,n)&&(d.final==null||isInt(d.final,0,n)))dis[q.id]={first:d.first,final:d.final==null?null:d.final};
   });
   out.discuss=dis;
-  out.dq=isInt(out.dq,0,DISCUSS.length-1)?out.dq:0;
   var free={},tags={};
   for(k in CONCEPTS){r=has(out.free,k)?out.free[k]:null;if(r&&typeof r==='object'&&isInt(r.n,0,1e7)&&isInt(r.c,0,1e7))free[k]={n:r.n,c:r.c};}
   for(k in out.tags)if(has(out.tags,k)&&has(TAGINFO,k.split('+')[0])&&isInt(out.tags[k],1,1e7))tags[k]=out.tags[k];
@@ -2834,7 +4088,9 @@ function repair(s){
   out.explore=(typeof ex.start==='string'&&has(STARTS,ex.start)&&Array.isArray(ex.ops)&&ex.ops.length<=24&&ex.ops.every(opValid))?{start:ex.start,ops:ex.ops.map(cleanOp)}:{start:'zero',ops:[]};
   var c=out.code;
   out.code={axis:typeof c.axis==='string'&&has(CG_AXIS,c.axis)?c.axis:'y',shots:isInt(c.shots,1,10000)?c.shots:1000,target:typeof c.target==='string'&&has(CG_TARGETS,c.target)?c.target:'simulator',mode:c.mode==='expect'?'expect':'counts'};
-  if(PART_ROUTE.indexOf(out.unitTab)<0)out.unitTab='u1-goals';
+  var e0=out.explore0;
+  function vec2(v){return Array.isArray(v)&&v.length===2&&v.every(function(x){return typeof x==='number'&&x>=-4&&x<=4;})?[Math.round(v[0]*100)/100,Math.round(v[1]*100)/100]:null;}
+  out.explore0={a:vec2(e0.a)||[2,1],b:vec2(e0.b)||[1,2],show:{sum:!!(e0.show&&e0.show.sum),diff:!!(e0.show&&e0.show.diff),proj:!!(e0.show&&e0.show.proj)}};
   return out;
 }
 function migrate(o){
@@ -2842,7 +4098,7 @@ function migrate(o){
   try{
     if(!o||typeof o!=='object'||o.v!==2||!o.groups||typeof o.groups!=='object')return s;
     GROUP_ORDER.forEach(function(k){if(has(o.groups,k))s.groups[k]=o.groups[k];});
-    if(GROUP_ORDER.indexOf(o.group)>=0)s.group=o.group;
+    if(UNITS.u1.groups.indexOf(o.group)>=0)s.units.u1.group=o.group;s.lastUnit='u1';
     if(o.tags&&typeof o.tags==='object')s.tags=o.tags;
     (Array.isArray(o.log)?o.log:[]).forEach(function(r){
       if(!r||typeof r!=='object'||typeof r.item!=='string')return;
@@ -2862,8 +4118,8 @@ var S=(function(){
   return o?migrate(o):fresh();
 })();
 function logRow(row){S.log.push(row);if(S.log.length>1500)S.log.shift();return row;}
-function attempts(){var n=0,k;for(k in S.items)if(S.items[k].n)n++;return n;}
-function discussed(){var n=0;DISCUSS.forEach(function(q){var d=S.discuss[q.id];if(d&&d.final!=null)n++;});return n;}
+function attempts(u){var n=0,k;for(k in S.items)if(S.items[k].n&&(!u||ITEM_UNIT[k]===u))n++;return n;}
+function discussed(u){var n=0;UNITS[u||UID].discuss.forEach(function(q){var d=S.discuss[q.id];if(d&&d.final!=null)n++;});return n;}
 function markOf(id){var r=S.items[id];if(!r||!r.n)return '';return r.last?(r.m?'rec':'ok'):'miss';}
 function pipsFor(ids){
   var n={ok:0,rec:0,miss:0,none:0},h='';
@@ -2908,28 +4164,28 @@ function copyText(text,btn,el){
 }
 
 // Practice
-var ps=new Sphere($('p-sphere'),'Bloch sphere. Click to place your prediction. Drag to turn the view.');
-var cur=null,phase='idle',cls=null,resp=null,curLog=null,pDirty=true;
-function G(){return S.groups[S.group];}
-function dueIds(){
-  var d=today(),out=[],id,r;
-  for(id in S.items){r=S.items[id];if(ITEM[id]&&r.n>0&&r.due<=d&&r.day<d)out.push(id);}
+var ps=new FigSlot($('p-sphere'),'Bloch sphere. Click to place your prediction. Drag to turn the view.','A plane with a grid. Click to place the tip of your arrow.');
+var cur=null,phase='idle',cls=null,resp=null,curLog=null,pDirty=true,pUnit=null;
+function G(){return S.groups[US().group];}
+function dueIds(u){
+  u=u||UID;var d=today(),out=[],id,r;
+  for(id in S.items){r=S.items[id];if(ITEM[id]&&ITEM_UNIT[id]===u&&r.n>0&&r.due<=d&&r.day<d)out.push(id);}
   return out;
 }
 function buildReview(){
   var d=today(),ids=dueIds();
   ids.sort(function(a,b){var x=S.items[a],y=S.items[b];return (x.box?1:0)-(y.box?1:0)||x.due-y.due||hashStr(a+':'+d)-hashStr(b+':'+d);});
-  S.review={day:d,queue:ids.slice(0,12).map(function(id){return {id:id};}),pos:0};
+  US().review={day:d,queue:ids.slice(0,12).map(function(id){return {id:id};}),pos:0};
 }
-function reviewLeft(){
-  var rv=S.review,n=dueIds().length,i;
+function reviewLeft(u){
+  u=u||UID;var rv=S.units[u].review,n=dueIds(u).length,i;
   if(rv.day===today())for(i=rv.pos;i<rv.queue.length;i++)if(rv.queue[i].retry)n++;
   return n;
 }
 function nextDue(){
   var d=today(),best=null,n=0,id,r,e;
   for(id in S.items){
-    r=S.items[id];if(!ITEM[id]||!r.n)continue;
+    r=S.items[id];if(!ITEM[id]||ITEM_UNIT[id]!==UID||!r.n)continue;
     e=Math.max(r.due,r.day+1);if(e<=d)continue;
     if(best===null||e<best){best=e;n=1;}else if(e===best)n++;
   }
@@ -2937,9 +4193,9 @@ function nextDue(){
 }
 function currentItem(){
   var q,it,c;
-  if(S.group==='R'){
-    var rv=S.review,d=today();
-    if(rv.day!==d){buildReview();store.save(S);rv=S.review;}
+  if(US().group==='R'){
+    var rv=US().review,d=today();
+    if(rv.day!==d){buildReview();store.save(S);rv=US().review;}
     while(rv.pos<rv.queue.length){q=rv.queue[rv.pos];if(!q.retry&&S.items[q.id]&&S.items[q.id].day>=d)rv.pos++;else break;}
     if(rv.pos>=rv.queue.length)return null;
     q=rv.queue[rv.pos];c=copyOf(ITEM[q.id]);c.level=3;c.retry=!!q.retry;c.review=true;return c;
@@ -2954,20 +4210,20 @@ function currentItem(){
     q=g.queue[g.pos];it=ITEM[q.id];if(!it)return null;
     c=copyOf(it);c.retry=!!q.retry;return c;
   }
-  return GROUPS[S.group].gen(g.freeN,S.seed);
+  return GROUPS[US().group].gen(g.freeN,S.seed);
 }
 function renderGroups(){
-  var h='',n=reviewLeft();
-  GROUP_ORDER.forEach(function(k){
+  var h='',n=reviewLeft(),cg=US().group;
+  U().groups.forEach(function(k){
     var g=S.groups[k],st=g.mode==='free'?'more practice':g.pos>=g.queue.length?'done':g.pos?g.pos+' of '+g.queue.length+' done':'';
-    h+='<button type="button" data-g="'+k+'"'+(k===S.group?' aria-current="true"':'')+'>'+GROUPS[k].name+(st?'<small>'+st+'</small>':'')+'</button>';
+    h+='<button type="button" data-g="'+k+'"'+(k===cg?' aria-current="true"':'')+'>'+GROUPS[k].name+(st?'<small>'+st+'</small>':'')+'</button>';
   });
-  h+='<button type="button" data-g="R"'+(S.group==='R'?' aria-current="true"':'')+'>Review'+(n?'<small>'+n+' due</small>':'')+'</button>';
+  h+='<button type="button" data-g="R"'+(cg==='R'?' aria-current="true"':'')+'>Review'+(n?'<small>'+n+' due</small>':'')+'</button>';
   $('p-groups').innerHTML=h;
 }
 $('p-groups').onclick=function(e){
   var b=closest(e.target,'button[data-g]');if(!b)return;
-  S.group=b.getAttribute('data-g');store.save(S);renderItem();
+  US().group=b.getAttribute('data-g');store.save(S);renderItem();
 };
 function predictControls(R){
   if(R.mode==='point'||R.mode==='slice')return '<p class="readout" id="p-read">No point placed yet.</p>';
@@ -2979,12 +4235,13 @@ function predictControls(R){
   return '<div class="opts" id="p-opts" role="radiogroup" aria-label="Answers">'+R.options.map(function(o,i){return '<label><input type="radio" name="p-choice" value="'+i+'"> <span>'+esc(o.t)+'</span></label>';}).join('')+'</div>';
 }
 function renderItem(){
-  pDirty=false;
-  show($('p-intro'),!S.seenStart&&!attempts());
+  pDirty=false;pUnit=UID;
+  $('p-intro').innerHTML='First time here? '+link('','unit-start','Start here')+' '+esc(U().practiceIntro);
+  show($('p-intro'),!S.seenStart[UID]&&!attempts(UID));
   var it=currentItem();
   renderGroups();
   if(!it){renderSummary();return;}
-  var R=buildItem(it),rv=S.group==='R',g=rv?S.review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
+  var R=buildItem(it),rv=US().group==='R',g=rv?US().review:G();cur=R;phase='predict';cls=null;resp=null;curLog=null;
   $('view-practice').querySelector('.stage').classList.toggle('nofig',!!R.nofig);
   ps.load(R.scene());ps.setPlacing(R.mode==='point'||R.mode==='slice');ps.draw();
   var pos=rv?'Review, item '+(g.pos+1)+' of '+g.queue.length:g.mode==='starter'?'Item '+(g.pos+1)+' of '+g.queue.length:'More practice, item '+(g.freeN+1);
@@ -3018,16 +4275,19 @@ function renderItem(){
   var numEl=$('p-num');if(numEl)numEl.oninput=function(){show($('p-lockerr'),false);};
   if(opts&&R.mode==='choice')opts.onchange=function(){show($('p-lockerr'),false);};
   setupNumbers(R);
-  show($('p-resetview'),R.mode!=='slice');show($('p-flatnote'),R.mode==='slice');
+  show($('p-resetview'),R.mode!=='slice'&&!R.plane);show($('p-flatnote'),R.mode==='slice');
+  $('p-legend').innerHTML=R.plane?'<span><i class="k-state"></i>Result</span><span><i class="k-vec"></i>Given vectors</span><span><i class="k-pred"></i>Your prediction</span>'
+    :UID==='u0'?'<span><i class="k-state"></i>Result</span><span><i class="k-vec"></i>Given vectors</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Motion</span>'
+    :'<span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span>';
   renderStrip();
 }
 ps.onPlace=function(p){
   if(phase!=='predict'||!cur)return;
-  ps.pred=p;ps.draw();$('p-read').textContent='Your point: '+cur.respText(p)+'.';show($('p-lockerr'),false);
+  ps.pred=p;ps.draw();$('p-read').textContent=(cur.plane?'Your arrow: ':'Your point: ')+cur.respText(p)+'.';show($('p-lockerr'),false);
 };
 function readResponse(){
   var R=cur,e=null,v=null;
-  if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':'Place a point on the sphere first.';}
+  if(R.mode==='point'||R.mode==='slice'){v=ps.pred;if(!v)e=R.mode==='slice'?'Place a point in the circle first.':R.plane?'Place the tip of the arrow on the grid first.':'Place a point on the sphere first.';}
   else if(R.mode==='number'){
     var raw=$('p-num').value.trim(),lo=R.numMin==null?0:R.numMin,hi=R.numMax==null?1:R.numMax;v=parseFloat(raw);
     if(raw===''||!(v>=lo&&v<=hi)){v=null;e='Type a number between '+String(lo).replace('-','\u2212')+' and '+hi+'.';}
@@ -3068,7 +4328,7 @@ function compare(){
   $('p-next').onclick=function(){renderItem();toTop($('p-groups'));};
 }
 function record(R,c){
-  var it=R.item,ok=c.tag==='correct',rv=S.group==='R',Q=rv?S.review:G(),starter=!!ITEM[it.id];
+  var it=R.item,ok=c.tag==='correct',rv=US().group==='R',Q=rv?US().review:G(),starter=!!ITEM[it.id];
   if(starter)mark(S.items,it.id,ok,!!it.retry,today());
   else{var f=S.free[it.concept]||(S.free[it.concept]={n:0,c:0});f.n++;if(ok)f.c++;}
   if(!ok){
@@ -3081,25 +4341,29 @@ function record(R,c){
 }
 function renderStrip(){
   var h='';
-  GROUP_ORDER.forEach(function(k){GROUPS[k].concepts.forEach(function(c){
+  U().groups.forEach(function(k){GROUPS[k].concepts.forEach(function(c){
     h+='<div class="c"><b>'+c+'</b>'+esc(CONCEPTS[c])+pipsFor(CONCEPT_ITEMS[c])+'</div>';
   });});
   h+='<div class="striptools"><span><span class="pip ok"></span>Right on the first try</span><span><span class="pip rec"></span>Right after a miss</span><span><span class="pip miss"></span>Missed on the last try</span><span><span class="pip"></span>Not tried yet</span><button type="button" class="link" id="p-restart">Start over</button></div>';
   $('p-strip').innerHTML=h;
-  twoStep($('p-restart'),'Start over','Click again to reset your practice progress',function(){
-    var p=freshPractice();S.group=p.group;S.groups=p.groups;S.items=p.items;S.free=p.free;S.tags=p.tags;S.review=p.review;store.save(S);renderItem();
+  twoStep($('p-restart'),'Start over','Click again to reset your practice progress in this unit',function(){
+    var f=freshUnit(UID),id;
+    U().groups.forEach(function(k){S.groups[k]=freshGroup(k);GROUPS[k].concepts.forEach(function(x){delete S.free[x];});});
+    for(id in S.items)if(ITEM_UNIT[id]===UID)delete S.items[id];
+    S.units[UID].group=f.group;S.units[UID].review=f.review;
+    store.save(S);renderItem();
   });
 }
 function renderSummary(){
   cur=null;phase='idle';curLog=null;
   $('view-practice').querySelector('.stage').classList.remove('nofig');
-  ps.load({state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),true);show($('p-flatnote'),false);
+  ps.load(UID==='u0'?{plane:true}:{state:[0,0,1]});ps.setPlacing(false);ps.draw();show($('p-numbers'),false);show($('p-resetview'),UID!=='u0');show($('p-flatnote'),false);
   $('p-head').removeAttribute('data-item');$('p-head').removeAttribute('data-level');
-  if(S.group==='R'){reviewSummary();renderStrip();return;}
-  var def=GROUPS[S.group],low=def.name.toLowerCase(),n=0,c=0,rec=0,miss=0;
+  if(US().group==='R'){reviewSummary();renderStrip();return;}
+  var def=GROUPS[US().group],low=def.name.toLowerCase(),n=0,c=0,rec=0,miss=0;
   def.starter.forEach(function(it){var r=S.items[it.id];if(!r||!r.n)return;n++;if(r.first)c++;var m=markOf(it.id);if(m==='rec')rec++;else if(m==='miss')miss++;});
   var top=Object.keys(S.tags).sort(function(a,b){return S.tags[b]-S.tags[a];})[0];
-  var ni=GROUP_ORDER.indexOf(S.group)+1,next=ni<GROUP_ORDER.length?GROUP_ORDER[ni]:null;
+  var order=U().groups,ni=order.indexOf(US().group)+1,next=ni<order.length?order[ni]:null;
   $('p-head').innerHTML=
     '<p class="meta"><span>'+def.name+'</span><span>Starter set complete</span></p>'+
     '<p class="prompt">You finished the starter set on '+low+'. Right on the first try: '+c+' of '+n+'.</p>'+
@@ -3107,17 +4371,17 @@ function renderSummary(){
     (top?'<p class="note">Most frequent slip so far: '+esc(tagName(top).toLowerCase())+', '+plural(S.tags[top]|0,'time','times')+'.</p>':'')+
     '<p class="note">These items come back under Review. Missed items return tomorrow, the others in 3 days.</p>';
   $('p-steps').innerHTML=
-    '<div class="row" style="margin-top:18px">'+(next?'<button type="button" class="primary" id="p-nextgroup">Go on to '+GROUPS[next].name.toLowerCase()+'</button>':link('primary','u1-discuss','Go on to the discussion questions'))+'<button type="button" class="ghost" id="p-more">More practice on '+low+'</button></div>'+
-    (S.group==='G'?'<p class="note">More practice on gates draws from '+count(COUNTS.one)+' single-gate and '+count(COUNTS.two)+' two-gate items, without hints.</p>':'<p class="note">More practice items are generated without hints.</p>');
+    '<div class="row" style="margin-top:18px">'+(next?'<button type="button" class="primary" id="p-nextgroup">Go on to '+GROUPS[next].name.toLowerCase()+'</button>':link('primary',UID+'-discuss','Go on to the discussion questions'))+'<button type="button" class="ghost" id="p-more">More practice on '+low+'</button></div>'+
+    (US().group==='G'?'<p class="note">More practice on gates draws from '+count(COUNTS.one)+' single-gate and '+count(COUNTS.two)+' two-gate items, without hints.</p>':'<p class="note">More practice items are generated without hints.</p>');
   $('p-more').onclick=function(){G().mode='free';store.save(S);renderItem();};
-  if(next)$('p-nextgroup').onclick=function(){S.group=next;store.save(S);renderItem();};
+  if(next)$('p-nextgroup').onclick=function(){US().group=next;store.save(S);renderItem();};
   renderStrip();
 }
 function reviewSummary(){
-  var more=dueIds().length,nx=nextDue(),done=S.review.day===today()&&S.review.queue.length>0,h,b,open=null;
-  GROUP_ORDER.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
-  var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts()?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary','u1-discuss','Go to the discussion questions');
-  if(!attempts()){
+  var rv=US().review,more=dueIds().length,nx=nextDue(),done=rv.day===today()&&rv.queue.length>0,h,b,open=null;
+  U().groups.forEach(function(k){var g=S.groups[k];if(open===null&&g.mode==='starter'&&g.pos<g.queue.length)open=k;});
+  var onward=open?'<button type="button" class="'+(more?'ghost':'primary')+'" id="p-togroup">'+(attempts(UID)?'Continue with ':'Begin with ')+GROUPS[open].name.toLowerCase()+'</button>':link(more?'ghost':'primary',UID+'-discuss','Go to the discussion questions');
+  if(!attempts(UID)){
     h='<p class="prompt">Nothing to review yet.</p><p class="note">Items you answer in each topic come back here. Missed items return the next day, the others after 3 days, then after 7, 14 and 30 days. Review items come without hints.</p>';
     b=onward;
   }else if(more){
@@ -3130,21 +4394,26 @@ function reviewSummary(){
   $('p-head').innerHTML='<p class="meta"><span>Review</span><span></span></p>'+h;
   $('p-steps').innerHTML='<div class="row" style="margin-top:18px">'+b+'</div>';
   if($('p-reviewmore'))$('p-reviewmore').onclick=function(){buildReview();store.save(S);renderItem();};
-  if($('p-togroup'))$('p-togroup').onclick=function(){S.group=open;store.save(S);renderItem();};
+  if($('p-togroup'))$('p-togroup').onclick=function(){US().group=open;store.save(S);renderItem();};
 }
 function setupNumbers(R){
   var box=$('p-numbers'),on=R.mode==='point'||R.mode==='slice';show(box,on);if(!on)return;
-  var slice=R.mode==='slice';
-  $('p-n1l').firstChild.nodeValue=slice?'across ':'θ ';$('p-n2l').firstChild.nodeValue=slice?'up ':'φ ';
+  var slice=R.mode==='slice',pl=!!R.plane,cx=pl&&ps.active.axes;
+  $('p-n1l').firstChild.nodeValue=pl?(cx?'Re ':'x '):slice?'across ':'θ ';$('p-n2l').firstChild.nodeValue=pl?(cx?'Im ':'y '):slice?'up ':'φ ';
   var a=$('p-n1'),b=$('p-n2');a.value='';b.value='';
-  a.min=slice?-1:0;a.max=slice?1:180;a.step=slice?0.05:1;a.placeholder=slice?'0.5':'90';
-  b.min=slice?-1:0;b.max=slice?1:360;b.step=slice?0.05:1;b.placeholder=slice?'0.5':'45';
+  a.min=pl?-4:slice?-1:0;a.max=pl?4:slice?1:180;a.step=pl?0.25:slice?0.05:1;a.placeholder=pl?'2':slice?'0.5':'90';
+  b.min=pl?-4:slice?-1:0;b.max=pl?4:slice?1:360;b.step=pl?0.25:slice?0.05:1;b.placeholder=pl?'1':slice?'0.5':'45';
+  $('p-numbers').querySelector('summary').textContent=pl?'Enter the components':'Place by numbers';
   show($('p-angerr'),false);
 }
 $('p-resetview').onclick=function(){ps.resetView();};
 $('p-placeangles').onclick=function(){
   var e=$('p-angerr'),a=parseFloat($('p-n1').value),b=parseFloat($('p-n2').value);
   if(phase!=='predict'||!cur){e.textContent='This item is already locked in.';show(e,true);return;}
+  if(cur.plane){
+    if(!(a>=-4&&a<=4)||!(b>=-4&&b<=4)){e.textContent='Enter two components between −4 and 4.';show(e,true);return;}
+    show(e,false);ps.onPlace(v2snap([a,b],0.25));return;
+  }
   if(cur.mode==='slice'){
     if(!(a>=-1&&a<=1)||!(b>=-1&&b<=1)||Math.hypot(a,b)>1.0001){e.textContent='Enter two numbers between −1 and 1 that lie inside the circle.';show(e,true);return;}
     show(e,false);ps.onPlace(add(scale(ps.slice.u,a),scale(ps.slice.w,b)));return;
@@ -3153,37 +4422,37 @@ $('p-placeangles').onclick=function(){
   show(e,false);ps.onPlace(fromAngles(a,b));
 };
 function enterPractice(){
-  if(pDirty||phase==='idle')renderItem();
-  else{show($('p-intro'),!S.seenStart&&!attempts());renderGroups();ps.draw();}
+  if(pDirty||phase==='idle'||pUnit!==UID)renderItem();
+  else{show($('p-intro'),!S.seenStart[UID]&&!attempts(UID));renderGroups();ps.draw();}
 }
 
 // Discuss
-var dsp=new Sphere($('d-sphere'),'Figure for the discussion question.');
-var dDirty=true;
+var dsp=new FigSlot($('d-sphere'),'Figure for the discussion question. Drag to turn it.','Figure for the discussion question.');
+var dDirty=true,dUnit=null;
 function dOptions(q,name){
   return '<div class="opts" role="radiogroup" aria-label="Answers" id="'+name+'">'+q.options.map(function(o,i){
     return '<label><input type="radio" name="'+name+'" value="'+i+'"> <span class="letter">'+LET[i]+'</span><span>'+esc(o.t)+'</span></label>';
   }).join('')+'</div>';
 }
 function renderDiscuss(){
-  dDirty=false;
-  var q=DISCUSS[S.dq],D=S.discuss[q.id]||{first:null,final:null},st=D.final!=null?3:D.first!=null?2:1,h='';
-  GROUP_ORDER.forEach(function(k){
+  dDirty=false;dUnit=UID;
+  var DQ=U().discuss,dq=US().dq,q=DQ[dq],D=S.discuss[q.id]||{first:null,final:null},st=D.final!=null?3:D.first!=null?2:1,h='';
+  U().groups.forEach(function(k){
     h+='<span class="qg"><span>'+GROUPS[k].name+'</span>';
-    DISCUSS.forEach(function(x,j){
+    DQ.forEach(function(x,j){
       if(GROUPS[k].concepts.indexOf(x.concept)<0)return;
       var d=S.discuss[x.id],s=d&&d.final!=null?(x.options[d.final].ok?'ok':'no'):'';
-      h+='<button type="button" data-q="'+j+'"'+(s?' class="'+s+'"':'')+(j===S.dq?' aria-current="true"':'')+' aria-label="Question '+(j+1)+': '+esc(x.title)+(s==='ok'?'. Answered, your final answer holds':s==='no'?'. Answered, your final answer does not hold':'')+'">'+(j+1)+'</button>';
+      h+='<button type="button" data-q="'+j+'"'+(s?' class="'+s+'"':'')+(j===dq?' aria-current="true"':'')+' aria-label="Question '+(j+1)+': '+esc(x.title)+(s==='ok'?'. Answered, your final answer holds':s==='no'?'. Answered, your final answer does not hold':'')+'">'+(j+1)+'</button>';
     });
     h+='</span>';
   });
   $('d-nav').innerHTML=h;
   var sc=q.scene?q.scene():null;
   $('d-stage').classList.toggle('nofig',!sc);
-  if(sc){dsp.load(sc);dsp.draw();$('d-cap').textContent=sc.slice?'A cross-section through the x and z axes.':'Drag the figure to turn it.';show($('d-resetview'),!sc.slice);}
+  if(sc){dsp.load(sc);dsp.draw();$('d-cap').textContent=sc.plane?'The figure for this question.':sc.slice?'A cross-section through the x and z axes.':'Drag the figure to turn it.';show($('d-resetview'),!sc.slice&&!sc.plane);}
   else dsp.stop();
   show($('d-replay'),!!sc&&!!q.reveal&&st===3);
-  h='<p class="meta"><span>'+esc(CONCEPTS[q.concept])+'</span><span>Question '+(S.dq+1)+' of '+DISCUSS.length+'</span></p>';
+  h='<p class="meta"><span>'+esc(CONCEPTS[q.concept])+'</span><span>Question '+(dq+1)+' of '+DQ.length+'</span></p>';
   (q.circuits||[]).forEach(function(c){h+='<div class="circuit" aria-hidden="true"><span class="cname">'+esc(c.name)+'</span>'+circuitHTML(c.start,c.gates)+'</div>';});
   h+='<p class="prompt">'+esc(q.stem)+'</p>';
   $('d-head').setAttribute('data-q',q.id);$('d-head').innerHTML=h;
@@ -3223,9 +4492,9 @@ function renderDiscuss(){
   if(st===2){$('d-lock2').onclick=function(){lock(2);};$('d-o2').onchange=function(){show($('d-err2'),false);};}
   if(st===3){
     $('d-next').onclick=function(){
-      var n=DISCUSS.length,j=(S.dq+1)%n,i,c,d;
-      for(i=1;i<=n;i++){c=(S.dq+i)%n;d=S.discuss[DISCUSS[c].id];if(!d||d.final==null){j=c;break;}}
-      S.dq=j;store.save(S);renderDiscuss();toTop($('d-nav'));
+      var n=DQ.length,j=(dq+1)%n,i,c,d;
+      for(i=1;i<=n;i++){c=(dq+i)%n;d=S.discuss[DQ[c].id];if(!d||d.final==null){j=c;break;}}
+      US().dq=j;store.save(S);renderDiscuss();toTop($('d-nav'));
     };
     $('d-redo').onclick=function(){delete S.discuss[q.id];store.save(S);renderDiscuss();};
   }
@@ -3233,11 +4502,11 @@ function renderDiscuss(){
 }
 $('d-nav').onclick=function(e){
   var b=closest(e.target,'button[data-q]');if(!b)return;
-  S.dq=parseInt(b.getAttribute('data-q'),10);store.save(S);renderDiscuss();
+  US().dq=parseInt(b.getAttribute('data-q'),10);store.save(S);renderDiscuss();
 };
 $('d-resetview').onclick=function(){dsp.resetView();};
-$('d-replay').onclick=function(){var q=DISCUSS[S.dq];if(q.reveal)q.reveal(dsp,function(){});};
-function enterDiscuss(){if(dDirty)renderDiscuss();else dsp.draw();}
+$('d-replay').onclick=function(){var q=U().discuss[US().dq];if(q.reveal)q.reveal(dsp,function(){});};
+function enterDiscuss(){if(dDirty||dUnit!==UID)renderDiscuss();else dsp.draw();}
 
 // Explore
 var es=new Sphere($('e-sphere'),'Bloch sphere sandbox. Drag to turn the view.');
@@ -3384,14 +4653,74 @@ $('c-copy').onclick=function(){copyText(codeNow,$('c-copy'),$('c-code'));};
 $('c-tohow').onclick=function(){var t=$('c-howh');try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}};
 $('c-qcopy').onclick=function(){copyText(qasmNow,$('c-qcopy'),$('c-qasm'));};
 
+// Explore, Unit 0
+var e0=new Plane($('e0-plane'),'A plane with two vectors, a and b. Change the components to move them.');
+var E0={a:[2,1],b:[1,2],show:{sum:true,diff:false,proj:false},busy:false};
+function e0Load(){E0.a=S.explore0.a.slice();E0.b=S.explore0.b.slice();E0.show=copyOf(S.explore0.show);E0.busy=false;e0.stop();e0Fill();e0Render();}
+function e0Save(){S.explore0={a:E0.a.slice(),b:E0.b.slice(),show:copyOf(E0.show)};store.save(S);}
+function e0Fill(){
+  $('e0-ax').value=nt(E0.a[0]).replace('−','-');$('e0-ay').value=nt(E0.a[1]).replace('−','-');$('e0-bx').value=nt(E0.b[0]).replace('−','-');$('e0-by').value=nt(E0.b[1]).replace('−','-');
+  $('e0-sum').checked=E0.show.sum;$('e0-diff').checked=E0.show.diff;$('e0-proj').checked=E0.show.proj;
+}
+function e0Scene(){
+  var a=E0.a,b=E0.b,vs=[{v:a,cls:'ma',label:'a'},{v:b,cls:'mb',label:'b'}],lines=[],marks=[],arcs=[];
+  if(E0.show.sum){vs.push({tail:a,v:b,cls:'ghost'});vs.push({v:v2add(a,b),cls:'sum',label:'a + b'});}
+  if(E0.show.diff){vs.push({tail:a,v:v2scale(b,-1),cls:'ghost'});vs.push({v:v2sub(a,b),cls:'sum',label:'a − b'});}
+  if(E0.show.proj&&v2len(b)>1e-9){var pr=v2proj(a,b),u=v2unit(b);lines.push({a:v2scale(u,-4.3),b:v2scale(u,4.3),cls:'thin'},{a:a,b:pr});marks.push({p:pr,cls:'foot',label:'proj',dx:6,dy:14});vs.push({v:pr,cls:'sum'});}
+  if(v2len(a)>1e-9&&v2len(b)>1e-9)arcs.push(arcAB(a,b,0.7,'θ'));
+  return {plane:true,vectors:vs,lines:lines,marks:marks,arcs:arcs};
+}
+function cplx(z){var r=v2len(z);return ct(z)+' = '+f2(r)+' e^(i·'+f2(argDeg(z))+'°)';}
+function e0Render(){
+  e0.load(e0Scene());e0.draw();
+  var a=E0.a,b=E0.b,la=v2len(a),lb=v2len(b),d=v2dot(a,b),ok=la>1e-9&&lb>1e-9,prod=[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+  $('e0-vals').innerHTML='<span>|a| = '+f2(la)+'</span><span>|b| = '+f2(lb)+'</span><span>a + b = '+vt(v2add(a,b))+'</span><br>'+
+    '<span>a · b = '+f2(d)+'</span><span>θ = '+(ok?f2(v2between(a,b))+'°':'–')+'</span><span>a × b = '+f2(v2cross(a,b))+' along z</span><br>'+
+    '<span>projection of a onto b: '+(lb>1e-9?vt(v2proj(a,b))+', length '+f2(d/lb):'–')+'</span><br>'+
+    '<span>as complex numbers: a = '+cplx(a)+', b = '+cplx(b)+'</span><br><span>a b = '+cplx(prod)+'</span>';
+  if(route==='u0-code')renderCode0();
+}
+function e0Read(id){var v=parseFloat($(id).value);return v>=-4&&v<=4?Math.round(v*100)/100:null;}
+function e0Input(){
+  var ax=e0Read('e0-ax'),ay=e0Read('e0-ay'),bx=e0Read('e0-bx'),by=e0Read('e0-by'),er=$('e0-err');
+  if(ax===null||ay===null||bx===null||by===null){er.textContent='Enter components between −4 and 4.';show(er,true);return;}
+  show(er,false);if(E0.busy)return;
+  E0.a=[ax,ay];E0.b=[bx,by];e0Render();e0Save();
+}
+['e0-ax','e0-ay','e0-bx','e0-by'].forEach(function(id){$(id).oninput=e0Input;$(id).onchange=function(){if(e0Read(id)===null)e0Fill();};});
+['sum','diff','proj'].forEach(function(k){$('e0-'+k).onchange=function(){if(E0.busy){this.checked=E0.show[k];return;}E0.show[k]=this.checked;e0Render();e0Save();};});
+$('e0-rotate').onclick=function(){
+  var er=$('e0-rerr'),d=Math.round(parseFloat($('e0-angle').value)*100)/100,a0=E0.a.slice();
+  if(!(d>=-360&&d<=360)||d===0){er.textContent='Enter an angle between −360 and 360 degrees, not zero.';show(er,true);return;}
+  var a1=v2rot(a0,d);a1=[Math.round(a1[0]*100)/100,Math.round(a1[1]*100)/100];
+  if(Math.abs(a1[0])>4||Math.abs(a1[1])>4){er.textContent='The turned arrow would leave the grid. Shorten a first.';show(er,true);return;}
+  if(E0.busy||v2len(a0)<1e-9)return;
+  show(er,false);E0.busy=true;
+  var base=e0Scene();e0.load(base);
+  e0.animateFn(function(e){var N=24,seg=[],upto=Math.round(e*N);for(var j=0;j<=upto;j++)seg.push(v2rot(a0,d*j/N));return {state:v2rot(a0,d*e),trail:[seg],vectors:[]};},reducedMotion()?0:400+Math.abs(d)*4,function(){E0.busy=false;E0.a=a1;e0Fill();e0Render();e0Save();});
+};
+$('e0-swap').onclick=function(){if(E0.busy)return;var t=E0.a;E0.a=E0.b;E0.b=t;e0Fill();e0Render();e0Save();};
+
+// Code, Unit 0
+var code0Now='';
+function renderCode0(){
+  var g=genNumpy(E0.a,E0.b);code0Now=g.text;
+  $('c0-code').innerHTML=g.text.split('\n').slice(0,-1).map(function(l){return '<span class="ln">'+esc(l)+'\n</span>';}).join('');
+  $('c0-expect').textContent=g.out;
+  $('c0-note').textContent='a = '+vt(E0.a)+' and b = '+vt(E0.b)+', the vectors from Explore.';
+}
+$('c0-copy').onclick=function(){copyText(code0Now,$('c0-copy'),$('c0-code'));};
+function enterExplore0(){e0.draw();}
+
 // Goals
 function renderGoals(){
   var h='';
-  GOALS.forEach(function(g){
+  $('g-lead').textContent=U().goalsLead;$('g-prereq').textContent=U().prereq;
+  U().goals.forEach(function(g){
     var ids=[],right=0,miss=0,dn=0,dq=[];
     g.concepts.forEach(function(c){ids=ids.concat(CONCEPT_ITEMS[c]||[]);});
     ids.forEach(function(id){var m=markOf(id);if(m==='miss')miss++;else if(m)right++;});
-    DISCUSS.forEach(function(q,j){if(g.concepts.indexOf(q.concept)<0)return;dq.push(j);var d=S.discuss[q.id];if(d&&d.final!=null)dn++;});
+    U().discuss.forEach(function(q,j){if(g.concepts.indexOf(q.concept)<0)return;dq.push(j);var d=S.discuss[q.id];if(d&&d.final!=null)dn++;});
     h+='<li><div><h3>'+esc(g.short)+'</h3><p class="gt">'+esc(g.text)+'</p>'+
       '<p class="gp"><span>Practice: '+right+' of '+ids.length+' right'+(miss?', '+miss+' to revisit':'')+pipsFor(ids)+'</span>'+
       '<span>Discuss: '+dn+' of '+dq.length+' answered</span>'+
@@ -3402,18 +4731,19 @@ function renderGoals(){
 }
 $('g-list').onclick=function(e){
   var b=closest(e.target,'button');if(!b)return;
-  if(b.hasAttribute('data-pg')){S.group=b.getAttribute('data-pg');pDirty=true;store.save(S);go('u1-practice',true);}
-  else if(b.hasAttribute('data-dq')){S.dq=parseInt(b.getAttribute('data-dq'),10);dDirty=true;store.save(S);go('u1-discuss',true);}
+  if(b.hasAttribute('data-pg')){US().group=b.getAttribute('data-pg');pDirty=true;store.save(S);go(UID+'-practice',true);}
+  else if(b.hasAttribute('data-dq')){US().dq=parseInt(b.getAttribute('data-dq'),10);dDirty=true;store.save(S);go(UID+'-discuss',true);}
 };
 
 // Start here
-var startFigs=null;
+var startBuilt={};
 function buildStart(){
-  var toc='',body=$('s-body');startFigs=[];
-  INTRO.forEach(function(sec){
+  var toc='',body=document.createElement('div'),figs=[],u=UID;
+  body.id='s-body-'+u;$('s-body').appendChild(body);
+  U().intro.forEach(function(sec){
     toc+='<button type="button" class="link" data-sec="'+sec.id+'">'+esc(sec.title)+'</button>';
     var el=document.createElement('section'),h;
-    el.className='lesson'+(sec.fig?'':' wide');el.id='sec-'+sec.id;
+    el.className='lesson'+(sec.fig?'':' wide');el.id='sec-'+sec.id;el.setAttribute('data-unit',u);
     h='<div>'+(sec.kind?'<p class="kind">'+esc(sec.kind)+'</p>':'')+'<h3>'+esc(sec.title)+'</h3>';
     if(sec.task)h+='<p class="task">'+sec.task+'</p><ol class="worked">'+sec.steps.map(function(s){return '<li>'+s+'</li>';}).join('')+'</ol>';
     if(sec.html)h+=sec.html;
@@ -3422,23 +4752,27 @@ function buildStart(){
     if(sec.fig)h+='<figure class="fig"><div id="s-fig-'+sec.id+'"></div><figcaption>'+esc(sec.fig.cap)+(sec.fig.play?'<div class="row"><button type="button" class="ghost" id="s-play-'+sec.id+'">Play</button></div>':'')+'</figcaption></figure>';
     el.innerHTML=h;body.appendChild(el);
     if(!sec.fig)return;
-    var sp=new Sphere($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap);
-    sp.load(sec.fig.scene());sp.draw();startFigs.push(sp);
+    var sp=sec.fig.plane?new Plane($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap):new Sphere($('s-fig-'+sec.id),'Figure for the section '+sec.title+'. '+sec.fig.cap);
+    sp.load(sec.fig.scene());sp.draw();figs.push(sp);
     if(sec.fig.play){
       var btn=$('s-play-'+sec.id);
       btn.onclick=function(){btn.disabled=true;sp.load(sec.fig.scene());sec.fig.play(sp,function(){btn.disabled=false;btn.textContent='Play again';});};
     }
   });
-  $('s-toc').innerHTML=toc;
-  $('s-toc').onclick=function(e){
-    var b=closest(e.target,'button[data-sec]');if(!b)return;
-    var t=$('sec-'+b.getAttribute('data-sec'));
-    try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}
-  };
+  startBuilt[u]={body:body,toc:toc,figs:figs};
 }
+$('s-toc').onclick=function(e){
+  var b=closest(e.target,'button[data-sec]');if(!b)return;
+  var t=$('sec-'+b.getAttribute('data-sec'));
+  try{t.scrollIntoView({behavior:reducedMotion()?'auto':'smooth',block:'start'});}catch(_){t.scrollIntoView();}
+};
 function enterStart(){
-  if(!startFigs)buildStart();else startFigs.forEach(function(sp){sp.draw();});
-  if(!S.seenStart){S.seenStart=true;store.save(S);}
+  if(!startBuilt[UID])buildStart();
+  var b=startBuilt[UID];
+  UNIT_ORDER.forEach(function(u){if(startBuilt[u])startBuilt[u].body.hidden=u!==UID;});
+  $('s-toc').innerHTML=b.toc;$('s-lead').textContent=U().startLead;
+  b.figs.forEach(function(sp){sp.draw();});
+  if(!S.seenStart[UID]){S.seenStart[UID]=true;store.save(S);}
 }
 
 // Home
@@ -3449,19 +4783,25 @@ function homeScene(){
 function renderHome(){
   if(!hs){hs=new Sphere($('h-sphere'),'Bloch sphere. The state moves from |0⟩ to |+⟩ under H, then on to |+i⟩ under S.');homeScene();}
   else hs.draw();
-  var a=attempts(),d=discussed(),due=reviewLeft(),h,st,miss=0,id;
+  var a=attempts(),d=0,due=0,dueUnit=null,h,st=[],lu=S.lastUnit;
+  UNIT_ORDER.forEach(function(u){d+=discussed(u);var n=reviewLeft(u);if(n&&!dueUnit){dueUnit=u;due=n;}});
   if(!a&&!d){
-    h=S.seenStart?link('primary','u1-practice','Go to practice')+link('ghost','u1-start','Read the introduction again')
-                 :link('primary','u1-start','Start here')+link('ghost','u1-goals','See the goals of unit 1');
-    st='Unit 1, One qubit, is open. It begins with a short introduction to the Bloch sphere.';
+    h=S.seenStart.u0?link('primary','u0-practice','Go to practice')+link('ghost','u0-start','Read the introduction again')
+                    :link('primary','u0-start','Start here')+link('ghost','u1-goals','Skip to Unit 1');
+    st='Units 0 and 1 are open. Unit 0 is the geometry of arrows and phases. Unit 1 is the qubit on the Bloch sphere. Students who already know vectors and complex numbers can start with Unit 1.';
   }else{
-    for(id in S.items)if(markOf(id)==='miss')miss++;
-    h=(due?'<button type="button" class="primary" id="h-review">Review '+plural(due,'item','items')+'</button>'+link('ghost','u1-practice','Continue practice'):link('primary','u1-practice','Continue practice'))+
-      link('ghost','u1-discuss','Discuss')+link('ghost','u1-goals','Your progress');
-    st='Unit 1: '+a+' of '+N_ITEMS+' practice items answered'+(miss?', '+miss+' to revisit':'')+'. '+d+' of '+DISCUSS.length+' discussion questions answered.';
+    h=(due?'<button type="button" class="primary" id="h-review">Review '+plural(due,'item','items')+'</button>'+link('ghost',lu+'-practice','Continue practice'):link('primary',lu+'-practice','Continue practice'))+
+      link('ghost',lu+'-discuss','Discuss')+link('ghost',lu+'-goals','Your progress');
+    UNIT_ORDER.forEach(function(u){
+      var n=attempts(u),dn=discussed(u),miss=0,id;
+      if(!n&&!dn)return;
+      for(id in S.items)if(ITEM_UNIT[id]===u&&markOf(id)==='miss')miss++;
+      st.push('Unit '+UNITS[u].n+': '+n+' of '+UNIT_N[u]+' practice items answered'+(miss?', '+miss+' to revisit':'')+'. '+dn+' of '+UNITS[u].discuss.length+' discussion questions answered.');
+    });
+    st=st.join(' ');
   }
   $('h-cta').innerHTML=h;$('h-status').textContent=st;
-  if($('h-review'))$('h-review').onclick=function(){S.group='R';pDirty=true;store.save(S);go('u1-practice',true);};
+  if($('h-review'))$('h-review').onclick=function(){S.units[dueUnit].group='R';pDirty=true;store.save(S);go(dueUnit+'-practice',true);};
 }
 $('h-play').onclick=function(){
   if(!hs)return;
@@ -3471,12 +4811,13 @@ $('h-play').onclick=function(){
 function renderMap(){
   var h='';
   COURSE.units.forEach(function(u){
+    var uid=u.open&&u.go?u.go.split('-')[0]:null,pr=uid?partRoutes(uid):[];
     h+='<div class="unit'+(u.open?' open':'')+'"><div class="un">'+esc(u.n)+'</div><div class="ub"><h3>'+(u.go?'<a href="#'+u.go+'" data-go="'+u.go+'">'+esc(u.title)+'</a>':esc(u.title))+'</h3><p>'+esc(u.line)+'</p>';
-    if(u.open)h+='<div class="parts">'+COURSE.parts.map(function(p,i){return '<a href="#'+PART_ROUTE[i]+'" data-go="'+PART_ROUTE[i]+'">'+esc(p[0])+'</a>';}).join('')+'</div>';
+    if(uid)h+='<div class="parts">'+COURSE.parts.map(function(p,i){return '<a href="#'+pr[i]+'" data-go="'+pr[i]+'">'+esc(p[0])+'</a>';}).join('')+'</div>';
     if(u.plan)h+='<details><summary>Planned contents</summary><ul>'+u.plan.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul></details>';
     h+='</div><div class="us">'+(u.open?'Open':u.n==='R'?'Topics in preparation':'In preparation')+'</div></div>';
   });
-  $('h-map').innerHTML=h;
+  $('h-map').innerHTML=h;$('u-map').innerHTML=h;
   $('h-parts').innerHTML=COURSE.parts.map(function(p){return '<dt>'+esc(p[0])+'</dt><dd>'+esc(p[1])+'</dd>';}).join('');
 }
 
@@ -3495,39 +4836,52 @@ function renderAbout(){
   var seen={},rows=[];
   Object.keys(TAGINFO).forEach(function(t){var i=TAGINFO[t];if(t==='unclassified'||seen[i[0]])return;seen[i[0]]=1;rows.push(i);});
   $('v-tags').innerHTML='<thead><tr><th>Tag</th><th>The student\u2019s answer matches</th><th>Reported in</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r[0])+'</td><td>'+esc(r[1])+'</td><td>'+esc(r[2])+'</td></tr>';}).join('')+'</tbody>';
-  $('v-discuss').innerHTML='<thead><tr><th>No.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+DISCUSS.map(function(q,j){return '<tr><td>'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';}).join('')+'</tbody>';
-  $('v-checks').innerHTML=selfChecks().concat(selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
+  var drows='';
+  UNIT_ORDER.forEach(function(u){UNITS[u].discuss.forEach(function(q,j){drows+='<tr><td>'+UNITS[u].n+'.'+(j+1)+'</td><td>'+esc(q.title)+'</td><td>'+q.concept+' '+esc(CONCEPTS[q.concept])+'</td><td>'+esc(q.src||'')+'</td></tr>';});});
+  $('v-discuss').innerHTML='<thead><tr><th>Unit, no.</th><th>Question</th><th>Idea</th><th>Based on</th></tr></thead><tbody>'+drows+'</tbody>';
+  $('v-checks').innerHTML=selfChecks0().concat(selfChecks(),selfChecks2(),selfChecks3()).map(function(c){return '<li'+(c.ok?'':' class="bad"')+'>'+esc(c.name)+(c.ok?'':' (failed)')+'</li>';}).join('');
   $('v-log').value=S.log.length?csv():'No responses yet.';
 }
 $('v-copy').onclick=function(){copyText($('v-log').value,$('v-copy'),$('v-log'));};
 twoStep($('v-clear'),'Clear my data','Click again to erase everything',function(){
   store.clear();S=fresh();ps.stop();dsp.stop();pDirty=true;dDirty=true;cur=null;phase='idle';
   es.stop();E.busy=false;E.start='zero';E.ops=[];eRecompute();eRender();$('e-mout').textContent='';show($('e-serr'),false);
+  e0Load();
   renderAbout();$('v-clearnote').textContent='Cleared.';
 });
 
 // Routes
 var route=null;
-var ENTER={'home':renderHome,'u1-goals':renderGoals,'u1-start':enterStart,'u1-practice':enterPractice,'u1-discuss':enterDiscuss,
-  'u1-explore':function(){es.draw();},'u1-code':renderCode,'about':renderAbout};
+var ENTER={'home':renderHome,'units':renderUnits,'goals':renderGoals,'start':enterStart,'practice':enterPractice,'discuss':enterDiscuss,
+  'explore':function(){es.draw();},'code':renderCode,'explore0':enterExplore0,'code0':renderCode0,'about':renderAbout};
 function resolveRoute(r){
-  if(r==='u1')return S.unitTab;
+  var m=/^(u\d)$/.exec(r);
+  if(m&&UNITS[m[1]])return S.units[m[1]].tab;
+  if(r.indexOf('unit-')===0){var t=(route&&/^u\d-/.test(route)?UID:S.lastUnit)+'-'+r.slice(5);return ROUTES.indexOf(t)>=0?t:'home';}
   if(r==='practice'||r==='explore')return 'u1-'+r;
   if(r==='evidence')return 'about';
   return ROUTES.indexOf(r)>=0?r:'home';
 }
+function setUnit(u){
+  if(u===UID&&$('unit-tabs').children.length)return;
+  UID=u;var d=UNITS[u];
+  $('unit-title').innerHTML='<span>Unit '+esc(d.n)+'</span><h1>'+esc(d.title)+'</h1>';
+  $('unit-tabs').setAttribute('aria-label','Parts of unit '+d.n);
+  $('unit-tabs').innerHTML=PARTS.map(function(p,i){return '<a href="#'+u+'-'+p+'" data-go="'+u+'-'+p+'" data-nav="'+u+'-'+p+'">'+esc(COURSE.parts[i][0])+'</a>';}).join('');
+}
 function go(r,push){
   r=resolveRoute(r);
-  var inUnit=r.indexOf('u1-')===0,changed=r!==route;
+  var um=/^(u\d)-/.exec(r),inUnit=!!um,changed=r!==route;
+  if(inUnit)setUnit(um[1]);
   route=r;
-  ROUTES.forEach(function(x){show($('view-'+VIEW[x]),x===r);});
+  VIEWS.forEach(function(v){show($('view-'+v),VIEW[r]===v);});
   show($('unit-head'),inUnit);
   each(document.querySelectorAll('[data-nav]'),function(a){
     var n=a.getAttribute('data-nav');
-    if(n===r||(n==='u1'&&inUnit))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
+    if(n===r||(n==='units'&&(inUnit||r==='units')))a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
   });
-  if(inUnit&&S.unitTab!==r){S.unitTab=r;store.save(S);}
-  if(ENTER[r])ENTER[r]();
+  if(inUnit&&(US().tab!==r||S.lastUnit!==UID)){US().tab=r;S.lastUnit=UID;store.save(S);}
+  if(ENTER[VIEW[r]])ENTER[VIEW[r]]();
   if(push&&changed){
     try{history.pushState(null,'','#'+r);}catch(e){try{location.hash=r;}catch(e2){}}
     try{window.scrollTo(0,0);}catch(e3){}
@@ -3548,10 +4902,12 @@ window.addEventListener('storage',function(e){
   S=s&&s.v===3?repair(s):fresh();
   ps.stop();dsp.stop();es.stop();cur=null;phase='idle';pDirty=true;dDirty=true;
   E.busy=false;E.start=S.explore.start;E.ops=S.explore.ops.slice();eRecompute();eRender();$('e-mout').textContent='';
-  if(ENTER[route])ENTER[route]();
+  e0Load();
+  if(ENTER[VIEW[route]])ENTER[VIEW[route]]();
 });
 
-renderMap();eRecompute();eRender();
+function renderUnits(){}
+renderMap();eRecompute();eRender();e0Load();
 go((location.hash||'').slice(1)||'home',false);
 })();
 </script>

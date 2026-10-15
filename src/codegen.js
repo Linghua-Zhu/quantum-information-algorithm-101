@@ -258,3 +258,55 @@ function genQasm(spec){
   L.push('c[0] = measure q[0];');
   return {text:L.join('\n')+'\n',skipped:skipped};
 }
+
+// NumPy script for Unit 0
+function pyf(x){var r=Math.round(x*1e4)/1e4;if(r===0)r=0;return Number.isInteger(r)?r.toFixed(1):String(r);}
+function pyv(v){return '['+v.map(pyf).join(', ')+']';}
+function genNumpy(a,b){
+  var L=[],la=v2len(a),lb=v2len(b),d=v2dot(a,b),ok=la>1e-9&&lb>1e-9,pr=lb>1e-9?v2proj(a,b):[0,0],r90=v2rot(a,90),prod=[a[0]*b[0]-a[1]*b[1],a[0]*b[1]+a[1]*b[0]];
+  function push(t){L.push(t);}
+  push('# Quantum Information and Programming 101');
+  push('# Unit 0, vectors and complex numbers');
+  push('# a = '+vt(a).replace(/−/g,'-')+', b = '+vt(b).replace(/−/g,'-'));
+  push('import numpy as np');
+  push('');
+  push('a = np.array(['+pyf(a[0])+', '+pyf(a[1])+'])');
+  push('b = np.array(['+pyf(b[0])+', '+pyf(b[1])+'])');
+  push('');
+  push('# 1. Length and sum. Adding 0.0 turns a -0.0 into 0.0 in the output.');
+  push('print("|a| =", round(float(np.linalg.norm(a)), 4))');
+  push('print("a + b =", (np.round(a + b, 4) + 0.0).tolist())');
+  push('print("a - b =", (np.round(a - b, 4) + 0.0).tolist())');
+  push('');
+  push('# 2. Dot product, angle and projection');
+  push('d = float(np.dot(a, b))');
+  push('print("a . b =", round(d, 4) + 0.0)');
+  if(ok){push('cos_theta = d / (np.linalg.norm(a) * np.linalg.norm(b))');push('angle = np.degrees(np.arccos(np.clip(cos_theta, -1, 1)))');push('print("angle =", round(float(angle), 2), "degrees")');}
+  if(lb>1e-9){push('proj = d / float(np.dot(b, b)) * b');push('print("projection of a onto b =", (np.round(proj, 4) + 0.0).tolist())');}
+  push('');
+  push('# 3. Cross product. The vectors get a z component of 0 first.');
+  push('a3 = np.append(a, 0.0)');
+  push('b3 = np.append(b, 0.0)');
+  push('print("a x b =", (np.round(np.cross(a3, b3), 4) + 0.0).tolist())');
+  push('');
+  push('# 4. A turn by 90 degrees is a matrix');
+  push('t = np.radians(90)');
+  push('R = np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]])');
+  push('print("a turned by 90 degrees =", (np.round(R @ a, 4) + 0.0).tolist())');
+  push('');
+  push('# 5. The same vectors as complex numbers: x + iy');
+  push('za = complex(a[0], a[1])');
+  push('zb = complex(b[0], b[1])');
+  push('angle_a = np.degrees(np.angle(za))');
+  push('print("|za| =", round(abs(za), 4), " angle of za =", round(float(angle_a), 2), "degrees")');
+  push('zab = za * zb');
+  push('print("za * zb =", round(zab.real, 4) + 0.0, "+", round(zab.imag, 4) + 0.0, "i")');
+  var out=['|a| = '+pyf(la),'a + b = '+pyv(v2add(a,b)),'a - b = '+pyv(v2sub(a,b)),'a . b = '+pyf(d)];
+  if(ok)out.push('angle = '+pyf2(v2between(a,b))+' degrees');
+  if(lb>1e-9)out.push('projection of a onto b = '+pyv(pr));
+  out.push('a x b = '+pyv([0,0,v2cross(a,b)]),'a turned by 90 degrees = '+pyv(r90));
+  out.push('|za| = '+pyf(la)+'  angle of za = '+pyf2(la>1e-9?argDeg(a):0)+' degrees');
+  out.push('za * zb = '+pyf(prod[0])+' + '+pyf(prod[1])+' i');
+  return {text:L.join('\n')+'\n',out:out.join('\n')+'\n'};
+}
+function pyf2(x){var r=Math.round(x*100)/100;if(r===0)r=0;return Number.isInteger(r)?r.toFixed(1):String(r);}

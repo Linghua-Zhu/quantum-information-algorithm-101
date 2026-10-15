@@ -37,9 +37,10 @@ Sphere.prototype.head=function(a,b,s,cls){
   return '<polygon class="'+cls+'" points="'+f1(b.x)+','+f1(b.y)+' '+f1(bx-uy*w)+','+f1(by+ux*w)+' '+f1(bx+uy*w)+','+f1(by-ux*w)+'"/>';
 };
 var LABELS=[['|0⟩','z',[0,0,1]],['|1⟩','',[0,0,-1]],['|+⟩','x',[1,0,0]],['|−⟩','',[-1,0,0]],['|+i⟩','y',[0,1,0]],['|−i⟩','',[0,-1,0]]];
+var LABELS_XYZ=[['+z','',[0,0,1]],['−z','',[0,0,-1]],['+x','',[1,0,0]],['−x','',[-1,0,0]],['+y','',[0,1,0]],['−y','',[0,-1,0]]];
 Sphere.prototype.visibleLabels=function(B){
-  var self=this;if(!this.slice)return LABELS;
-  return LABELS.filter(function(L){var q=self.proj(L[2],B);return Math.hypot(q.x,q.y)>60;});
+  var self=this,L0=this.labelSet||LABELS;if(!this.slice)return L0;
+  return L0.filter(function(L){var q=self.proj(L[2],B);return Math.hypot(q.x,q.y)>60;});
 };
 Sphere.prototype.draw=function(){
   var B=this.basis(),R=this.R,P=[],self=this,i,j,sl=this.slice;
@@ -149,7 +150,7 @@ Sphere.prototype.stop=function(){this._gen++;if(this._raf)cancelAnimationFrame(t
 Sphere.prototype.clearScene=function(){this.stop();this.state=null;this.ghost=null;this.pred=null;this.trailSteps=[];this.hint=null;this.guides=[];this.marks=[];this.lines=[];this.arcs=[];};
 Sphere.prototype.load=function(sc){
   sc=sc||{};
-  this.clearScene();this.setSlice(sc.slice||null);
+  this.clearScene();this.setSlice(sc.slice||null);this.labelSet=sc.axes==='xyz'?LABELS_XYZ:null;
   this.state=sc.state||null;this.ghost=sc.ghost||null;this.hint=sc.hint||null;this.guides=sc.guides||[];this.marks=sc.marks||[];this.lines=sc.lines||[];this.arcs=sc.arcs||[];this.trailSteps=sc.trail||[];
 };
 function reducedMotion(){return !!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);}

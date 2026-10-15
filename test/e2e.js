@@ -19,7 +19,7 @@ async function info(page){
     GROUP_ORDER.forEach(k=>GROUPS[k].starter.forEach(x=>{if(x.id===id)it=x;}));
     if(!it){const g=document.querySelector('#p-groups [aria-current]').getAttribute('data-g');it=GROUPS[g].gen(+id.replace(/^\D+/,''),S?S.seed:20261006);}
     const R=buildItem(Object.assign({},it,{level})),sc=R.scene();
-    return {id,level,mode:R.mode,type:R.type,answer:R.answer,slice:sc.slice||null,nopt:R.options?R.options.length:0,
+    return {id,level,mode:R.mode,type:R.type,answer:R.answer,slice:sc.slice||null,nopt:R.options?R.options.length:0,plane:!!R.plane,
       note:head.querySelector('.note').textContent,pos:head.querySelector('.meta span:last-child').textContent,hint:!!sc.hint||!!(sc.guides&&sc.guides.length)||!!(sc.lines&&sc.lines.length)};
   });
 }
@@ -27,7 +27,13 @@ async function info(page){
 async function answer(page,right,opts={}){
   const I=await info(page);
   if(!I)throw new Error('no item on screen');
-  if(I.mode==='point'||I.mode==='slice'){
+  if((I.mode==='point'||I.mode==='slice')&&I.plane){
+    const v=right?I.answer:((I.answer[0]||I.answer[1])?[-I.answer[0],-I.answer[1]]:[1,0]);
+    if(!(await page.evaluate(()=>document.getElementById('p-numbers').open)))await page.locator('#p-numbers summary').click();
+    await page.fill('#p-n1',String(v[0]));await page.fill('#p-n2',String(v[1]));
+    await page.click('#p-placeangles');
+    ok(!(await page.locator('#p-angerr').isVisible()),I.id+': components accepted');
+  }else if(I.mode==='point'||I.mode==='slice'){
     let a,b;
     if(I.mode==='point'){
       const v=right?I.answer:I.answer.map(x=>-x);
@@ -42,7 +48,8 @@ async function answer(page,right,opts={}){
     await page.click('#p-placeangles');
     ok(!(await page.locator('#p-angerr').isVisible()),I.id+': numbers accepted');
   }else if(I.mode==='number'){
-    const x=right?I.answer:(I.answer>0.5?I.answer-0.33:I.answer+0.33);
+    const step=(+await page.locator('#p-num').getAttribute('max'))>=100?3:0.33;
+    const x=right?I.answer:(I.answer>0.5?I.answer-step:I.answer+step);
     await page.fill('#p-num',x.toFixed(3));
   }else if(I.mode==='multi'){
     const want=right?I.answer:(I.answer.length?[]:['z']);
@@ -87,14 +94,17 @@ async function overflow(page,label){
   ok(await page.locator('#view-home').isVisible(),'home is the first page');
   eq(await page.locator('#h-cta a').first().textContent(),'Start here','first call to action is Start here');
   eq(await page.locator('#h-map .unit').count(),6,'course map has six rows');
-  eq(await page.locator('#h-map .unit.open').count(),1,'one unit is open');
+  eq(await page.locator('#h-map .unit.open').count(),2,'two units are open');
+  eq(await page.locator('#h-cta a').nth(1).textContent(),'Skip to Unit 1','the second call to action skips to Unit 1');
   await page.click('#h-play');await page.waitForTimeout(2500);
   ok(await page.evaluate(()=>!!document.querySelector('#h-sphere svg .s-trail')),'home figure draws a path');
   await page.locator('#h-map details summary').first().click();
   ok(await page.locator('#h-map details ul').first().isVisible(),'planned contents open');
 
   console.log('B. start here');
-  await page.click('#h-cta a[data-go="u1-start"]');
+  await page.click('#h-cta a[data-go="u1-goals"]');
+  ok(await page.locator('#view-goals').isVisible()&&(await page.locator('#unit-title').textContent()).includes('One qubit'),'skip link opens the goals of Unit 1');
+  await page.click('#unit-tabs a[data-go="u1-start"]');
   ok(await page.locator('#view-start').isVisible(),'start page shown');
   ok(await page.locator('#unit-head').isVisible(),'unit head shown');
   eq(await page.locator('#s-body .lesson').count(),15,'fifteen sections');
@@ -110,7 +120,7 @@ async function overflow(page,label){
   const mats=await page.evaluate(()=>[...document.querySelectorAll('#sec-paulis .mat')].map(m=>m.children.length));
   ok(mats.length===3&&mats.every(n=>n===4),'the three Pauli matrices are drawn as 2 by 2 grids '+JSON.stringify(mats));
   await page.click('#s-toc button[data-sec="how"]');
-  ok((await state(page)).seenStart===true,'visit to Start here is remembered');
+  ok((await state(page)).seenStart.u1===true,'visit to Start here is remembered');
 
   console.log('C. goals');
   await page.click('#unit-tabs a[data-go="u1-goals"]');
@@ -316,8 +326,11 @@ async function overflow(page,label){
   ok(poll.split('\n').length===5&&/^A\. /.test(poll.split('\n')[1]),'poll text has the stem and four lettered options');
   await page.click('#d-copy');await page.waitForTimeout(200);
   ok(/Copied|Selected/.test(await page.locator('#d-copy').textContent()),'copy button responds ['+await page.locator('#d-copy').textContent()+']');
-  await page.click('.top a[data-go="u1"]');
+  await page.click('.top a[data-go="home"]');
+  await page.evaluate(()=>{location.hash='u1';});await page.waitForTimeout(100);
   ok(await page.locator('#view-discuss').isVisible(),'the unit link returns to the part last used');
+  await page.click('.top a[data-go="home"]');await page.click('#h-map a[data-go="u1-goals"]');
+  ok(await page.locator('#view-goals').isVisible(),'the map opens the goals of Unit 1');
   await page.click('#unit-tabs a[data-go="u1-goals"]');
   const gp=await page.locator('#g-list').textContent();
   ok(gp.includes('Discuss: 1 of 1 answered')&&gp.includes('Discuss: 3 of 3 answered'),'goals page counts discussion answers');
@@ -418,9 +431,9 @@ async function overflow(page,label){
 
   console.log('K. about page, data, routes');
   await page.click('.top a[data-go="about"]');
-  eq(await page.locator('#v-checks li').count(),26,'26 self-checks listed');
+  eq(await page.locator('#v-checks li').count(),34,'34 self-checks listed');
   eq(await page.locator('#v-checks li.bad').count(),0,'all self-checks pass');
-  eq(await page.locator('#v-discuss tbody tr').count(),15,'discussion table');
+  eq(await page.locator('#v-discuss tbody tr').count(),25,'discussion table lists both units');
   ok(await page.locator('#v-tags tbody tr').count()>=40,'tag table');
   const csv=await page.locator('#v-log').inputValue();
   S=await state(page);
@@ -436,7 +449,7 @@ async function overflow(page,label){
   await page.goto(FILE+'#practice');await page.reload();ok(await page.locator('#view-practice').isVisible(),'old link from version 0.2 still lands on practice');
   await page.goto(FILE+'#nonsense');await page.reload();ok(await page.locator('#view-home').isVisible(),'unknown link lands on home');
   ok((await page.locator('#h-status').textContent()).includes('65 of 65 practice items answered'),'home shows progress ['+await page.locator('#h-status').textContent()+']');
-  await page.click('.top a[data-go="u1"]');await page.click('#unit-tabs a[data-go="u1-practice"]');
+  await page.click('.top a[data-go="units"]');await page.click('#u-map a[data-go="u1-practice"]');
   await page.click('#p-restart');
   ok((await page.locator('#p-restart').textContent()).includes('Click again'),'start over asks twice');
   await page.click('#p-restart');
@@ -448,6 +461,107 @@ async function overflow(page,label){
   eq(await state(page),null,'clear my data removes the saved state');
   await page.click('.top a[data-go="home"]');
   eq(await page.locator('#h-cta a').first().textContent(),'Start here','home is back to the first-visit state');
+
+  console.log('N. unit 0');
+  await page.goto(FILE+'#u0-goals');await page.reload();
+  ok((await page.locator('#unit-title').textContent()).includes('Vectors, rotations and phase'),'unit 0 head');
+  eq(await page.locator('#g-list > li').count(),5,'five goals');
+  eq(await page.locator('#g-list .pip').count(),49,'49 item marks');
+  await page.click('#unit-tabs a[data-go="u0-start"]');
+  eq(await page.locator('#s-body-u0 .lesson').count(),12,'twelve sections');
+  eq(await page.locator('#s-body-u0 svg').count(),11,'eleven figures');
+  eq(await page.locator('#s-toc button').count(),12,'contents list has twelve entries');
+  ok(await page.locator('#s-body-u1').isHidden(),'unit 1 sections are hidden');
+  for(const id of ['ex-add','ex-field','ex-complex']){
+    await page.click('#s-play-'+id);
+    await page.waitForFunction(i=>document.getElementById('s-play-'+i).textContent==='Play again',id,{timeout:8000});
+    passes++;
+  }
+  await page.click('#view-start a[data-go="unit-practice"]');
+  ok(await page.locator('#view-practice').isVisible()&&(await page.locator('#unit-title').textContent()).includes('Unit 0'),'start page leads to the practice of the same unit');
+  ok((await page.locator('#p-legend').textContent()).includes('Given vectors'),'legend for the plane');
+  const plan0={V:{miss:[1,4],twice:[]},P:{miss:[2,6],twice:[6]},X:{miss:[0,7],twice:[]},F:{miss:[3],twice:[]},C:{miss:[2,9],twice:[]}};
+  const sizes0={V:10,P:9,X:9,F:9,C:12},expect0={},types0=new Set();
+  for(const g of ['V','P','X','F','C']){
+    await page.click('#p-groups button[data-g="'+g+'"]');
+    const seen=[],missed=new Set();let guard=0;
+    while(guard++<40){
+      const I=await info(page);
+      if(!I)break;
+      types0.add(I.type);
+      const idx=seen.indexOf(I.id);let right;
+      if(idx<0){seen.push(I.id);right=!plan0[g].miss.includes(seen.length-1);if(!right)missed.add(I.id);expect0[I.id]={first:right?1:0,last:right?1:0,m:right?0:1};}
+      else{ok(/back because you missed it earlier/.test(I.note),I.id+': retry note shown');const order=[...missed].indexOf(I.id),tw=plan0[g].twice.includes(plan0[g].miss[order]);right=!tw;expect0[I.id].last=right?1:0;if(!right)expect0[I.id].m++;}
+      await answer(page,right);
+    }
+    eq(seen.length,sizes0[g],g+': all starter items shown');
+    ok((await page.locator('#p-head').textContent()).includes('Starter set complete'),g+': summary shown');
+  }
+  ok(types0.size>=12,'many item types in unit 0 '+JSON.stringify([...types0]));
+  S=await state(page);
+  eq(Object.keys(S.items).filter(id=>/^[vpxfc]\d/.test(id)).length,49,'49 unit 0 item records');
+  eq(Object.keys(S.items).length,49,'unit 1 records were cleared earlier, unit 0 records stand alone');
+  eq(await page.locator('#p-strip .c .pip.miss').count(),1,'one item missed twice shows as missed');
+  eq(await page.locator('#p-strip .c .pip.rec').count(),8,'eight items right after a miss');
+  await page.click('#p-groups button[data-g="R"]');
+  ok((await page.locator('#p-head').textContent()).includes('Next review: 9 items tomorrow'),'unit 0 review announces tomorrow');
+  await page.click('#p-groups button[data-g="C"]');await page.click('#p-more');
+  for(let i=0;i<6;i++){const I=await answer(page,i%2===0);ok(/^gc\d+$/.test(I.id),'generated complex item '+I.id);}
+  await page.click('#p-groups button[data-g="F"]');await page.click('#p-more');
+  for(let i=0;i<4;i++){const I=await answer(page,true);ok(/^gf\d+$/.test(I.id),'generated field item '+I.id);}
+  S=await state(page);
+  eq(Object.keys(S.items).length,49,'generated unit 0 items leave the item records alone');
+  // unit 1 is untouched by unit 0 practice
+  await page.goto(FILE+'#u1-practice');await page.reload();
+  eq(await page.locator('#p-groups button[data-g="R"] small').count(),0,'nothing due in unit 1');
+  ok((await page.locator('#p-strip .c .pip.ok').count())===0&&(await page.locator('#p-strip .c .pip').count())===65,'unit 1 strip shows its own 65 items, untouched');
+  await page.goto(FILE+'#u0-discuss');await page.reload();
+  eq(await page.locator('#d-nav button').count(),10,'ten questions in unit 0');
+  const KEYS0=await page.evaluate(()=>DISCUSS0.map(q=>q.options.findIndex(o=>o.ok)));
+  eq(KEYS0.map(i=>'ABCD'[i]).join(''),'CBADBDACBD','unit 0 answer key is spread over the four letters');
+  for(let j=0;j<10;j++){
+    await page.click('#d-nav button[data-q="'+j+'"]');
+    const meta=await page.evaluate(j=>{const q=DISCUSS0[j];return {id:q.id,fig:!!q.scene,reveal:!!q.reveal};},j);
+    eq(await page.locator('#d-stage').evaluate(e=>e.classList.contains('nofig')),!meta.fig,meta.id+': figure shown');
+    const first=(KEYS0[j]+1)%4,final=j%3===2?first:KEYS0[j];
+    await page.check('#d-o1 input[value="'+first+'"]');await page.click('#d-lock1');
+    await page.check('#d-o2 input[value="'+final+'"]');await page.click('#d-lock2');
+    eq(await page.locator('#d-steps .why').count(),4,meta.id+': a reason for each option');
+    eq(await page.locator('#d-steps .why.ok').count(),1,meta.id+': one option holds');
+    eq(await page.locator('#d-replay').isVisible(),meta.reveal,meta.id+': replay offered only where there is a motion');
+    if(meta.reveal){await page.waitForTimeout(1200);await page.click('#d-replay');await page.waitForTimeout(300);}
+  }
+  S=await state(page);
+  eq(Object.keys(S.discuss).filter(k=>/^d[VPXFC]/.test(k)).length,10,'ten unit 0 discussion answers saved');
+  await page.click('#unit-tabs a[data-go="u0-goals"]');
+  ok((await page.locator('#g-list').textContent()).includes('Discuss: 2 of 2 answered'),'unit 0 goals count discussion answers');
+  // explore and code
+  await page.click('#unit-tabs a[data-go="u0-explore"]');
+  await page.fill('#e0-ax','3');await page.fill('#e0-ay','0');await page.fill('#e0-bx','0');await page.fill('#e0-by','2');
+  vals=await page.locator('#e0-vals').textContent();
+  ok(vals.includes('a \u00b7 b = 0.00')&&vals.includes('\u03b8 = 90.00\u00b0')&&vals.includes('a \u00d7 b = 6.00 along z'),'sandbox numbers ['+vals.slice(0,80)+']');
+  await page.fill('#e0-angle','90');await page.click('#e0-rotate');await page.waitForTimeout(1200);
+  eq(await page.locator('#e0-ax').inputValue(),'0','turn by 90 degrees changes a');
+  eq(await page.locator('#e0-ay').inputValue(),'3','turn by 90 degrees sends (3, 0) to (0, 3)');
+  await page.fill('#e0-ax','9');ok(await page.locator('#e0-err').isVisible(),'components outside the grid are refused');
+  await page.fill('#e0-ax','1');
+  await page.click('#view-explore0 a[data-go="u0-code"]');
+  ok(await page.locator('#view-code0').isVisible(),'code page of unit 0');
+  code=await page.locator('#c0-code').textContent();
+  ok(code.includes('a = np.array([1.0, 3.0])')&&code.includes('b = np.array([0.0, 2.0])')&&code.includes('np.cross(a3, b3)'),'numpy script holds the sandbox vectors');
+  ok((await page.locator('#c0-expect').textContent()).includes('a . b = 6.0'),'expected output computed');
+  await page.click('#c0-copy');await page.waitForTimeout(200);
+  ok(/Copied|Selected/.test(await page.locator('#c0-copy').textContent()),'copy responds');
+  await page.reload();await page.goto(FILE+'#u0-explore');
+  eq(await page.locator('#e0-ay').inputValue(),'3','sandbox vectors survive a reload');
+  await page.goto(FILE+'#home');await page.reload();
+  ok((await page.locator('#h-status').textContent()).includes('Unit 0: 49 of 49 practice items answered, 1 to revisit. 10 of 10 discussion questions answered.'),'home sums up unit 0 ['+await page.locator('#h-status').textContent()+']');
+  await page.clock.setFixedTime(dayDate(55));await page.reload();
+  eq(await page.locator('#h-review').textContent(),'Review 9 items','home offers the unit 0 review the next day');
+  await page.click('#h-review');
+  ok(await page.locator('#view-practice').isVisible()&&(await page.locator('#unit-title').textContent()).includes('Unit 0')&&(await page.locator('#p-groups [aria-current]').getAttribute('data-g'))==='R','review opens in unit 0');
+  await page.click('.top a[data-go="about"]');await page.click('#v-clear');await page.click('#v-clear');
+  await page.clock.setFixedTime(dayDate(54));
 
   console.log('L. progress from version 0.2 is carried over');
   await page.evaluate(()=>{
@@ -477,19 +591,29 @@ async function overflow(page,label){
   const p2=await ph.newPage();
   p2.on('console',m=>{if(m.type()==='error')errs.push('phone: '+m.text());});
   p2.on('pageerror',e=>errs.push('phone PAGEERROR '+e.message));
-  for(const r of ['home','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about']){
+  for(const r of ['home','units','u0-goals','u0-start','u0-practice','u0-discuss','u0-explore','u0-code','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about']){
     await p2.goto(FILE+'#'+r);await p2.reload();await p2.waitForTimeout(150);await overflow(p2,'phone '+r);
   }
   await p2.goto(FILE+'#u1-practice');await p2.reload();
   // tap the label |+> on the sphere to answer the first item (place (|0>+|1>)/sqrt2)
-  const box=await p2.locator('#p-sphere svg').boundingBox();
-  const pt=await p2.evaluate(()=>{const svg=document.querySelector('#p-sphere svg');const t=[...svg.querySelectorAll('text.s-label')].find(e=>e.textContent.startsWith('|+⟩'));const r=t.getBoundingClientRect();return {x:r.left+6,y:r.top+r.height/2};});
+  const box=await p2.locator('#p-sphere svg:not([hidden])').boundingBox();
+  const pt=await p2.evaluate(()=>{const svg=document.querySelector('#p-sphere svg:not([hidden])');const t=[...svg.querySelectorAll('text.s-label')].find(e=>e.textContent.startsWith('|+⟩'));const r=t.getBoundingClientRect();return {x:r.left+6,y:r.top+r.height/2};});
   await p2.touchscreen.tap(pt.x,pt.y);
   ok((await p2.locator('#p-read').textContent()).includes('|+⟩'),'a tap on a label places that state ['+await p2.locator('#p-read').textContent()+']');
   await p2.tap('#p-lock');
   await p2.waitForSelector('#st3:not([hidden])',{timeout:15000});
   ok(await p2.locator('#p-obs .fb.ok').count()===1,'phone: answer by tap is correct');
   await overflow(p2,'phone practice after answering');
+  await p2.goto(FILE+'#u0-practice');await p2.reload();await p2.waitForTimeout(150);
+  await p2.evaluate(()=>{const s=JSON.parse(localStorage.getItem('qip101-v3'));s.units.u0.group='V';s.groups.V.pos=5;localStorage.setItem('qip101-v3',JSON.stringify(s));});
+  await p2.reload();await p2.waitForTimeout(150);
+  // v06: tap the grid point (3, 3), the tip of a + b
+  const gq=await p2.evaluate(()=>{const svg=document.querySelector('#p-sphere svg:not([hidden])');svg.scrollIntoView({block:'center'});const r=svg.getBoundingClientRect();const k=r.width/300;return {x:r.left+(150+3*30)*k,y:r.top+(150-3*30)*k};});
+  await p2.touchscreen.tap(gq.x,gq.y);
+  ok((await p2.locator('#p-read').textContent()).includes('(3, 3)'),'phone: a tap on the grid places the arrow ['+await p2.locator('#p-read').textContent()+']');
+  await p2.tap('#p-lock');await p2.waitForSelector('#st3:not([hidden])',{timeout:15000});
+  ok(await p2.locator('#p-obs .fb.ok').count()===1,'phone: tapped arrow is correct');
+  await overflow(p2,'phone unit 0 practice after answering');
   await p2.goto(FILE+'#u1-code');await p2.reload();await overflow(p2,'phone code');
   ok(await p2.evaluate(()=>{const p=document.getElementById('c-code');return p.scrollWidth>p.clientWidth;}),'phone: wide code scrolls inside its own box');
   await p2.check('#c-mode-expect');await p2.locator('#c-paulibox > summary').click();await overflow(p2,'phone code, expectation values and Pauli snippet');

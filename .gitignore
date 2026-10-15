@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .DS_Store
 cases.json
+cases0.json

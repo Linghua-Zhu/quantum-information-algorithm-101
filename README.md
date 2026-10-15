@@ -4,13 +4,13 @@ From vectors to qubits to algorithms. Predict first, then observe.
 
 **Open the course:** https://linghua-zhu.github.io/quantum-information-algorithm-101/
 
-A course tool for a first course in quantum information and quantum programming. Students work through each topic by committing to an answer, watching what the physics does, and explaining the difference. The same circuits then become code that runs on a simulator or on a real quantum computer.
+A course tool for a first course in quantum information and quantum programming. Students work through each topic by committing to an answer, watching what the physics does, and explaining the difference. The same circuits then become code that runs on a simulator or on a real quantum computer. Unit 0 covers the vectors, projections and complex numbers that the rest is built from, and serves introductory mechanics and electromagnetism as well.
 
 ## Units
 
 | Unit | Topic | |
 |---|---|---|
-| 0 | Vectors, rotations and phase | In preparation |
+| 0 | Vectors, rotations and phase: vectors, projections, the right-hand rule, fields of point charges, complex numbers as arrows | Open |
 | 1 | One qubit: states, gates, measurement, Pauli operators and noise on the Bloch sphere | Open |
 | 2 | Two qubits: product states, entanglement, CNOT and the Bell states | In preparation |
 | 3 | Algorithms: Deutsch-Jozsa, Grover search, teleportation, phase estimation, the variational eigensolver | In preparation |
@@ -24,7 +24,7 @@ Every unit has the same six parts.
 - **Practice.** Predict, observe, explain. Missed items come back.
 - **Discuss.** Questions to argue over, with a reason for every option.
 - **Explore.** A sandbox with no questions asked.
-- **Code.** The same circuit as a Qiskit program for a simulator or a real device.
+- **Code.** The same circuit as a Qiskit program for a simulator or a real device. In Unit 0, the same vectors as a NumPy script.
 
 ## How each question works
 
@@ -44,7 +44,7 @@ Committing first is what makes the observation informative. It shows exactly whe
 
 **Missed items come back.** A missed item returns a few items later and again the next day. An item answered correctly returns after 3, 7, 14 and 30 days, without hints. Recalling an answer improves long-term retention more than studying it again (Roediger and Karpicke 2006). So does spreading practice over several days instead of one session (Cepeda et al. 2006).
 
-**A reason for every option.** Each idea in a unit has one question for discussion. Students answer alone, talk it over and answer again (Crouch and Mazur 2001). Then they read the reasons for every option: why each wrong option is tempting, and where it breaks down. Several of the wrong options are answers that students give in published studies (Passante et al. 2015; Wan et al. 2019; Hu, Li, Mong and Singh 2024; Hu, Li and Singh 2024).
+**A reason for every option.** Each idea in a unit has one question for discussion. Students answer alone, talk it over and answer again (Crouch and Mazur 2001). Then they read the reasons for every option: why each wrong option is tempting, and where it breaks down. Several of the wrong options are answers that students give in published studies (Nguyen and Meltzer 2003; Barniol and Zavala 2014; Passante et al. 2015; Wan et al. 2019; Hu, Li, Mong and Singh 2024; Hu, Li and Singh 2024).
 
 **One idea, several representations.** A state appears as amplitudes, as a point on the sphere, as numbers and as a circuit, and the worked examples translate from one to another (Ainsworth 2006). The Code part turns the circuit into a Qiskit program. Students predict what the program prints, run it, and then change it. These are the first steps of the PRIMM approach to teaching programming (Sentance et al. 2019).
 
@@ -60,12 +60,14 @@ Committing first is what makes the observation informative. It shows exactly whe
 ## References
 
 - Ainsworth, S. (2006). DeFT: A conceptual framework for considering learning with multiple representations. *Learning and Instruction, 16*(3), 183–198. https://doi.org/10.1016/j.learninstruc.2006.03.001
+- Barniol, P., & Zavala, G. (2014). Test of understanding of vectors: A reliable multiple-choice vector concept test. *Physical Review Special Topics - Physics Education Research, 10*(1), 010121. https://doi.org/10.1103/PhysRevSTPER.10.010121
 - Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., & Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. *Psychological Bulletin, 132*(3), 354–380. https://doi.org/10.1037/0033-2909.132.3.354
 - Crouch, C. H., Fagen, A. P., Callan, J. P., & Mazur, E. (2004). Classroom demonstrations: Learning tools or entertainment? *American Journal of Physics, 72*(6), 835–838. https://doi.org/10.1119/1.1707018
 - Crouch, C. H., & Mazur, E. (2001). Peer Instruction: Ten years of experience and results. *American Journal of Physics, 69*(9), 970–977. https://doi.org/10.1119/1.1374249
 - Hattie, J., & Timperley, H. (2007). The power of feedback. *Review of Educational Research, 77*(1), 81–112. https://doi.org/10.3102/003465430298487
 - Hu, P., Li, Y., Mong, R. S. K., & Singh, C. (2024). Student understanding of the Bloch sphere. *European Journal of Physics, 45*(2), 025705. https://doi.org/10.1088/1361-6404/ad2393
 - Hu, P., Li, Y., & Singh, C. (2024). Investigating and improving student understanding of the basics of quantum computing. *Physical Review Physics Education Research, 20*(2), 020108. https://doi.org/10.1103/PhysRevPhysEducRes.20.020108
+- Nguyen, N.-L., & Meltzer, D. E. (2003). Initial understanding of vector concepts among students in introductory physics courses. *American Journal of Physics, 71*(6), 630–638. https://doi.org/10.1119/1.1571831
 - McDermott, L. C. (2001). Oersted Medal Lecture 2001: "Physics Education Research—The key to student learning." *American Journal of Physics, 69*(11), 1127–1137. https://doi.org/10.1119/1.1389280
 - Passante, G., Emigh, P. J., & Shaffer, P. S. (2015). Student ability to distinguish between superposition states and mixed states in quantum mechanics. *Physical Review Special Topics - Physics Education Research, 11*(2), 020135. https://doi.org/10.1103/PhysRevSTPER.11.020135
 - Renkl, A., & Atkinson, R. K. (2003). Structuring the transition from example study to problem solving in cognitive skill acquisition: A cognitive load perspective. *Educational Psychologist, 38*(1), 15–22. https://doi.org/10.1207/S15326985EP3801_3

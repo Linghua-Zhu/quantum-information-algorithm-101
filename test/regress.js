@@ -159,7 +159,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
     await page.goto(URL);
     await page.evaluate(([k,v])=>localStorage.setItem(k,v),[KEY,b]);
     const before=errs.length;
-    for(const r of ['home','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about']){await page.goto(URL+'#'+r);await page.reload();await sleep(40);}
+    for(const r of ['home','units','u0-goals','u0-start','u0-practice','u0-discuss','u0-explore','u0-code','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about']){await page.goto(URL+'#'+r);await page.reload();await sleep(40);}
     await page.goto(URL+'#u1-practice');await page.reload();
     // the page must still take an answer
     const hasItem=await page.locator('#p-head').getAttribute('data-item');
@@ -182,7 +182,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   await page.click('.top a[data-go="about"]');await page.click('#v-clear');await page.click('#v-clear');
   await sleep(2500);
   ok(errs.length===0,'clearing data during a practice animation raises no error'+(errs.length?': '+errs.join(' | '):''));
-  await page.click('.top a[data-go="u1"]');await page.click('#unit-tabs a[data-go="u1-practice"]');
+  await page.click('.top a[data-go="units"]');await page.click('#u-map a[data-go="u1-practice"]');
   await page.click('#p-groups button[data-g="M"]');
   await page.fill('#p-num','0.75');await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');
   await page.dblclick('#p-restart');
@@ -193,7 +193,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
   S=await st(page);
   ok(Object.keys(S.items).length===0,'two separate clicks do');
   await page.click('#p-groups button[data-g="S"]');
-  const box=await page.locator('#p-sphere svg').boundingBox();
+  const box=await page.locator('#p-sphere svg:not([hidden])').boundingBox();
   await page.mouse.click(box.x+box.width/2,box.y+box.height/2,{button:'right'});
   ok((await page.locator('#p-read').textContent())==='No point placed yet.','a right click does not place a prediction');
   await page.mouse.click(box.x+box.width/2,box.y+box.height/2);

@@ -3,7 +3,7 @@ const {chromium}=require('playwright');
 const path=require('path'),fs=require('fs');
 const FILE='file://'+path.join(__dirname,'..','docs','index.html');
 const AXE=fs.readFileSync(require.resolve('axe-core/axe.min.js'),'utf8');
-const ROUTES=['home','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about'];
+const ROUTES=['home','units','u0-goals','u0-start','u0-practice','u0-discuss','u0-explore','u0-code','u1-goals','u1-start','u1-practice','u1-discuss','u1-explore','u1-code','research','about'];
 let bad=0;
 async function axe(page,label){
   await page.evaluate(AXE);
@@ -25,6 +25,18 @@ async function axe(page,label){
     await page.goto(FILE+'#u1-discuss');
     await page.check('#d-o1 input[value="1"]');await page.click('#d-lock1');await page.check('#d-o2 input[value="2"]');await page.click('#d-lock2');
     await axe(page,scheme+' discuss answered');
+    await page.goto(FILE+'#u0-practice');await page.reload();
+    await page.fill('#p-num','5');await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');await page.fill('#p-exp','x');await page.click('#p-compare');
+    await axe(page,scheme+' unit 0 practice answered');
+    await page.click('#p-next');await page.click('#p-groups button[data-g="F"]');
+    await page.locator('#p-numbers summary').click();await page.fill('#p-n1','1');await page.fill('#p-n2','0');await page.click('#p-placeangles');
+    await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');
+    await axe(page,scheme+' unit 0 field item answered');
+    await page.goto(FILE+'#u0-discuss');
+    await page.check('#d-o1 input[value="1"]');await page.click('#d-lock1');await page.check('#d-o2 input[value="2"]');await page.click('#d-lock2');
+    await axe(page,scheme+' unit 0 discuss answered');
+    await page.goto(FILE+'#u0-explore');await page.check('#e0-proj');await page.check('#e0-diff');await axe(page,scheme+' unit 0 explore');
+    await page.goto(FILE+'#u0-code');await page.evaluate(()=>{document.getElementById('c0-expectbox').open=true;});await axe(page,scheme+' unit 0 code');
     await page.goto(FILE+'#u1-code');
     await page.check('#c-mode-expect');
     await page.evaluate(()=>document.querySelectorAll('#view-code details').forEach(d=>{d.open=true;}));
@@ -55,7 +67,7 @@ async function axe(page,label){
   let page=await ctx.newPage();const errs=[];
   page.on('pageerror',e=>errs.push(e.message));page.on('console',m=>{if(m.type()==='error')errs.push(m.text());});
   await page.goto(FILE);
-  await page.click('#h-cta a[data-go="u1-start"]');await page.click('#view-start a[data-go="u1-practice"]');
+  await page.click('#h-cta a[data-go="u1-goals"]');await page.click('#unit-tabs a[data-go="u1-start"]');await page.click('#view-start a[data-go="unit-practice"]');
   await page.locator('#p-numbers summary').click();await page.fill('#p-n1','90');await page.fill('#p-n2','0');await page.click('#p-placeangles');
   await page.click('#p-lock');await page.waitForSelector('#st3:not([hidden])');
   const okFb=await page.locator('#p-obs .fb.ok').count();

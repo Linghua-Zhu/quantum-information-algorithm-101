@@ -2,22 +2,15 @@
   <a class="brand" href="#home" data-go="home">Quantum Information and Programming 101</a>
   <nav class="tabs" id="nav" aria-label="Course">
     <a href="#home" data-go="home" data-nav="home">Home</a>
-    <a href="#u1-goals" data-go="u1" data-nav="u1">Unit 1: One qubit</a>
+    <a href="#units" data-go="units" data-nav="units">Units</a>
     <a href="#research" data-go="research" data-nav="research">Research</a>
     <a href="#about" data-go="about" data-nav="about">About</a>
   </nav>
 </header>
 <main id="main">
 <div class="unit-head" id="unit-head" hidden>
-  <div class="unit-title"><span>Unit 1</span><h1>One qubit</h1></div>
-  <nav class="tabs" id="unit-tabs" aria-label="Parts of unit 1">
-    <a href="#u1-goals" data-go="u1-goals" data-nav="u1-goals">Goals</a>
-    <a href="#u1-start" data-go="u1-start" data-nav="u1-start">Start here</a>
-    <a href="#u1-practice" data-go="u1-practice" data-nav="u1-practice">Practice</a>
-    <a href="#u1-discuss" data-go="u1-discuss" data-nav="u1-discuss">Discuss</a>
-    <a href="#u1-explore" data-go="u1-explore" data-nav="u1-explore">Explore</a>
-    <a href="#u1-code" data-go="u1-code" data-nav="u1-code">Code</a>
-  </nav>
+  <div class="unit-title" id="unit-title"></div>
+  <nav class="tabs" id="unit-tabs" aria-label="Parts of the unit"></nav>
 </div>
 
 <section id="view-home">
@@ -51,40 +44,49 @@
   <h2 class="sec">About this tool</h2>
   <div class="about">
     <p class="txt">Linghua Zhu made this tool for a first course in quantum information and quantum programming. It runs in your browser. There is no login, and your answers are stored on this device only.</p>
-    <p class="txt">Unit 1 is open. The other units and the research topics are in preparation. The <a href="#about" data-go="about">About</a> page explains how the tool is designed and lists its sources.</p>
+    <p class="txt">Units 0 and 1 are open. The other units and the research topics are in preparation. The <a href="#about" data-go="about">About</a> page explains how the tool is designed and lists its sources.</p>
+  </div>
+</section>
+
+<section id="view-units" hidden>
+  <div class="page">
+    <h1>Units</h1>
+    <p class="lead">Unit 0 is the geometry: vectors, projections, the right-hand rule and complex numbers as arrows. Unit 1 puts a qubit on the Bloch sphere. Each open unit has the same six parts.</p>
+    <h2 class="vh">The units</h2>
+    <div class="map" id="u-map"></div>
   </div>
 </section>
 
 <section id="view-goals" hidden>
   <div class="page">
     <h2>What you will be able to do</h2>
-    <p class="lead">Unit 1 has eight goals. Every practice item and every discussion question belongs to one of them, so this page also shows where you stand.</p>
+    <p class="lead" id="g-lead"></p>
     <ol class="goals" id="g-list"></ol>
     <h3>What you need before you start</h3>
-    <p class="txt">Sines and cosines, vectors with three components, and complex numbers in the form e<sup>iφ</sup>. No quantum mechanics is assumed. The Start here page gives the conventions this unit uses.</p>
-    <div class="row" style="margin-top:18px"><a class="primary" href="#u1-start" data-go="u1-start">Start here</a><a class="ghost" href="#u1-practice" data-go="u1-practice">Go to practice</a></div>
+    <p class="txt" id="g-prereq"></p>
+    <div class="row" style="margin-top:18px"><a class="primary" href="#unit-start" data-go="unit-start">Start here</a><a class="ghost" href="#unit-practice" data-go="unit-practice">Go to practice</a></div>
   </div>
 </section>
 
 <section id="view-start" hidden>
   <div class="page" style="max-width:none">
     <h2>Start here</h2>
-    <p class="lead">Read this once before the practice. It gives the conventions for the sphere and one worked example for each topic. The practice then asks for the same steps with less and less help.</p>
+    <p class="lead" id="s-lead"></p>
     <nav class="toc" id="s-toc" aria-label="On this page"></nav>
     <div id="s-body"></div>
-    <div class="row" style="border-top:1px solid var(--rule);padding-top:18px;margin-top:0"><a class="primary" href="#u1-practice" data-go="u1-practice">Go to practice</a><a class="ghost" href="#u1-goals" data-go="u1-goals">Back to the goals</a></div>
+    <div class="row" style="border-top:1px solid var(--rule);padding-top:18px;margin-top:0"><a class="primary" href="#unit-practice" data-go="unit-practice">Go to practice</a><a class="ghost" href="#unit-goals" data-go="unit-goals">Back to the goals</a></div>
   </div>
 </section>
 
 <section id="view-practice" hidden>
   <h2 class="vh">Practice</h2>
-  <p class="note" id="p-intro" style="margin:0 0 14px" hidden>First time here? <a href="#u1-start" data-go="u1-start">Start here</a> explains how to read the sphere and how the practice works.</p>
+  <p class="note" id="p-intro" style="margin:0 0 14px" hidden></p>
   <nav class="groups" id="p-groups" aria-label="Topics"></nav>
   <div class="stage poe">
     <figure class="fig">
       <div id="p-sphere"></div>
       <figcaption>
-        <div class="legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span></div>
+        <div class="legend" id="p-legend"><span><i class="k-state"></i>State</span><span><i class="k-start"></i>Start</span><span><i class="k-pred"></i>Your prediction</span><span><i class="k-path"></i>Actual motion</span></div>
         <div class="figtools">
           <button type="button" class="link" id="p-resetview">Reset view</button><span id="p-flatnote" hidden>Cross-section through the z axis</span>
           <details id="p-numbers"><summary>Place by numbers</summary>
@@ -215,6 +217,56 @@
   </div>
 </section>
 
+<section id="view-explore0" hidden>
+  <h2 class="vh">Explore</h2>
+  <div class="stage">
+    <figure class="fig">
+      <div id="e0-plane"></div>
+      <figcaption><div class="legend"><span><i class="k-vec"></i>a and b</span><span><i class="k-path"></i>Results</span><span><i class="k-start"></i>Moved copies</span></div></figcaption>
+    </figure>
+    <div>
+      <p class="note" style="margin:0 0 14px">A sandbox with no questions. Set two vectors and watch their sum, difference and projection. The Code part computes the same numbers with NumPy.</p>
+      <div class="group"><h3>Vectors</h3>
+        <div class="row"><label>a = (<input type="number" id="e0-ax" min="-4" max="4" step="0.25" style="width:70px">, <input type="number" id="e0-ay" min="-4" max="4" step="0.25" style="width:70px">)</label></div>
+        <div class="row"><label>b = (<input type="number" id="e0-bx" min="-4" max="4" step="0.25" style="width:70px">, <input type="number" id="e0-by" min="-4" max="4" step="0.25" style="width:70px">)</label><button type="button" class="ghost" id="e0-swap">Swap a and b</button></div>
+        <p class="err" id="e0-err" hidden></p>
+      </div>
+      <div class="group"><h3>Show</h3>
+        <div class="opts row2"><label><input type="checkbox" id="e0-sum"> a + b</label><label><input type="checkbox" id="e0-diff"> a − b</label><label><input type="checkbox" id="e0-proj"> projection of a onto b</label></div>
+      </div>
+      <div class="group"><h3>Turn a</h3>
+        <div class="row"><label>Angle <input type="number" id="e0-angle" value="90" min="-360" max="360" step="15"> °</label><button type="button" class="ghost" id="e0-rotate">Turn a</button></div>
+        <p class="note">A positive angle turns counterclockwise. Turning by 90° is the same as multiplying the complex number a by i.</p>
+        <p class="err" id="e0-rerr" hidden></p>
+      </div>
+      <div class="group"><h3>Numbers</h3><div class="vals" id="e0-vals"></div>
+        <div class="row" style="margin-top:10px"><a class="ghost" href="#u0-code" data-go="u0-code">See these numbers as code</a></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="view-code0" hidden>
+  <h2 class="vh">Code</h2>
+  <div class="codegrid">
+    <div>
+      <div class="group"><h3>The vectors</h3>
+        <p class="note" id="c0-note" style="margin:0 0 10px"></p>
+        <div class="row"><a class="ghost" href="#u0-explore" data-go="u0-explore">Change them in Explore</a></div>
+      </div>
+      <div class="group"><p class="note" style="margin:0">The script uses NumPy, the library that every quantum programming tool is built on. The same functions return in Unit 1: a state is an array, a gate is a matrix, and <code>@</code> applies it.</p></div>
+    </div>
+    <div>
+      <div class="codebar"><div class="codekey"><span>A script for NumPy</span></div><button type="button" class="ghost" id="c0-copy">Copy the code</button></div>
+      <pre class="code" id="c0-code" tabindex="0" aria-label="Python code for these vectors"></pre>
+      <h3 class="sub3">How to run it</h3>
+      <div class="howto"><ol><li>You need Python 3.10 or later.</li><li>Install NumPy once, in a terminal:<pre>pip install numpy</pre></li><li>Copy the code into a file named <code>unit0_vectors.py</code> and run it:<pre>python unit0_vectors.py</pre></li></ol>
+        <p class="note">In a notebook, put <code>%pip install numpy</code> in one cell and the code in the next.</p></div>
+      <p class="note" style="margin-top:12px">Before you run the script, write down what you expect it to print. Then compare.</p>
+      <details style="margin-top:14px" id="c0-expectbox"><summary>What should come out</summary><pre class="code" id="c0-expect" style="margin-top:8px" tabindex="0" aria-label="Expected output"></pre></details>
+    </div>
+  </div>
+</section>
+
 <section id="view-research" hidden>
   <div class="page">
     <h1>Research</h1>
@@ -278,12 +330,14 @@
     <h2 class="sec">References</h2>
     <ul class="refs" id="v-refs">
       <li>Ainsworth, S. (2006). DeFT: A conceptual framework for considering learning with multiple representations. <i>Learning and Instruction, 16</i>(3), 183–198. <a href="https://doi.org/10.1016/j.learninstruc.2006.03.001" target="_blank" rel="noopener">https://doi.org/10.1016/j.learninstruc.2006.03.001</a></li>
+      <li>Barniol, P., &amp; Zavala, G. (2014). Test of understanding of vectors: A reliable multiple-choice vector concept test. <i>Physical Review Special Topics - Physics Education Research, 10</i>(1), 010121. <a href="https://doi.org/10.1103/PhysRevSTPER.10.010121" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevSTPER.10.010121</a></li>
       <li>Cepeda, N. J., Pashler, H., Vul, E., Wixted, J. T., &amp; Rohrer, D. (2006). Distributed practice in verbal recall tasks: A review and quantitative synthesis. <i>Psychological Bulletin, 132</i>(3), 354–380. <a href="https://doi.org/10.1037/0033-2909.132.3.354" target="_blank" rel="noopener">https://doi.org/10.1037/0033-2909.132.3.354</a></li>
       <li>Crouch, C. H., Fagen, A. P., Callan, J. P., &amp; Mazur, E. (2004). Classroom demonstrations: Learning tools or entertainment? <i>American Journal of Physics, 72</i>(6), 835–838. <a href="https://doi.org/10.1119/1.1707018" target="_blank" rel="noopener">https://doi.org/10.1119/1.1707018</a></li>
       <li>Crouch, C. H., &amp; Mazur, E. (2001). Peer Instruction: Ten years of experience and results. <i>American Journal of Physics, 69</i>(9), 970–977. <a href="https://doi.org/10.1119/1.1374249" target="_blank" rel="noopener">https://doi.org/10.1119/1.1374249</a></li>
       <li>Hattie, J., &amp; Timperley, H. (2007). The power of feedback. <i>Review of Educational Research, 77</i>(1), 81–112. <a href="https://doi.org/10.3102/003465430298487" target="_blank" rel="noopener">https://doi.org/10.3102/003465430298487</a></li>
       <li>Hu, P., Li, Y., Mong, R. S. K., &amp; Singh, C. (2024). Student understanding of the Bloch sphere. <i>European Journal of Physics, 45</i>(2), 025705. <a href="https://doi.org/10.1088/1361-6404/ad2393" target="_blank" rel="noopener">https://doi.org/10.1088/1361-6404/ad2393</a></li>
       <li>Hu, P., Li, Y., &amp; Singh, C. (2024). Investigating and improving student understanding of the basics of quantum computing. <i>Physical Review Physics Education Research, 20</i>(2), 020108. <a href="https://doi.org/10.1103/PhysRevPhysEducRes.20.020108" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevPhysEducRes.20.020108</a></li>
+      <li>Nguyen, N.-L., &amp; Meltzer, D. E. (2003). Initial understanding of vector concepts among students in introductory physics courses. <i>American Journal of Physics, 71</i>(6), 630–638. <a href="https://doi.org/10.1119/1.1571831" target="_blank" rel="noopener">https://doi.org/10.1119/1.1571831</a></li>
       <li>McDermott, L. C. (2001). Oersted Medal Lecture 2001: “Physics Education Research—The key to student learning.” <i>American Journal of Physics, 69</i>(11), 1127–1137. <a href="https://doi.org/10.1119/1.1389280" target="_blank" rel="noopener">https://doi.org/10.1119/1.1389280</a></li>
       <li>Passante, G., Emigh, P. J., &amp; Shaffer, P. S. (2015). Student ability to distinguish between superposition states and mixed states in quantum mechanics. <i>Physical Review Special Topics - Physics Education Research, 11</i>(2), 020135. <a href="https://doi.org/10.1103/PhysRevSTPER.11.020135" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevSTPER.11.020135</a></li>
       <li>Renkl, A., &amp; Atkinson, R. K. (2003). Structuring the transition from example study to problem solving in cognitive skill acquisition: A cognitive load perspective. <i>Educational Psychologist, 38</i>(1), 15–22. <a href="https://doi.org/10.1207/S15326985EP3801_3" target="_blank" rel="noopener">https://doi.org/10.1207/S15326985EP3801_3</a></li>

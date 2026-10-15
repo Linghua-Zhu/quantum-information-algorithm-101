@@ -103,6 +103,28 @@ svg.sphere.flat.placing{cursor:crosshair}
 .s-mk-mb{fill:var(--paper);stroke:var(--navy);stroke-width:2}
 .s-mkv-mb{stroke:var(--navy);stroke-width:1.8;stroke-dasharray:4 3}
 .s-marklabel{font-family:var(--sans);font-size:9.5px;font-weight:600;fill:var(--ink)}
+.s-mk-pt{fill:var(--ink)}
+svg.plane{cursor:default}
+svg.plane.placing{cursor:crosshair}
+.pl-grid{fill:none;stroke:var(--rule);stroke-width:.7}
+.pl-half{fill:var(--slate);opacity:.55}
+.pl-axis{stroke:var(--muted);stroke-width:.9}
+.pl-axname{font-family:var(--serif);font-size:11px;font-style:italic;fill:var(--ink)}
+.pl-tick{font-family:var(--sans);font-size:7.5px;fill:var(--muted)}
+.pl-circle{fill:none;stroke:var(--slate);stroke-width:.8;stroke-dasharray:2 2.5}
+.pl-anchor{fill:var(--ink)}
+.pl-line-thin{stroke:var(--slate);stroke-width:.8}
+.pl-v-ma,.pl-v-mb,.pl-v-state,.pl-v-sum,.pl-v-ghost,.pl-v-pred{stroke-linecap:round;fill:none}
+.pl-v-ma{stroke:var(--navy);stroke-width:2.2}.pl-h-ma,.pl-dot-ma{fill:var(--navy)}
+.pl-v-mb{stroke:var(--navy);stroke-width:1.8;stroke-dasharray:4 3}.pl-h-mb,.pl-dot-mb{fill:var(--navy)}
+.pl-v-state{stroke:var(--teal);stroke-width:2.6}.pl-h-state,.pl-dot-state{fill:var(--teal)}
+.pl-v-sum{stroke:var(--teal);stroke-width:2.2}.pl-h-sum,.pl-dot-sum{fill:var(--teal)}
+.pl-v-ghost{stroke:var(--slate);stroke-width:1.3;stroke-dasharray:3 3}.pl-h-ghost,.pl-dot-ghost{fill:var(--slate)}
+.pl-v-pred{stroke:var(--coral);stroke-width:1.6}.pl-h-pred,.pl-dot-pred{fill:var(--coral)}
+.pl-label{font-family:var(--serif);font-size:11px;font-style:italic;fill:var(--ink)}
+.pl-label-state,.pl-label-sum{fill:var(--teal);font-weight:600}
+.pl-q-plus{fill:var(--coral);stroke:none}.pl-q-minus{fill:var(--navy);stroke:none}
+.pl-qsign{font-family:var(--sans);font-size:11px;font-weight:700;fill:var(--paper)}
 figcaption{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:10px 18px;flex-wrap:wrap;align-items:flex-start;border-top:1px solid var(--rule);padding-top:10px}
 .legend{display:flex;gap:6px 14px;flex-wrap:wrap}
 .legend i,dl.marks i{display:inline-block;vertical-align:middle}
@@ -111,6 +133,7 @@ figcaption{font-size:13px;color:var(--muted);display:flex;justify-content:space-
 .k-pred{width:10px;height:10px;border:2.5px solid var(--coral);border-radius:50%}
 .k-path{width:16px;height:0;border-top:2.5px solid var(--teal)}
 .k-start{width:16px;height:0;border-top:1.5px dashed var(--slate)}
+.k-vec{width:16px;height:0;border-top:2.2px solid var(--navy)}
 .figtools{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start}
 .angles{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:8px}
 .angles input{width:74px}
